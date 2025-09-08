@@ -163,14 +163,55 @@ export default function AdminPanel() {
     }
   };
 
+  const preprocessImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Cannot get canvas context'));
+          return;
+        }
+        
+        // Scale image for better OCR (aim for 1000px width)
+        const maxWidth = 1000;
+        const scale = img.width > maxWidth ? maxWidth / img.width : 1;
+        
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        
+        // Draw image with enhancements for better OCR
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.filter = 'contrast(200%) brightness(150%)';
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        // Convert to high-quality data URL
+        resolve(canvas.toDataURL('image/png', 1.0));
+      };
+      img.onerror = () => reject(new Error('Failed to load image'));
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
   const handleOcrImageUpload = async (file: File) => {
     try {
       setIsOcrProcessing(true);
       setOcrProgress(0);
       
+      toast({
+        title: "Processing Image",
+        description: "Preprocessing image for better text recognition...",
+      });
+
+      // Preprocess image for better OCR
+      const processedImageUrl = await preprocessImage(file);
+      
       // Create Tesseract worker with progress tracking
       const worker = createWorker({
-        logger: ({ progress }) => {
+        logger: ({ status, progress }) => {
+          console.log(`OCR ${status}: ${Math.round(progress * 100)}%`);
           setOcrProgress(Math.round(progress * 100));
         }
       });
@@ -179,17 +220,36 @@ export default function AdminPanel() {
       await worker.loadLanguage('eng');
       await worker.initialize('eng');
 
-      // Optimize OCR for numbers and text
+      // Configure OCR for better number and text recognition
       await worker.setParameters({
-        tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz:.%()-',
+        tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz:.%()- \n',
         tessedit_pageseg_mode: 6, // Uniform block of text
+        preserve_interword_spaces: '1',
       });
 
-      const { data: { text } } = await worker.recognize(file);
+      console.log("Starting OCR recognition...");
+      const { data: { text, confidence } } = await worker.recognize(processedImageUrl);
       await worker.terminate();
+
+      console.log("OCR Results:", { text, confidence });
+
+      if (!text || text.trim().length === 0) {
+        throw new Error("No text detected in image");
+      }
 
       // Parse the extracted text to identify stats
       const extractedStats = parseOcrText(text);
+      
+      console.log("Extracted stats:", extractedStats);
+
+      if (Object.keys(extractedStats).length === 0) {
+        toast({
+          title: "No Stats Found",
+          description: "Could not identify football statistics in the image. Try a clearer image with visible stat labels.",
+          variant: "destructive",
+        });
+        return;
+      }
       
       // Auto-fill the form with extracted data
       Object.entries(extractedStats).forEach(([key, value]) => {
@@ -200,14 +260,14 @@ export default function AdminPanel() {
 
       toast({
         title: "OCR Complete",
-        description: `Extracted text processed. Found ${Object.keys(extractedStats).length} stat values.`,
+        description: `Successfully extracted ${Object.keys(extractedStats).length} stat values! Check the form fields.`,
       });
 
     } catch (error) {
       console.error("OCR error:", error);
       toast({
         title: "OCR Failed",
-        description: "Could not extract text from image. Please try again.",
+        description: error instanceof Error ? error.message : "Could not extract text from image. Please try again with a clearer image.",
         variant: "destructive",
       });
     } finally {
@@ -220,41 +280,67 @@ export default function AdminPanel() {
     const stats: Partial<StatsFormData> = {};
     const lines = text.split('\n').filter(line => line.trim());
     
-    // Common patterns for parsing FC stats
+    console.log("Parsing OCR text lines:", lines);
+    
+    // Enhanced patterns for parsing football game stats
     const patterns = {
-      goals: /goals?\s*:?\s*(\d+)/i,
-      assists: /assists?\s*:?\s*(\d+)/i,
-      shots: /shots?\s*:?\s*(\d+)/i,
-      passes: /passes?\s*:?\s*(\d+)/i,
-      tackles: /tackles?\s*:?\s*(\d+)/i,
-      saves: /saves?\s*:?\s*(\d+)/i,
-      dribbles: /dribbles?\s*:?\s*(\d+)/i,
-      offsides: /offsides?\s*:?\s*(\d+)/i,
-      foulsCommitted: /fouls?\s*(committed)?\s*:?\s*(\d+)/i,
-      yellowCards: /yellow\s*cards?\s*:?\s*(\d+)/i,
-      redCards: /red\s*cards?\s*:?\s*(\d+)/i,
-      avgRating: /rating\s*:?\s*(\d+\.?\d*)/i,
-      shotAccuracy: /shot\s*accuracy\s*:?\s*(\d+)%?/i,
-      passAccuracy: /pass\s*accuracy\s*:?\s*(\d+)%?/i,
-      tackleSuccessRate: /tackle\s*success\s*:?\s*(\d+)%?/i,
-      dribbleSuccessRate: /dribble\s*success\s*:?\s*(\d+)%?/i,
-      possessionWon: /possession\s*won\s*:?\s*(\d+)/i,
-      possessionLost: /possession\s*lost\s*:?\s*(\d+)/i,
-      cleanSheet: /clean\s*sheet\s*:?\s*(\d+)/i,
+      // Basic stats
+      goals: [/goals?\s*:?\s*(\d+)/i, /(\d+)\s*goals?/i, /G\s*(\d+)/i],
+      assists: [/assists?\s*:?\s*(\d+)/i, /(\d+)\s*assists?/i, /A\s*(\d+)/i],
+      shots: [/shots?\s*:?\s*(\d+)/i, /(\d+)\s*shots?/i, /SH\s*(\d+)/i],
+      passes: [/passes?\s*:?\s*(\d+)/i, /(\d+)\s*passes?/i, /P\s*(\d+)/i],
+      tackles: [/tackles?\s*:?\s*(\d+)/i, /(\d+)\s*tackles?/i, /T\s*(\d+)/i],
+      saves: [/saves?\s*:?\s*(\d+)/i, /(\d+)\s*saves?/i, /SV\s*(\d+)/i],
+      dribbles: [/dribbles?\s*:?\s*(\d+)/i, /(\d+)\s*dribbles?/i, /DR\s*(\d+)/i],
+      offsides: [/offsides?\s*:?\s*(\d+)/i, /(\d+)\s*offsides?/i, /OFF\s*(\d+)/i],
+      foulsCommitted: [/fouls?\s*(committed)?\s*:?\s*(\d+)/i, /(\d+)\s*fouls?/i, /FC\s*(\d+)/i],
+      yellowCards: [/yellow\s*cards?\s*:?\s*(\d+)/i, /(\d+)\s*yellow/i, /YC\s*(\d+)/i],
+      redCards: [/red\s*cards?\s*:?\s*(\d+)/i, /(\d+)\s*red/i, /RC\s*(\d+)/i],
+      
+      // Percentage stats
+      avgRating: [/rating\s*:?\s*(\d+\.?\d*)/i, /(\d+\.?\d*)\s*rating/i, /RAT\s*(\d+\.?\d*)/i],
+      shotAccuracy: [/shot\s*acc(uracy)?\s*:?\s*(\d+)%?/i, /(\d+)%?\s*shot\s*acc/i, /SHA\s*(\d+)%?/i],
+      passAccuracy: [/pass\s*acc(uracy)?\s*:?\s*(\d+)%?/i, /(\d+)%?\s*pass\s*acc/i, /PA\s*(\d+)%?/i],
+      tackleSuccessRate: [/tackle\s*succ(ess)?\s*:?\s*(\d+)%?/i, /(\d+)%?\s*tackle/i, /TS\s*(\d+)%?/i],
+      dribbleSuccessRate: [/dribble\s*succ(ess)?\s*:?\s*(\d+)%?/i, /(\d+)%?\s*dribble/i, /DS\s*(\d+)%?/i],
+      
+      // Possession stats
+      possessionWon: [/possession\s*won\s*:?\s*(\d+)/i, /(\d+)\s*pos\s*won/i, /PW\s*(\d+)/i],
+      possessionLost: [/possession\s*lost\s*:?\s*(\d+)/i, /(\d+)\s*pos\s*lost/i, /PL\s*(\d+)/i],
+      cleanSheet: [/clean\s*sheet\s*:?\s*(\d+)/i, /(\d+)\s*clean/i, /CS\s*(\d+)/i],
+      pkSave: [/pk\s*save\s*:?\s*(\d+)/i, /penalty\s*save\s*:?\s*(\d+)/i, /(\d+)\s*pk\s*save/i, /PS\s*(\d+)/i],
+      
+      // Alternative forms
+      appearance: [/appear(ance)?\s*:?\s*(\d+)/i, /(\d+)\s*app/i, /APP\s*(\d+)/i],
+      motm: [/motm\s*:?\s*(\d+)/i, /man\s*of\s*match\s*:?\s*(\d+)/i, /(\d+)\s*motm/i],
     };
 
-    // Try to extract stats using patterns
-    for (const [key, pattern] of Object.entries(patterns)) {
-      for (const line of lines) {
-        const match = line.match(pattern);
-        if (match) {
-          const value = parseFloat(match[match.length - 1]);
-          if (!isNaN(value)) {
-            (stats as any)[key] = Math.round(value);
-            break;
+    // Try to extract stats using multiple patterns per stat
+    for (const [key, patternArray] of Object.entries(patterns)) {
+      let found = false;
+      
+      for (const pattern of patternArray) {
+        if (found) break;
+        
+        for (const line of lines) {
+          const match = line.match(pattern);
+          if (match) {
+            const value = parseFloat(match[match.length - 1]);
+            if (!isNaN(value)) {
+              (stats as any)[key] = key === 'avgRating' ? Math.round(value * 10) / 10 : Math.round(value);
+              console.log(`Found ${key}: ${value} from line: "${line}"`);
+              found = true;
+              break;
+            }
           }
         }
       }
+    }
+
+    // Look for numeric sequences that might be stats (fallback)
+    const numberSequences = text.match(/\d+/g);
+    if (numberSequences && numberSequences.length > 0) {
+      console.log("Found numbers:", numberSequences);
     }
 
     return stats;
