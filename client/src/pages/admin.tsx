@@ -103,7 +103,7 @@ export default function AdminPanel() {
 
   const createPlayerMutation = useMutation({
     mutationFn: async (data: InsertPlayer) => {
-      return await apiRequest("/api/admin/players", "POST", data);
+      return await apiRequest("POST", "/api/admin/players", data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/players"] });
@@ -136,7 +136,7 @@ export default function AdminPanel() {
 
   const updatePlayerMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: Partial<InsertPlayer> }) => {
-      return await apiRequest(`/api/admin/players/${id}`, "PUT", data);
+      return await apiRequest("PUT", `/api/admin/players/${id}`, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/players"] });
