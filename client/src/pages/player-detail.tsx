@@ -93,7 +93,7 @@ export default function PlayerDetail() {
       <div className="relative h-96 overflow-hidden">
         {/* Background Image */}
         <div 
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-contain bg-top bg-no-repeat"
           style={{
             backgroundImage: `url('${player.imageUrl || "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"}')`
           }}
