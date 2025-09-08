@@ -1,0 +1,79 @@
+import { sql } from "drizzle-orm";
+import { pgTable, text, varchar, integer, timestamp, boolean } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+
+export const players = pgTable("players", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  jerseyNumber: integer("jersey_number").notNull(),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  position: text("position").notNull(), // "Goalkeeper", "Defender", "Midfielder", "Forward"
+  nationality: text("nationality").notNull(),
+  dateOfBirth: text("date_of_birth").notNull(),
+  height: text("height").notNull(),
+  joinDate: text("join_date").notNull(),
+  imageUrl: text("image_url"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const playerStats = pgTable("player_stats", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  playerId: varchar("player_id").references(() => players.id).notNull(),
+  season: text("season").notNull().default("2024-25"),
+  gamesPlayed: integer("games_played").default(0),
+  minutes: integer("minutes").default(0),
+  goals: integer("goals").default(0),
+  assists: integer("assists").default(0),
+  yellowCards: integer("yellow_cards").default(0),
+  redCards: integer("red_cards").default(0),
+  starts: integer("starts").default(0),
+  substituteOn: integer("substitute_on").default(0),
+  substituteOff: integer("substitute_off").default(0),
+  leftFootedGoals: integer("left_footed_goals").default(0),
+  rightFootedGoals: integer("right_footed_goals").default(0),
+  headedGoals: integer("headed_goals").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const matches = pgTable("matches", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  homeTeam: text("home_team").notNull(),
+  awayTeam: text("away_team").notNull(),
+  homeTeamLogo: text("home_team_logo"),
+  awayTeamLogo: text("away_team_logo"),
+  homeScore: integer("home_score"),
+  awayScore: integer("away_score"),
+  competition: text("competition").notNull(),
+  matchDate: timestamp("match_date").notNull(),
+  venue: text("venue"),
+  status: text("status").notNull(), // "FT", "Upcoming", "Live"
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertPlayerSchema = createInsertSchema(players).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertPlayerStatsSchema = createInsertSchema(playerStats).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertMatchSchema = createInsertSchema(matches).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertPlayer = z.infer<typeof insertPlayerSchema>;
+export type Player = typeof players.$inferSelect;
+export type InsertPlayerStats = z.infer<typeof insertPlayerStatsSchema>;
+export type PlayerStats = typeof playerStats.$inferSelect;
+export type InsertMatch = z.infer<typeof insertMatchSchema>;
+export type Match = typeof matches.$inferSelect;
+
+export type PlayerWithStats = Player & {
+  stats: PlayerStats | null;
+};
