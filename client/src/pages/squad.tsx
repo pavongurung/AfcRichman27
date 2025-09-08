@@ -31,7 +31,7 @@ export default function Squad() {
     >
       <div className="bg-card rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105">
         <div 
-          className="relative h-64 bg-cover bg-center bg-gray-200"
+          className="relative h-64 bg-cover bg-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
           style={{
             backgroundImage: `url('${player.imageUrl || 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400'}')`
           }}
