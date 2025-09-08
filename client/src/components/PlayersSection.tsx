@@ -41,7 +41,10 @@ export default function PlayersSection() {
           </div>
           <div className="flex space-x-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="flex-none w-64 bg-card rounded-lg overflow-hidden animate-pulse">
+              <div
+                key={i}
+                className="flex-none w-64 bg-card rounded-lg overflow-hidden animate-pulse"
+              >
                 <div className="h-80 bg-muted"></div>
               </div>
             ))}
@@ -54,6 +57,7 @@ export default function PlayersSection() {
   return (
     <section className="py-16 bg-muted/20">
       <div className="container mx-auto px-4">
+        {/* Title + Scroll Buttons */}
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold" data-testid="players-title">
             <span className="text-primary italic mr-2">PLAYERS</span>
@@ -80,34 +84,39 @@ export default function PlayersSection() {
             </Button>
           </div>
         </div>
-        
-        {/* Horizontal scrolling players */}
-        <div 
+
+        {/* Horizontal scrolling player cards */}
+        <div
           ref={scrollRef}
           className="flex overflow-x-auto scrollbar-hide space-x-6 pb-4"
           data-testid="players-scroll"
         >
           {players?.map((player) => (
-            <Link 
-              key={player.id} 
+            <Link
+              key={player.id}
               href={`/player/${player.id}`}
-              className="flex-none w-64 bg-card rounded-lg overflow-hidden player-card cursor-pointer"
+              className="flex-none w-64 cursor-pointer transition-transform hover:scale-105 hover:ring-2 hover:ring-red-500 rounded-lg"
               data-testid={`player-card-${player.id}`}
             >
-              <div 
-                className="relative h-80 bg-cover bg-center"
-                style={{
-                  backgroundImage: `url('${player.imageUrl || 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=600'}')`
-                }}
-              >
-                <div className="absolute top-4 left-4 bg-primary text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
-                  {player.jerseyNumber}
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                  <div className="text-white font-semibold">
-                    {player.firstName} {player.lastName}
+              <div className="flex flex-col items-center w-full">
+                <div
+                  className="relative h-80 w-full bg-cover bg-center rounded-md shadow-lg"
+                  style={{
+                    backgroundImage: `url('${player.imageUrl || "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=600"}')`,
+                  }}
+                >
+                  <div className="absolute top-3 left-3 bg-primary text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
+                    {player.jerseyNumber}
                   </div>
-                  <div className="text-gray-300 text-sm">{player.position}</div>
+                </div>
+
+                <div className="text-center mt-3">
+                  <p className="text-white font-semibold">
+                    {player.firstName} {player.lastName}
+                  </p>
+                  <p className="text-muted-foreground text-sm">
+                    {player.position}
+                  </p>
                 </div>
               </div>
             </Link>

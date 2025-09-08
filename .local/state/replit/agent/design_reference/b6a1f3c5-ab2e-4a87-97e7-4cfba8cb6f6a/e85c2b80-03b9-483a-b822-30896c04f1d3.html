@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFC Richman - Official Website</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          borderRadius: {
+            lg: "var(--radius)",
+            md: "calc(var(--radius) - 2px)",
+            sm: "calc(var(--radius) - 4px)",
+          },
+          colors: {
+            background: "var(--background)",
+            foreground: "var(--foreground)",
+            card: {
+              DEFAULT: "var(--card)",
+              foreground: "var(--card-foreground)",
+            },
+            popover: {
+              DEFAULT: "var(--popover)",
+              foreground: "var(--popover-foreground)",
+            },
+            primary: {
+              DEFAULT: "var(--primary)",
+              foreground: "var(--primary-foreground)",
+            },
+            secondary: {
+              DEFAULT: "var(--secondary)",
+              foreground: "var(--secondary-foreground)",
+            },
+            muted: {
+              DEFAULT: "var(--muted)",
+              foreground: "var(--muted-foreground)",
+            },
+            accent: {
+              DEFAULT: "var(--accent)",
+              foreground: "var(--accent-foreground)",
+            },
+            destructive: {
+              DEFAULT: "var(--destructive)",
+              foreground: "var(--destructive-foreground)",
+            },
+            border: "var(--border)",
+            input: "var(--input)",
+            ring: "var(--ring)",
+          },
+          fontFamily: {
+            sans: ["var(--font-sans)"],
+          }
+        },
+      }
+    };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: hsl(210 20% 98%);
+            --foreground: hsl(222 47% 11%);
+            --card: hsl(0 0% 100%);
+            --card-foreground: hsl(222 47% 11%);
+            --popover: hsl(0 0% 100%);
+            --popover-foreground: hsl(222 47% 11%);
+            --primary: hsl(210 100% 20%);
+            --primary-foreground: hsl(0 0% 98%);
+            --secondary: hsl(0 84% 60%);
+            --secondary-foreground: hsl(0 0% 98%);
+            --muted: hsl(210 40% 96%);
+            --muted-foreground: hsl(215 15% 45%);
+            --accent: hsl(43 96% 56%);
+            --accent-foreground: hsl(222 47% 11%);
+            --destructive: hsl(0 84% 60%);
+            --destructive-foreground: hsl(0 0% 98%);
+            --border: hsl(214 32% 91%);
+            --input: hsl(214 32% 91%);
+            --ring: hsl(210 100% 20%);
+            --radius: 0.75rem;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .dark {
+            --background: hsl(224 71% 4%);
+            --foreground: hsl(213 31% 91%);
+            --card: hsl(224 71% 6%);
+            --card-foreground: hsl(213 31% 91%);
+            --popover: hsl(224 71% 6%);
+            --popover-foreground: hsl(213 31% 91%);
+            --primary: hsl(210 100% 40%);
+            --primary-foreground: hsl(0 0% 98%);
+            --secondary: hsl(0 84% 50%);
+            --secondary-foreground: hsl(0 0% 98%);
+            --muted: hsl(224 71% 10%);
+            --muted-foreground: hsl(215 20% 65%);
+            --accent: hsl(43 96% 56%);
+            --accent-foreground: hsl(224 71% 4%);
+            --border: hsl(216 34% 17%);
+            --input: hsl(216 34% 17%);
+            --ring: hsl(210 100% 40%);
+        }
+
+        body {
+            font-family: var(--font-sans);
+        }
+    </style>
+</head>
+<body class="bg-background text-foreground">
+    <!-- Navigation Header -->
+    <header class="bg-card border-b border-border sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <nav class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                            <span class="text-primary-foreground font-bold text-lg">AFC</span>
+                        </div>
+                        <div>
+                            <h1 class="font-bold text-xl text-primary">AFC Richman</h1>
+                            <p class="text-xs text-muted-foreground">Football Club</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#latest" class="text-foreground hover:text-primary transition-colors font-medium">Latest</a>
+                    <a href="#fixtures" class="text-foreground hover:text-primary transition-colors font-medium">Fixtures</a>
+                    <a href="#squad" class="text-foreground hover:text-primary transition-colors font-medium">Squad</a>
+                    <a href="#news" class="text-foreground hover:text-primary transition-colors font-medium">News</a>
+                    <div class="bg-secondary text-secondary-foreground px-3 py-2 rounded-md text-sm font-medium">
+                        🔴 LIVE on Twitch
+                    </div>
+                </div>
+                <button class="md:hidden">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-secondary">
+        <!-- Stadium background with action shot -->
+        <div class="absolute inset-0">
+            <!-- Dynamic football action scene showing players in motion during a match -->
+            <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080" 
+                 alt="Football players in action during a match" 
+                 class="w-full h-full object-cover opacity-20">
+        </div>
+        <div class="relative container mx-auto px-4 py-16">
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h2 class="text-4xl md:text-6xl font-bold text-primary-foreground mb-4">
+                        Welcome to<br>AFC Richman
+                    </h2>
+                    <p class="text-lg text-primary-foreground/80 mb-6">
+                        Follow our journey through the season with live matches, player updates, and exclusive content.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button class="bg-accent text-accent-foreground px-6 py-3 rounded-lg font-semibold hover:bg-accent/90 transition-colors">
+                            Watch Live on Twitch
+                        </button>
+                        <button class="border border-primary-foreground/20 text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:bg-primary-foreground/10 transition-colors">
+                            View Fixtures
+                        </button>
+                    </div>
+                </div>
+                <div class="flex justify-center">
+                    <div class="bg-card/10 backdrop-blur-sm rounded-2xl p-6 border border-primary-foreground/20">
+                        <h3 class="text-primary-foreground font-semibold text-lg mb-3">Next Match</h3>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-primary-foreground/20 rounded-full mb-2 mx-auto flex items-center justify-center">
+                                    <span class="text-primary-foreground font-bold">AFC</span>
+                                </div>
+                                <p class="text-primary-foreground text-sm">AFC Richman</p>
+                            </div>
+                            <div class="text-center px-4">
+                                <p class="text-primary-foreground/60 text-sm">VS</p>
+                                <p class="text-accent font-bold">Sep 15</p>
+                                <p class="text-primary-foreground/60 text-xs">3:00 PM</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-primary-foreground/20 rounded-full mb-2 mx-auto flex items-center justify-center">
+                                    <span class="text-primary-foreground font-bold">UTD</span>
+                                </div>
+                                <p class="text-primary-foreground text-sm">City United</p>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button class="bg-secondary text-secondary-foreground px-4 py-2 rounded-md text-sm font-medium w-full">
+                                🔴 Watch Live
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Fixtures Section -->
+    <section id="fixtures" class="py-12 bg-background">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold text-foreground">Matches</h2>
+                <button class="text-primary hover:text-primary/80 font-medium">View All Fixtures</button>
+            </div>
+            
+            <!-- Last Match -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-muted-foreground mb-4">Last Match</h3>
+                <div class="bg-card rounded-xl border border-border p-6 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-center">
+                                <!-- Team logo placeholder for AFC Richman -->
+                                <img src="https://pixabay.com/get/g563cd252678c2d800b17fca20669d26324d12a9d090f0401902c74f0a8d6701a51f754e6338eb3d80a22fc792f32c439508cd00f42e8a29d3c95d10e14d4042a_1280.jpg" 
+                                     alt="AFC Richman team logo" 
+                                     class="w-12 h-12 rounded-full object-cover mb-2">
+                                <p class="text-sm font-medium">AFC Richman</p>
+                            </div>
+                            <div class="text-center px-6">
+                                <div class="text-2xl font-bold text-foreground">3 - 1</div>
+                                <p class="text-xs text-muted-foreground">Full Time</p>
+                            </div>
+                            <div class="text-center">
+                                <!-- Opposing team logo placeholder -->
+                                <img src="https://pixabay.com/get/g66adf816ea4b71cfdc73e0a99501d1547d7a2947e3746473f20394cc285afcc630f480b3b8c680a608dc9ba37a74c1af2e3a21f027972fc90feee10274dc74dc_1280.jpg" 
+                                     alt="Hawks FC team logo" 
+                                     class="w-12 h-12 rounded-full object-cover mb-2">
+                                <p class="text-sm font-medium">Hawks FC</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm text-muted-foreground">Sep 8, 2024</p>
+                            <p class="text-sm text-muted-foreground">Home • Richman Stadium</p>
+                            <button class="text-primary text-sm font-medium mt-1">Match Report</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Matches -->
+            <div>
+                <h3 class="text-lg font-semibold text-muted-foreground mb-4">Upcoming Matches</h3>
+                <div class="grid gap-4">
+                    <!-- Next Match -->
+                    <div class="bg-card rounded-xl border border-border p-6 shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="text-center">
+                                    <!-- AFC Richman logo -->
+                                    <img src="https://pixabay.com/get/g9d85c37be8314886a2f01b9b7c36c06a57be0f5afd9ce6d5517d47bce6bb091bb04b548fc637bbe2a33f624f8f6f8112a8cac9b4ccc30760d45ef572ed96036c_1280.jpg" 
+                                         alt="AFC Richman team logo" 
+                                         class="w-12 h-12 rounded-full object-cover mb-2">
+                                    <p class="text-sm font-medium">AFC Richman</p>
+                                </div>
+                                <div class="text-center px-6">
+                                    <p class="text-muted-foreground text-sm">VS</p>
+                                    <p class="text-xs text-muted-foreground mt-1">Premier League</p>
+                                </div>
+                                <div class="text-center">
+                                    <!-- City United team logo -->
+                                    <img src="https://pixabay.com/get/g26966810f305773e8e84100d4dbaa3114eaf9b01f2912bbb87182f6f09916eabf8c1f338c5b3cf0f77389bc6173b69265aa879195aeccd89beab145b89f9ad89_1280.jpg" 
+                                         alt="City United team logo" 
+                                         class="w-12 h-12 rounded-full object-cover mb-2">
+                                    <p class="text-sm font-medium">City United</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-medium">Sep 15, 2024</p>
+                                <p class="text-sm text-muted-foreground">3:00 PM</p>
+                                <p class="text-sm text-muted-foreground">Home • Richman Stadium</p>
+                                <button class="bg-secondary text-secondary-foreground px-3 py-1 rounded-md text-xs font-medium mt-2">
+                                    🔴 Watch on Twitch
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional upcoming matches -->
+                    <div class="bg-card rounded-xl border border-border p-6 shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="text-center">
+                                    <!-- Rovers FC logo -->
+                                    <img src="https://pixabay.com/get/ge4d20194bb35ab7cd023ba3cb59de73a90774488b8cec5991d9d1a954d09ae26825478908f1130fb52fac286961a7a2881f33491fefe9eac6f518dd64bf7b9eb_1280.jpg" 
+                                         alt="Rovers FC team logo" 
+                                         class="w-12 h-12 rounded-full object-cover mb-2">
+                                    <p class="text-sm font-medium">Rovers FC</p>
+                                </div>
+                                <div class="text-center px-6">
+                                    <p class="text-muted-foreground text-sm">VS</p>
+                                    <p class="text-xs text-muted-foreground mt-1">Premier League</p>
+                                </div>
+                                <div class="text-center">
+                                    <!-- AFC Richman logo -->
+                                    <img src="https://pixabay.com/get/g9d85c37be8314886a2f01b9b7c36c06a57be0f5afd9ce6d5517d47bce6bb091bb04b548fc637bbe2a33f624f8f6f8112a8cac9b4ccc30760d45ef572ed96036c_1280.jpg" 
+                                         alt="AFC Richman team logo" 
+                                         class="w-12 h-12 rounded-full object-cover mb-2">
+                                    <p class="text-sm font-medium">AFC Richman</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-medium">Sep 22, 2024</p>
+                                <p class="text-sm text-muted-foreground">2:00 PM</p>
+                                <p class="text-sm text-muted-foreground">Away • Rovers Stadium</p>
+                                <button class="text-primary text-sm font-medium mt-1">Match Centre</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Players Squad Section -->
+    <section id="squad" class="py-12 bg-muted/30">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold text-foreground">Squad</h2>
+                <button class="text-primary hover:text-primary/80 font-medium">View Full Squad</button>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+                <!-- Player 1 -->
+                <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <!-- Professional football player headshot in team uniform -->
+                    <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=500" 
+                         alt="Marcus Johnson - AFC Richman goalkeeper" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-2xl font-bold text-primary">1</span>
+                            <span class="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">GK</span>
+                        </div>
+                        <h3 class="font-semibold text-foreground">Marcus Johnson</h3>
+                        <p class="text-sm text-muted-foreground">Goalkeeper</p>
+                    </div>
+                </div>
+
+                <!-- Player 2 -->
+                <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <!-- Professional football player headshot in team uniform -->
+                    <img src="https://pixabay.com/get/g4c550a9526c2115c3c93fbf1337e102093410588df96215d1cf5b08aa2d93759e0474fa44649461ff6c8f7ca209ffd4f0cddbde651dd38d285119216466b9b54_1280.jpg" 
+                         alt="David Rodriguez - AFC Richman defender" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-2xl font-bold text-primary">3</span>
+                            <span class="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">DEF</span>
+                        </div>
+                        <h3 class="font-semibold text-foreground">David Rodriguez</h3>
+                        <p class="text-sm text-muted-foreground">Defender</p>
+                    </div>
+                </div>
+
+                <!-- Player 3 -->
+                <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <!-- Professional football player headshot in team uniform -->
+                    <img src="https://images.unsplash.com/photo-1607627000458-210e8d2bdb1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=500" 
+                         alt="James Wilson - AFC Richman defender" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-2xl font-bold text-primary">5</span>
+                            <span class="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">DEF</span>
+                        </div>
+                        <h3 class="font-semibold text-foreground">James Wilson</h3>
+                        <p class="text-sm text-muted-foreground">Defender</p>
+                    </div>
+                </div>
+
+                <!-- Player 4 -->
+                <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <!-- Professional football player headshot in team uniform -->
+                    <img src="https://pixabay.com/get/g4c550a9526c2115c3c93fbf1337e102093410588df96215d1cf5b08aa2d93759e0474fa44649461ff6c8f7ca209ffd4f0cddbde651dd38d285119216466b9b54_1280.jpg" 
+                         alt="Alex Thompson - AFC Richman midfielder" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-2xl font-bold text-primary">8</span>
+                            <span class="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">MID</span>
+                        </div>
+                        <h3 class="font-semibold text-foreground">Alex Thompson</h3>
+                        <p class="text-sm text-muted-foreground">Midfielder</p>
+                    </div>
+                </div>
+
+                <!-- Player 5 -->
+                <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <!-- Professional football player headshot in team uniform -->
+                    <img src="https://pixabay.com/get/g4c550a9526c2115c3c93fbf1337e102093410588df96215d1cf5b08aa2d93759e0474fa44649461ff6c8f7ca209ffd4f0cddbde651dd38d285119216466b9b54_1280.jpg" 
+                         alt="Michael Brown - AFC Richman midfielder" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-2xl font-bold text-primary">10</span>
+                            <span class="text-xs bg-accent text-accent-foreground px-2 py-1 rounded">CAP</span>
+                        </div>
+                        <h3 class="font-semibold text-foreground">Michael Brown</h3>
+                        <p class="text-sm text-muted-foreground">Captain • Midfielder</p>
+                    </div>
+                </div>
+
+                <!-- Player 6 -->
+                <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <!-- Professional football player headshot in team uniform -->
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=500" 
+                         alt="Robert Davis - AFC Richman forward" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-2xl font-bold text-primary">11</span>
+                            <span class="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">FWD</span>
+                        </div>
+                        <h3 class="font-semibold text-foreground">Robert Davis</h3>
+                        <p class="text-sm text-muted-foreground">Forward</p>
+                    </div>
+                </div>
+
+                <!-- Additional players for mobile view -->
+                <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow md:hidden">
+                    <!-- Professional football player headshot in team uniform -->
+                    <img src="https://pixabay.com/get/g4c550a9526c2115c3c93fbf1337e102093410588df96215d1cf5b08aa2d93759e0474fa44649461ff6c8f7ca209ffd4f0cddbde651dd38d285119216466b9b54_1280.jpg" 
+                         alt="Kevin Martinez - AFC Richman midfielder" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-2xl font-bold text-primary">7</span>
+                            <span class="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">MID</span>
+                        </div>
+                        <h3 class="font-semibold text-foreground">Kevin Martinez</h3>
+                        <p class="text-sm text-muted-foreground">Midfielder</p>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow md:hidden">
+                    <!-- Professional football player headshot in team uniform -->
+                    <img src="https://pixabay.com/get/g4c550a9526c2115c3c93fbf1337e102093410588df96215d1cf5b08aa2d93759e0474fa44649461ff6c8f7ca209ffd4f0cddbde651dd38d285119216466b9b54_1280.jpg" 
+                         alt="Thomas Anderson - AFC Richman forward" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-2xl font-bold text-primary">9</span>
+                            <span class="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">FWD</span>
+                        </div>
+                        <h3 class="font-semibold text-foreground">Thomas Anderson</h3>
+                        <p class="text-sm text-muted-foreground">Forward</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional hidden players for larger screens -->
+            <div class="hidden md:grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mt-6">
+                <!-- Player 7 -->
+                <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <!-- Professional football player headshot in team uniform -->
+                    <img src="https://pixabay.com/get/g4c550a9526c2115c3c93fbf1337e102093410588df96215d1cf5b08aa2d93759e0474fa44649461ff6c8f7ca209ffd4f0cddbde651dd38d285119216466b9b54_1280.jpg" 
+                         alt="Kevin Martinez - AFC Richman midfielder" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-2xl font-bold text-primary">7</span>
+                            <span class="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">MID</span>
+                        </div>
+                        <h3 class="font-semibold text-foreground">Kevin Martinez</h3>
+                        <p class="text-sm text-muted-foreground">Midfielder</p>
+                    </div>
+                </div>
+
+                <!-- Player 8 -->
+                <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <!-- Professional football player headshot in team uniform -->
+                    <img src="https://pixabay.com/get/g4c550a9526c2115c3c93fbf1337e102093410588df96215d1cf5b08aa2d93759e0474fa44649461ff6c8f7ca209ffd4f0cddbde651dd38d285119216466b9b54_1280.jpg" 
+                         alt="Thomas Anderson - AFC Richman forward" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-2xl font-bold text-primary">9</span>
+                            <span class="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">FWD</span>
+                        </div>
+                        <h3 class="font-semibold text-foreground">Thomas Anderson</h3>
+                        <p class="text-sm text-muted-foreground">Forward</p>
+                    </div>
+                </div>
+
+                <!-- Player 9 -->
+                <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <!-- Professional football player headshot in team uniform -->
+                    <img src="https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=500" 
+                         alt="Chris Garcia - AFC Richman defender" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-2xl font-bold text-primary">4</span>
+                            <span class="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">DEF</span>
+                        </div>
+                        <h3 class="font-semibold text-foreground">Chris Garcia</h3>
+                        <p class="text-sm text-muted-foreground">Defender</p>
+                    </div>
+                </div>
+
+                <!-- Player 10 -->
+                <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <!-- Professional football player headshot in team uniform -->
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=500" 
+                         alt="Daniel Lee - AFC Richman midfielder" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-2xl font-bold text-primary">6</span>
+                            <span class="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">MID</span>
+                        </div>
+                        <h3 class="font-semibold text-foreground">Daniel Lee</h3>
+                        <p class="text-sm text-muted-foreground">Midfielder</p>
+                    </div>
+                </div>
+
+                <!-- Player 11 -->
+                <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <!-- Professional football player headshot in team uniform -->
+                    <img src="https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=500" 
+                         alt="Ryan Miller - AFC Richman forward" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-2xl font-bold text-primary">21</span>
+                            <span class="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">FWD</span>
+                        </div>
+                        <h3 class="font-semibold text-foreground">Ryan Miller</h3>
+                        <p class="text-sm text-muted-foreground">Forward</p>
+                    </div>
+                </div>
+
+                <!-- Player 12 -->
+                <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <!-- Professional football player headshot in team uniform -->
+                    <img src="https://pixabay.com/get/g4c550a9526c2115c3c93fbf1337e102093410588df96215d1cf5b08aa2d93759e0474fa44649461ff6c8f7ca209ffd4f0cddbde651dd38d285119216466b9b54_1280.jpg" 
+                         alt="Steven Clark - AFC Richman goalkeeper" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-2xl font-bold text-primary">12</span>
+                            <span class="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">GK</span>
+                        </div>
+                        <h3 class="font-semibold text-foreground">Steven Clark</h3>
+                        <p class="text-sm text-muted-foreground">Goalkeeper</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+
+                <!-- News Article 5 -->
+                <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm">
+                    <div class="p-6">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <span class="bg-secondary text-secondary-foreground text-xs px-2 py-1 rounded">Live Stream</span>
+                            <span class="text-xs text-muted-foreground">Sep 15, 2024</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-foreground mb-2">🔴 Watch AFC Richman vs City United Live</h3>
+                        <p class="text-muted-foreground text-sm mb-4">
+                            Don't miss our next home fixture! Join thousands of fans watching live on our official Twitch channel...
+                        </p>
+                        <div class="space-y-2">
+                            <button class="w-full bg-secondary text-secondary-foreground px-4 py-2 rounded-md font-medium">
+                                🔴 Watch Live on Twitch
+                            </button>
+                            <p class="text-xs text-muted-foreground text-center">Kickoff: Sep 15, 3:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- News Article 6 -->
+                <div class="bg-card rounded-xl border border-border overflow-hidden shadow-sm">
+                    <div class="p-6">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <span class="bg-muted text-muted-foreground text-xs px-2 py-1 rounded">Community</span>
+                            <span class="text-xs text-muted-foreground">Sep 3, 2024</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-foreground mb-2">AFC Richman Foundation Youth Program Launch</h3>
+                        <p class="text-muted-foreground text-sm mb-4">
+                            Supporting local youth development through our new community football program, providing opportunities for young talent...
+                        </p>
+                        <button class="text-primary font-medium text-sm">Learn More</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Twitch Integration Section -->
+    <section class="py-12 bg-gradient-to-r from-secondary/10 via-primary/10 to-accent/10">
+        <div class="container mx-auto px-4">
+            <div class="text-center max-w-2xl mx-auto">
+                <h2 class="text-3xl font-bold text-foreground mb-4">Never Miss a Match</h2>
+                <p class="text-muted-foreground mb-6">
+                    Follow AFC Richman on Twitch for live match coverage, exclusive interviews, and behind-the-scenes content.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button class="bg-secondary text-secondary-foreground px-6 py-3 rounded-lg font-semibold hover:bg-secondary/90 transition-colors">
+                        🔴 Follow on Twitch
+                    </button>
+                    <button class="border border-border text-foreground px-6 py-3 rounded-lg font-semibold hover:bg-card transition-colors">
+                        View Schedule
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary text-primary-foreground">
+        <div class="container mx-auto px-4 py-12">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 bg-primary-foreground/20 rounded-full flex items-center justify-center">
+                            <span class="text-primary-foreground font-bold text-xl">AFC</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl">AFC Richman</h3>
+                            <p class="text-primary-foreground/70">Official Football Club</p>
+                        </div>
+                    </div>
+                    <p class="text-primary-foreground/80 mb-4">
+                        AFC Richman Football Club - Established in 1985, proudly serving our community with passion, dedication, and excellence on and off the pitch.
+                    </p>
+                    <div class="flex space-x-4">
+                        <button class="text-primary-foreground hover:text-accent transition-colors">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                            </svg>
+                        </button>
+                        <button class="text-primary-foreground hover:text-accent transition-colors">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/>
+                            </svg>
+                        </button>
+                        <button class="text-primary-foreground hover:text-accent transition-colors">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.098.119.112.223.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.744-1.378l-.628 2.378c-.226.869-.835 1.958-1.244 2.621.937.29 1.931.446 2.962.446 6.624 0 11.99-5.367 11.99-11.987C24.007 5.367 18.641.001 12.017.001z"/>
+                            </svg>
+                        </button>
+                        <button class="bg-secondary text-secondary-foreground px-3 py-1 rounded text-sm font-medium hover:bg-secondary/90 transition-colors">
+                            Twitch
+                        </button>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-lg mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#fixtures" class="text-primary-foreground/80 hover:text-accent transition-colors">Fixtures & Results</a></li>
+                        <li><a href="#squad" class="text-primary-foreground/80 hover:text-accent transition-colors">Squad</a></li>
+                        <li><a href="#news" class="text-primary-foreground/80 hover:text-accent transition-colors">Latest News</a></li>
+                        <li><a href="#" class="text-primary-foreground/80 hover:text-accent transition-colors">Match Centre</a></li>
+                        <li><a href="#" class="text-primary-foreground/80 hover:text-accent transition-colors">Club History</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-lg mb-4">Contact</h4>
+                    <ul class="space-y-2 text-primary-foreground/80">
+                        <li>Richman Stadium</li>
+                        <li>123 Football Avenue</li>
+                        <li>Richman City, RC 12345</li>
+                        <li class="pt-2">
+                            <a href="tel:+1234567890" class="hover:text-accent transition-colors">+1 (234) 567-8900</a>
+                        </li>
+                        <li>
+                            <a href="mailto:info@afcrichman.com" class="hover:text-accent transition-colors">info@afcrichman.com</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="border-primary-foreground/20 my-8">
+            
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <p class="text-primary-foreground/60 text-sm">
+                    © 2024 AFC Richman Football Club. All rights reserved.
+                </p>
+                <div class="flex space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="text-primary-foreground/60 hover:text-accent text-sm transition-colors">Privacy Policy</a>
+                    <a href="#" class="text-primary-foreground/60 hover:text-accent text-sm transition-colors">Terms of Service</a>
+                    <a href="#" class="text-primary-foreground/60 hover:text-accent text-sm transition-colors">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // TODO: Implement interactive functionality
+        (function() {
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // TODO: Add Twitch integration for live streaming
+            // TODO: Implement match data fetching and updates
+            // TODO: Add player statistics and performance data
+            // TODO: Implement news content management system
+            // TODO: Add fixture scheduling and result updates
+            // TODO: Implement responsive mobile menu toggle
+            
+            console.log('AFC Richman website loaded successfully');
+        })();
+    </script>
+</body>
+</html>

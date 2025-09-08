@@ -1,0 +1,1184 @@
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFC Richman - Official Website</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    popover: {
+                        DEFAULT: "var(--popover)",
+                        foreground: "var(--popover-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                },
+                fontFamily: {
+                    sans: ["var(--font-sans)"],
+                }
+            },
+        }
+    };
+    </script>
+    <style>
+        :root {
+            --background: hsl(0 0% 0%);
+            --foreground: hsl(0 0% 98%);
+            --card: hsl(0 0% 8%);
+            --card-foreground: hsl(0 0% 98%);
+            --popover: hsl(0 0% 8%);
+            --popover-foreground: hsl(0 0% 98%);
+            --primary: hsl(0 84% 55%);
+            --primary-foreground: hsl(0 0% 98%);
+            --secondary: hsl(0 0% 18%);
+            --secondary-foreground: hsl(0 0% 98%);
+            --muted: hsl(0 0% 14%);
+            --muted-foreground: hsl(0 0% 63%);
+            --accent: hsl(0 72% 51%);
+            --accent-foreground: hsl(0 0% 98%);
+            --destructive: hsl(0 84% 55%);
+            --destructive-foreground: hsl(0 0% 98%);
+            --border: hsl(0 0% 18%);
+            --input: hsl(0 0% 18%);
+            --ring: hsl(0 84% 55%);
+            --radius: 0.5rem;
+            --font-sans: 'Inter', system-ui, sans-serif;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        body {
+            font-family: var(--font-sans);
+        }
+        
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .player-card {
+            transition: all 0.3s ease;
+        }
+        
+        .player-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .fixture-card {
+            transition: all 0.3s ease;
+        }
+        
+        .fixture-card:hover {
+            background-color: hsl(0 0% 12%);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-background text-foreground antialiased">
+    <!-- @COMPONENT: Header [main navigation] -->
+    <header class="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                        <span class="text-primary-foreground font-bold text-lg">R</span>
+                    </div>
+                    <div class="text-xl font-bold">AFC Richman</div>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="text-foreground hover:text-primary transition-colors">Latest</a>
+                    <a href="#" class="text-foreground hover:text-primary transition-colors">Team</a>
+                    <a href="#" class="text-foreground hover:text-primary transition-colors">Matches</a>
+                </nav>
+                
+                <!-- Right side -->
+                <div class="flex items-center space-x-4">
+
+                    <button class="md:hidden text-foreground">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- @END_COMPONENT: Header -->
+
+    <!-- Hero Section -->
+    <!-- @COMPONENT: HeroSection [main banner with featured content] -->
+    <section class="relative py-20 overflow-hidden">
+        <!-- Large banner background showcasing football action -->
+        <div class="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent z-10"></div>
+        <div 
+            class="absolute inset-0 bg-cover bg-center bg-no-repeat" 
+            style="background-image: url('https://images.unsplash.com/photo-1551698618-1dfe5d97d256?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80');"
+        ></div>
+        
+        <div class="container mx-auto px-4 relative z-20">
+            <div class="max-w-2xl">
+                <h1 class="text-5xl md:text-6xl font-bold mb-6">
+                    Welcome to<br>
+                    <span class="text-primary">AFC Richman</span>
+                </h1>
+                <p class="text-xl text-muted-foreground mb-8">
+                    Experience the passion, power, and pride of our football club. Follow our journey to greatness.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button class="bg-primary text-primary-foreground px-8 py-3 rounded-lg hover:bg-primary/90 transition-colors font-semibold">
+                        Latest News
+                    </button>
+                    <button class="border border-border text-foreground px-8 py-3 rounded-lg hover:bg-muted transition-colors font-semibold">
+                        Watch Live
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: HeroSection -->
+
+    <!-- Latest Section -->
+    <!-- @COMPONENT: LatestSection [horizontal scrolling fixtures and news] -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold">
+                    <span class="text-primary italic mr-2">LATEST</span>
+                    <span class="text-muted-foreground">All news</span>
+                </h2>
+                <div class="flex items-center space-x-2">
+                    <button class="p-2 rounded-full bg-secondary hover:bg-muted transition-colors" data-event="click:scrollLeft">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="p-2 rounded-full bg-secondary hover:bg-muted transition-colors" data-event="click:scrollRight">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Horizontal scrolling fixtures -->
+            <div class="flex overflow-x-auto scrollbar-hide space-x-4 pb-4" id="fixtures-scroll">
+                <!-- @MAP: fixtures.map(fixture => ( -->
+                <div class="flex-none w-80 bg-card rounded-lg p-6 fixture-card cursor-pointer" data-mock="true">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <!-- Match status indicator -->
+                            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                            <span class="text-sm text-muted-foreground">FT</span>
+                        </div>
+                        <span class="text-sm text-muted-foreground">Premier League</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                                <span class="text-primary-foreground font-bold text-sm">AFC</span>
+                            </div>
+                            <div>
+                                <div class="font-semibold">AFC Richman</div>
+                                <div class="text-sm text-muted-foreground">Home</div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="text-2xl font-bold">3</div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center text-muted-foreground my-2">-</div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">CHE</span>
+                            </div>
+                            <div>
+                                <div class="font-semibold">Chelsea FC</div>
+                                <div class="text-sm text-muted-foreground">Away</div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="text-2xl font-bold">1</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-border">
+                        <div class="text-sm text-muted-foreground">
+                            <i class="fas fa-calendar mr-2"></i>
+                            Dec 15, 2024 - 15:30
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex-none w-80 bg-card rounded-lg p-6 fixture-card cursor-pointer" data-mock="true">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                            <span class="text-sm text-muted-foreground">Upcoming</span>
+                        </div>
+                        <span class="text-sm text-muted-foreground">Champions League</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">LIV</span>
+                            </div>
+                            <div>
+                                <div class="font-semibold">Liverpool FC</div>
+                                <div class="text-sm text-muted-foreground">Home</div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="text-lg text-muted-foreground">VS</div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center text-muted-foreground my-2">-</div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                                <span class="text-primary-foreground font-bold text-sm">AFC</span>
+                            </div>
+                            <div>
+                                <div class="font-semibold">AFC Richman</div>
+                                <div class="text-sm text-muted-foreground">Away</div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="text-lg text-muted-foreground">VS</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-border">
+                        <div class="text-sm text-muted-foreground">
+                            <i class="fas fa-calendar mr-2"></i>
+                            Dec 22, 2024 - 20:00
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex-none w-80 bg-card rounded-lg p-6 fixture-card cursor-pointer" data-mock="true">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <span class="text-sm text-muted-foreground">FT</span>
+                        </div>
+                        <span class="text-sm text-muted-foreground">FA Cup</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                                <span class="text-primary-foreground font-bold text-sm">AFC</span>
+                            </div>
+                            <div>
+                                <div class="font-semibold">AFC Richman</div>
+                                <div class="text-sm text-muted-foreground">Home</div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="text-2xl font-bold">2</div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center text-muted-foreground my-2">-</div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-amber-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">WOL</span>
+                            </div>
+                            <div>
+                                <div class="font-semibold">Wolverhampton</div>
+                                <div class="text-sm text-muted-foreground">Away</div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="text-2xl font-bold">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-border">
+                        <div class="text-sm text-muted-foreground">
+                            <i class="fas fa-calendar mr-2"></i>
+                            Dec 10, 2024 - 14:00
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: LatestSection -->
+
+    <!-- Players Section -->
+    <!-- @COMPONENT: PlayersSection [horizontal scrolling player carousel] -->
+    <section class="py-16 bg-muted/20">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold">
+                    <span class="text-primary italic mr-2">PLAYERS</span>
+                    <span class="text-muted-foreground">Squad</span>
+                </h2>
+                <div class="flex items-center space-x-2">
+                    <button class="p-2 rounded-full bg-secondary hover:bg-muted transition-colors" data-event="click:scrollLeft">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="p-2 rounded-full bg-secondary hover:bg-muted transition-colors" data-event="click:scrollRight">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Horizontal scrolling players -->
+            <div class="flex overflow-x-auto scrollbar-hide space-x-6 pb-4" id="players-scroll">
+                <!-- @MAP: players.map(player => ( -->
+                <!-- Player 1 -->
+                <div class="flex-none w-64 bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true" data-event="click:openPlayerProfile">
+                    <!-- Professional football player headshot wearing red and black striped jersey -->
+                    <div class="relative h-80 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=600');">
+                        <div class="absolute top-4 left-4 bg-primary text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
+                            9
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <div class="text-white font-semibold">Marcus Thompson</div>
+                            <div class="text-gray-300 text-sm">Forward</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Player 2 -->
+                <div class="flex-none w-64 bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                    <!-- Professional goalkeeper in bright yellow uniform making a save -->
+                    <div class="relative h-80 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=600');">
+                        <div class="absolute top-4 left-4 bg-primary text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
+                            1
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <div class="text-white font-semibold">David Rodriguez</div>
+                            <div class="text-gray-300 text-sm">Goalkeeper</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Player 3 -->
+                <div class="flex-none w-64 bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                    <!-- Professional midfielder in red and black jersey controlling the ball -->
+                    <div class="relative h-80 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1553778263-73a83bab9b0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=600');">
+                        <div class="absolute top-4 left-4 bg-primary text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
+                            8
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <div class="text-white font-semibold">Alex Johnson</div>
+                            <div class="text-gray-300 text-sm">Midfielder</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Player 4 -->
+                <div class="flex-none w-64 bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                    <!-- Professional defender in red and black striped jersey in action pose -->
+                    <div class="relative h-80 bg-cover bg-center" style="background-image: url('https://pixabay.com/get/g186f16d5043358964aac73888f4c47b3778d00bfcc6fba9def5ed9a57d7cdc1047799e4f2d75fa0527b4663f149294757d52c38675daafabc21a700b72578d72_1280.jpg');">
+                        <div class="absolute top-4 left-4 bg-primary text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
+                            4
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <div class="text-white font-semibold">James Wilson</div>
+                            <div class="text-gray-300 text-sm">Defender</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Player 5 -->
+                <div class="flex-none w-64 bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                    <!-- Professional winger in red and black jersey running with ball -->
+                    <div class="relative h-80 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=600');">
+                        <div class="absolute top-4 left-4 bg-primary text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
+                            7
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <div class="text-white font-semibold">Luis Martinez</div>
+                            <div class="text-gray-300 text-sm">Winger</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Player 6 -->
+                <div class="flex-none w-64 bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                    <!-- Professional striker in red and black jersey celebrating -->
+                    <div class="relative h-80 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1560272564-c83b66b1ad12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=600');">
+                        <div class="absolute top-4 left-4 bg-primary text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
+                            10
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <div class="text-white font-semibold">Carlos Silva</div>
+                            <div class="text-gray-300 text-sm">Striker</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: PlayersSection -->
+
+    <!-- Player Detail Modal -->
+    <!-- @COMPONENT: PlayerDetailModal [individual player profile popup] -->
+    <div id="playerModal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden" data-implementation="Modal overlay for player details">
+        <div class="bg-card rounded-lg max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="relative">
+                <!-- Player hero image -->
+                <!-- Professional football player in AFC Richman red and black jersey against dramatic stadium backdrop -->
+                <div class="h-96 bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&h=800');">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                    <button class="absolute top-4 right-4 bg-secondary/80 text-foreground w-10 h-10 rounded-full flex items-center justify-center hover:bg-secondary transition-colors" data-event="click:closeModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    
+                    <div class="absolute bottom-8 left-8 text-white">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="bg-primary text-primary-foreground w-16 h-16 rounded-full flex items-center justify-center font-bold text-2xl">
+                                9
+                            </div>
+                            <div>
+                                <div class="text-xs uppercase tracking-wider text-gray-300">FORWARD</div>
+                                <div class="text-4xl font-bold" data-bind="player.name">MARCUS THOMPSON</div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div>
+                                <div class="text-gray-300">Nationality:</div>
+                                <div class="font-semibold" data-bind="player.nationality">England</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-300">Date of birth:</div>
+                                <div class="font-semibold" data-bind="player.dateOfBirth">15.03.1995</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-300">Height:</div>
+                                <div class="font-semibold" data-bind="player.height">1.83m</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-300">At AFC Richman since:</div>
+                                <div class="font-semibold" data-bind="player.joinDate">01.07.2022</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistics -->
+                <div class="p-8">
+                    <h3 class="text-2xl font-bold mb-6">Statistics</h3>
+                    
+                    <!-- Performance circles -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+                        <div class="text-center">
+                            <div class="relative w-24 h-24 mx-auto mb-2">
+                                <svg class="w-24 h-24 transform -rotate-90" viewBox="0 0 32 32">
+                                    <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" fill="none" class="text-muted-foreground" />
+                                    <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="40 60" class="text-primary" />
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-2xl font-bold" data-bind="player.stats.gamesPlayed">25</span>
+                                </div>
+                            </div>
+                            <div class="text-foreground font-semibold">Games played</div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="relative w-24 h-24 mx-auto mb-2">
+                                <svg class="w-24 h-24 transform -rotate-90" viewBox="0 0 32 32">
+                                    <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" fill="none" class="text-muted-foreground" />
+                                    <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="75 25" class="text-green-500" />
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-2xl font-bold" data-bind="player.stats.goals">18</span>
+                                </div>
+                            </div>
+                            <div class="text-foreground font-semibold">Goals</div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="relative w-24 h-24 mx-auto mb-2">
+                                <svg class="w-24 h-24 transform -rotate-90" viewBox="0 0 32 32">
+                                    <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" fill="none" class="text-muted-foreground" />
+                                    <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="45 55" class="text-blue-500" />
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-2xl font-bold" data-bind="player.stats.assists">12</span>
+                                </div>
+                            </div>
+                            <div class="text-foreground font-semibold">Assists</div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="relative w-24 h-24 mx-auto mb-2">
+                                <svg class="w-24 h-24 transform -rotate-90" viewBox="0 0 32 32">
+                                    <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" fill="none" class="text-muted-foreground" />
+                                    <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="15 85" class="text-yellow-500" />
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-2xl font-bold" data-bind="player.stats.cards">3</span>
+                                </div>
+                            </div>
+                            <div class="text-foreground font-semibold">Cards</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Detailed stats table -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-lg font-semibold mb-4">Performance</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between">
+                                    <span>Starts</span>
+                                    <span class="font-semibold" data-bind="player.stats.starts">22</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Substitute on</span>
+                                    <span class="font-semibold" data-bind="player.stats.substituteOn">3</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Substitute off</span>
+                                    <span class="font-semibold" data-bind="player.stats.substituteOff">8</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Time played</span>
+                                    <span class="font-semibold" data-bind="player.stats.timePlayed">1,890</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-lg font-semibold mb-4">Goals & Assists</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between">
+                                    <span>Left-footed goals</span>
+                                    <span class="font-semibold" data-bind="player.stats.leftFootedGoals">8</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Right-footed goals</span>
+                                    <span class="font-semibold" data-bind="player.stats.rightFootedGoals">9</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Headed goals</span>
+                                    <span class="font-semibold" data-bind="player.stats.headedGoals">1</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Assists</span>
+                                    <span class="font-semibold" data-bind="player.stats.assists">12</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: PlayerDetailModal -->
+
+    <!-- Squad Section -->
+    <!-- @COMPONENT: SquadSection [organized by position] -->
+    <section class="py-16" id="squad-section">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold">
+                    <span class="text-primary italic mr-2">SQUAD</span>
+                </h2>
+                <div class="flex items-center space-x-4">
+                    <select class="bg-secondary border border-border rounded-md px-4 py-2 text-foreground">
+                        <option>All players</option>
+                        <option>Goalkeepers</option>
+                        <option>Defenders</option>
+                        <option>Midfielders</option>
+                        <option>Forwards</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Goalkeepers -->
+            <div class="mb-12">
+                <h3 class="text-xl font-semibold mb-6">Goalkeepers</h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <!-- @MAP: goalkeepers.map(player => ( -->
+                    <div class="bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                        <!-- Professional goalkeeper in yellow AFC Richman uniform -->
+                        <div class="relative h-48 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=400');">
+                            <div class="absolute top-2 left-2 bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
+                                1
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="font-semibold text-sm" data-bind="player.name">David Rodriguez</div>
+                            <div class="text-xs text-muted-foreground" data-bind="player.position">Goalkeeper</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                        <!-- Professional backup goalkeeper in yellow jersey with confident pose -->
+                        <div class="relative h-48 bg-cover bg-center" style="background-image: url('https://pixabay.com/get/g598e93ef71b170414dceeea777dd59946d938b76cca2a716a4b2d88c5ce62ac3f33dab4a8820fdbbbeae8972691cd8efb4fdbfe53320a46fb0bd731496e3329d_1280.jpg');">
+                            <div class="absolute top-2 left-2 bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
+                                12
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="font-semibold text-sm" data-bind="player.name">Thomas Brown</div>
+                            <div class="text-xs text-muted-foreground" data-bind="player.position">Goalkeeper</div>
+                        </div>
+                    </div>
+                    <!-- @END_MAP )) -->
+                </div>
+            </div>
+            
+            <!-- Defenders -->
+            <div class="mb-12">
+                <h3 class="text-xl font-semibold mb-6">Defenders</h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <!-- @MAP: defenders.map(player => ( -->
+                    <div class="bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                        <!-- Professional central defender in red and black striped jersey -->
+                        <div class="relative h-48 bg-cover bg-center" style="background-image: url('https://pixabay.com/get/g6d8af90cd8177e6b96d64cea2cf05851b83d0fb1e12b5a5efb3470473807c9c3bbb64c96aa1610176d44f1562bbea1bdafd0d41fa4d3634b4cb67e494ad51b60_1280.jpg');">
+                            <div class="absolute top-2 left-2 bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
+                                4
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="font-semibold text-sm" data-bind="player.name">James Wilson</div>
+                            <div class="text-xs text-muted-foreground" data-bind="player.position">Defender</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                        <!-- Professional fullback in red and black jersey making a tackle -->
+                        <div class="relative h-48 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=400');">
+                            <div class="absolute top-2 left-2 bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
+                                3
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="font-semibold text-sm" data-bind="player.name">Roberto Garcia</div>
+                            <div class="text-xs text-muted-foreground" data-bind="player.position">Defender</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                        <!-- Professional centre-back in red and black kit in action -->
+                        <div class="relative h-48 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1552667466-07770ae110d0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=400');">
+                            <div class="absolute top-2 left-2 bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
+                                5
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="font-semibold text-sm" data-bind="player.name">Michael Anderson</div>
+                            <div class="text-xs text-muted-foreground" data-bind="player.position">Defender</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                        <!-- Professional right-back in red and black jersey running -->
+                        <div class="relative h-48 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1529900748604-07564a03e7a6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=400');">
+                            <div class="absolute top-2 left-2 bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
+                                2
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="font-semibold text-sm" data-bind="player.name">Lucas Silva</div>
+                            <div class="text-xs text-muted-foreground" data-bind="player.position">Defender</div>
+                        </div>
+                    </div>
+                    <!-- @END_MAP )) -->
+                </div>
+            </div>
+            
+            <!-- Midfielders -->
+            <div class="mb-12">
+                <h3 class="text-xl font-semibold mb-6">Midfielders</h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <!-- @MAP: midfielders.map(player => ( -->
+                    <div class="bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                        <!-- Professional central midfielder in red and black jersey controlling ball -->
+                        <div class="relative h-48 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1553778263-73a83bab9b0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=400');">
+                            <div class="absolute top-2 left-2 bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
+                                8
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="font-semibold text-sm" data-bind="player.name">Alex Johnson</div>
+                            <div class="text-xs text-muted-foreground" data-bind="player.position">Midfielder</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                        <!-- Professional attacking midfielder in red and black kit with ball -->
+                        <div class="relative h-48 bg-cover bg-center" style="background-image: url('https://pixabay.com/get/g81ebb54376828c433eddf93b32974e2e9304c1b7c2223a6a892bd179ad2fd6e3727db18cfe33f484556f8c09f33c39408a4a960dc94c7117ff1ca32aebe8d8dd_1280.jpg');">
+                            <div class="absolute top-2 left-2 bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
+                                6
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="font-semibold text-sm" data-bind="player.name">Daniel Foster</div>
+                            <div class="text-xs text-muted-foreground" data-bind="player.position">Midfielder</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                        <!-- Professional defensive midfielder in red and black jersey making pass -->
+                        <div class="relative h-48 bg-cover bg-center" style="background-image: url('https://pixabay.com/get/g4d0326dcc508eee41c142d278a74002ee2dc19872ce835120f95c50b29959f840f403045ffa4dfd471bdb83302087d175889797130f91591505f735c06b51544_1280.jpg');">
+                            <div class="absolute top-2 left-2 bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
+                                11
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="font-semibold text-sm" data-bind="player.name">Ryan Miller</div>
+                            <div class="text-xs text-muted-foreground" data-bind="player.position">Midfielder</div>
+                        </div>
+                    </div>
+                    <!-- @END_MAP )) -->
+                </div>
+            </div>
+            
+            <!-- Forwards -->
+            <div class="mb-12">
+                <h3 class="text-xl font-semibold mb-6">Forwards</h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <!-- @MAP: forwards.map(player => ( -->
+                    <div class="bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                        <!-- Professional striker in red and black jersey in scoring position -->
+                        <div class="relative h-48 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=400');">
+                            <div class="absolute top-2 left-2 bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
+                                9
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="font-semibold text-sm" data-bind="player.name">Marcus Thompson</div>
+                            <div class="text-xs text-muted-foreground" data-bind="player.position">Forward</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                        <!-- Professional winger in red and black jersey dribbling -->
+                        <div class="relative h-48 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=400');">
+                            <div class="absolute top-2 left-2 bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
+                                7
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="font-semibold text-sm" data-bind="player.name">Luis Martinez</div>
+                            <div class="text-xs text-muted-foreground" data-bind="player.position">Forward</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-card rounded-lg overflow-hidden player-card cursor-pointer" data-mock="true">
+                        <!-- Professional striker in red and black jersey celebrating goal -->
+                        <div class="relative h-48 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1560272564-c83b66b1ad12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=400');">
+                            <div class="absolute top-2 left-2 bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
+                                10
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="font-semibold text-sm" data-bind="player.name">Carlos Silva</div>
+                            <div class="text-xs text-muted-foreground" data-bind="player.position">Forward</div>
+                        </div>
+                    </div>
+                    <!-- @END_MAP )) -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: SquadSection -->
+
+    <!-- Statistics Section -->
+    <!-- @COMPONENT: StatisticsSection [team statistics table] -->
+    <section class="py-16 bg-muted/20" id="statistics-section">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold">
+                    <span class="text-primary italic mr-2">STATISTICS</span>
+                </h2>
+                <div class="flex items-center space-x-4">
+                    <select class="bg-secondary border border-border rounded-md px-4 py-2 text-foreground">
+                        <option>All competitions</option>
+                        <option>Premier League</option>
+                        <option>Champions League</option>
+                        <option>FA Cup</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Statistics table -->
+            <div class="bg-card rounded-lg overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-secondary">
+                            <tr>
+                                <th class="text-left p-4 font-semibold">NO.</th>
+                                <th class="text-left p-4 font-semibold">LAST NAME</th>
+                                <th class="text-left p-4 font-semibold">FIRST NAME</th>
+                                <th class="text-left p-4 font-semibold">POSITION</th>
+                                <th class="text-left p-4 font-semibold">NAT.</th>
+                                <th class="text-left p-4 font-semibold">GAMES PLAYED</th>
+                                <th class="text-left p-4 font-semibold">MINUTES</th>
+                                <th class="text-left p-4 font-semibold">GOALS</th>
+                                <th class="text-left p-4 font-semibold">ASSISTS</th>
+                                <th class="text-left p-4 font-semibold">🟨</th>
+                                <th class="text-left p-4 font-semibold">🟥</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- @MAP: statisticsData.map(player => ( -->
+                            <tr class="border-b border-border hover:bg-muted/20 transition-colors" data-mock="true">
+                                <td class="p-4 font-semibold">1</td>
+                                <td class="p-4">Rodriguez</td>
+                                <td class="p-4">David</td>
+                                <td class="p-4">Goalkeeper</td>
+                                <td class="p-4">Spain</td>
+                                <td class="p-4">25</td>
+                                <td class="p-4">2,250</td>
+                                <td class="p-4">0</td>
+                                <td class="p-4">0</td>
+                                <td class="p-4">2</td>
+                                <td class="p-4">0</td>
+                            </tr>
+                            
+                            <tr class="border-b border-border hover:bg-muted/20 transition-colors" data-mock="true">
+                                <td class="p-4 font-semibold">2</td>
+                                <td class="p-4">Silva</td>
+                                <td class="p-4">Lucas</td>
+                                <td class="p-4">Defender</td>
+                                <td class="p-4">Brazil</td>
+                                <td class="p-4">22</td>
+                                <td class="p-4">1,980</td>
+                                <td class="p-4">1</td>
+                                <td class="p-4">3</td>
+                                <td class="p-4">4</td>
+                                <td class="p-4">0</td>
+                            </tr>
+                            
+                            <tr class="border-b border-border hover:bg-muted/20 transition-colors" data-mock="true">
+                                <td class="p-4 font-semibold">3</td>
+                                <td class="p-4">Garcia</td>
+                                <td class="p-4">Roberto</td>
+                                <td class="p-4">Defender</td>
+                                <td class="p-4">Argentina</td>
+                                <td class="p-4">24</td>
+                                <td class="p-4">2,160</td>
+                                <td class="p-4">2</td>
+                                <td class="p-4">1</td>
+                                <td class="p-4">3</td>
+                                <td class="p-4">0</td>
+                            </tr>
+                            
+                            <tr class="border-b border-border hover:bg-muted/20 transition-colors" data-mock="true">
+                                <td class="p-4 font-semibold">4</td>
+                                <td class="p-4">Wilson</td>
+                                <td class="p-4">James</td>
+                                <td class="p-4">Defender</td>
+                                <td class="p-4">England</td>
+                                <td class="p-4">23</td>
+                                <td class="p-4">2,070</td>
+                                <td class="p-4">1</td>
+                                <td class="p-4">0</td>
+                                <td class="p-4">5</td>
+                                <td class="p-4">1</td>
+                            </tr>
+                            
+                            <tr class="border-b border-border hover:bg-muted/20 transition-colors" data-mock="true">
+                                <td class="p-4 font-semibold">5</td>
+                                <td class="p-4">Anderson</td>
+                                <td class="p-4">Michael</td>
+                                <td class="p-4">Defender</td>
+                                <td class="p-4">Scotland</td>
+                                <td class="p-4">20</td>
+                                <td class="p-4">1,800</td>
+                                <td class="p-4">0</td>
+                                <td class="p-4">2</td>
+                                <td class="p-4">3</td>
+                                <td class="p-4">0</td>
+                            </tr>
+                            
+                            <tr class="border-b border-border hover:bg-muted/20 transition-colors" data-mock="true">
+                                <td class="p-4 font-semibold">6</td>
+                                <td class="p-4">Foster</td>
+                                <td class="p-4">Daniel</td>
+                                <td class="p-4">Midfielder</td>
+                                <td class="p-4">Ireland</td>
+                                <td class="p-4">24</td>
+                                <td class="p-4">2,100</td>
+                                <td class="p-4">4</td>
+                                <td class="p-4">8</td>
+                                <td class="p-4">6</td>
+                                <td class="p-4">0</td>
+                            </tr>
+                            
+                            <tr class="border-b border-border hover:bg-muted/20 transition-colors" data-mock="true">
+                                <td class="p-4 font-semibold">7</td>
+                                <td class="p-4">Martinez</td>
+                                <td class="p-4">Luis</td>
+                                <td class="p-4">Forward</td>
+                                <td class="p-4">Spain</td>
+                                <td class="p-4">25</td>
+                                <td class="p-4">2,200</td>
+                                <td class="p-4">12</td>
+                                <td class="p-4">7</td>
+                                <td class="p-4">2</td>
+                                <td class="p-4">0</td>
+                            </tr>
+                            
+                            <tr class="border-b border-border hover:bg-muted/20 transition-colors" data-mock="true">
+                                <td class="p-4 font-semibold">8</td>
+                                <td class="p-4">Johnson</td>
+                                <td class="p-4">Alex</td>
+                                <td class="p-4">Midfielder</td>
+                                <td class="p-4">England</td>
+                                <td class="p-4">23</td>
+                                <td class="p-4">2,070</td>
+                                <td class="p-4">6</td>
+                                <td class="p-4">11</td>
+                                <td class="p-4">4</td>
+                                <td class="p-4">0</td>
+                            </tr>
+                            
+                            <tr class="border-b border-border hover:bg-muted/20 transition-colors" data-mock="true">
+                                <td class="p-4 font-semibold">9</td>
+                                <td class="p-4">Thompson</td>
+                                <td class="p-4">Marcus</td>
+                                <td class="p-4">Forward</td>
+                                <td class="p-4">England</td>
+                                <td class="p-4">25</td>
+                                <td class="p-4">2,175</td>
+                                <td class="p-4">18</td>
+                                <td class="p-4">12</td>
+                                <td class="p-4">3</td>
+                                <td class="p-4">0</td>
+                            </tr>
+                            
+                            <tr class="border-b border-border hover:bg-muted/20 transition-colors" data-mock="true">
+                                <td class="p-4 font-semibold">10</td>
+                                <td class="p-4">Silva</td>
+                                <td class="p-4">Carlos</td>
+                                <td class="p-4">Forward</td>
+                                <td class="p-4">Portugal</td>
+                                <td class="p-4">22</td>
+                                <td class="p-4">1,890</td>
+                                <td class="p-4">14</td>
+                                <td class="p-4">9</td>
+                                <td class="p-4">1</td>
+                                <td class="p-4">0</td>
+                            </tr>
+                            
+                            <tr class="border-b border-border hover:bg-muted/20 transition-colors" data-mock="true">
+                                <td class="p-4 font-semibold">11</td>
+                                <td class="p-4">Miller</td>
+                                <td class="p-4">Ryan</td>
+                                <td class="p-4">Midfielder</td>
+                                <td class="p-4">Wales</td>
+                                <td class="p-4">21</td>
+                                <td class="p-4">1,785</td>
+                                <td class="p-4">3</td>
+                                <td class="p-4">5</td>
+                                <td class="p-4">7</td>
+                                <td class="p-4">1</td>
+                            </tr>
+                            
+                            <tr class="border-b border-border hover:bg-muted/20 transition-colors" data-mock="true">
+                                <td class="p-4 font-semibold">12</td>
+                                <td class="p-4">Brown</td>
+                                <td class="p-4">Thomas</td>
+                                <td class="p-4">Goalkeeper</td>
+                                <td class="p-4">England</td>
+                                <td class="p-4">3</td>
+                                <td class="p-4">270</td>
+                                <td class="p-4">0</td>
+                                <td class="p-4">0</td>
+                                <td class="p-4">0</td>
+                                <td class="p-4">0</td>
+                            </tr>
+                            <!-- @END_MAP )) -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: StatisticsSection -->
+
+
+    <!-- Footer -->
+    <!-- @COMPONENT: Footer [site footer with links and information] -->
+    <footer class="bg-secondary py-16 border-t border-border">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-4 mb-6">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                            <span class="text-primary-foreground font-bold text-xl">R</span>
+                        </div>
+                        <div class="text-2xl font-bold">AFC Richman</div>
+                    </div>
+                    <p class="text-muted-foreground mb-4">
+                        Leading the charge in modern football with passion, dedication, and excellence.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                            <i class="fab fa-youtube text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Team</h3>
+                    <ul class="space-y-2 text-muted-foreground">
+                        <li><a href="#" class="hover:text-primary transition-colors">Squad</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Statistics</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Coaching Staff</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Matches</h3>
+                    <ul class="space-y-2 text-muted-foreground">
+                        <li><a href="#" class="hover:text-primary transition-colors">Fixtures</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Results</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Season</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Live Stream</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Club</h3>
+                    <ul class="space-y-2 text-muted-foreground">
+                        <li><a href="#" class="hover:text-primary transition-colors">About</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">History</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-border pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="text-muted-foreground text-sm mb-4 md:mb-0">
+                        © 2024 AFC Richman. All rights reserved.
+                    </div>
+                    <div class="flex space-x-6 text-sm text-muted-foreground">
+                        <a href="#" class="hover:text-primary transition-colors">Privacy Policy</a>
+                        <a href="#" class="hover:text-primary transition-colors">Terms of Service</a>
+                        <a href="#" class="hover:text-primary transition-colors">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- @END_COMPONENT: Footer -->
+
+    <script>
+        // TODO: Implement JavaScript functionality for carousel scrolling, modal interactions, and other dynamic features
+        
+        (() => {
+            // Modal functionality
+            const playerModal = document.getElementById('playerModal');
+            const playerCards = document.querySelectorAll('.player-card');
+            
+            // Open player modal
+            playerCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    playerModal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            // Close modal
+            const closeModalBtn = playerModal.querySelector('[data-event="click:closeModal"]');
+            closeModalBtn?.addEventListener('click', () => {
+                playerModal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Close modal on overlay click
+            playerModal.addEventListener('click', (e) => {
+                if (e.target === playerModal) {
+                    playerModal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Horizontal scroll functionality
+            const setupScrollButtons = (containerId, prevSelector, nextSelector) => {
+                const container = document.getElementById(containerId);
+                const prevBtn = document.querySelector(prevSelector);
+                const nextBtn = document.querySelector(nextSelector);
+                
+                if (container && prevBtn && nextBtn) {
+                    prevBtn.addEventListener('click', () => {
+                        container.scrollBy({ left: -300, behavior: 'smooth' });
+                    });
+                    
+                    nextBtn.addEventListener('click', () => {
+                        container.scrollBy({ left: 300, behavior: 'smooth' });
+                    });
+                }
+            };
+            
+            // Setup scroll buttons for fixtures and players
+            setupScrollButtons('fixtures-scroll', '[data-event="click:scrollLeft"]', '[data-event="click:scrollRight"]');
+            setupScrollButtons('players-scroll', '[data-event="click:scrollLeft"]', '[data-event="click:scrollRight"]');
+        })();
+    </script>
+</body>
+</html>
