@@ -23,8 +23,8 @@ import type { UploadResult } from "@uppy/core";
 
 const playerFormSchema = z.object({
   jerseyNumber: z.number().min(1).max(99),
-  firstName: z.string().min(1, "Player name is required"),
-  lastName: z.string(),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
   position: z.enum(["Goalkeeper", "Defender", "Midfielder", "Forward"]),
   consoleUsername: z.string().min(1, "Console username is required"),
   joinDate: z.string().min(1, "Join date is required"),
@@ -393,24 +393,39 @@ export default function AdminPanel() {
                             >
                               <div className="flex flex-col items-center justify-center w-24 h-24 bg-muted rounded-lg cursor-pointer hover:bg-muted/80 transition-colors">
                                 <Upload className="w-6 h-6 text-muted-foreground mb-1" />
-                                <span className="text-xs text-muted-foreground">200x240</span>
+                                <span className="text-xs text-muted-foreground">Upload</span>
                               </div>
                             </ObjectUploader>
                           </div>
                           
-                          <FormField
-                            control={playerForm.control}
-                            name="firstName"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Player Name</FormLabel>
-                                <FormControl>
-                                  <Input {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                          <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                              control={playerForm.control}
+                              name="firstName"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>First Name</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={playerForm.control}
+                              name="lastName"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Last Name</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
 
                           <FormField
                             control={playerForm.control}
