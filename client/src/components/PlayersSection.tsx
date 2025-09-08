@@ -116,7 +116,7 @@ export default function PlayersSection() {
 
                 <div className="text-center mt-3">
                   <p className="text-white font-semibold">
-                    {player.firstName} {player.lastName}
+                    {player.jerseyNumber} / {player.firstName} {player.lastName}
                   </p>
                   <p className="text-muted-foreground text-sm">
                     {player.position}
