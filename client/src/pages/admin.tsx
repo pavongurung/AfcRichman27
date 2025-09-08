@@ -19,7 +19,6 @@ import { z } from "zod";
 import type { Player, PlayerStats, InsertPlayer, InsertPlayerStats } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import { createWorker } from "tesseract.js";
 
 const playerFormSchema = z.object({
   jerseyNumber: z.number().min(1).max(99),
@@ -163,35 +162,17 @@ export default function AdminPanel() {
     }
   };
 
-  const preprocessImage = (file: File): Promise<string> => {
+  const convertFileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        if (!ctx) {
-          reject(new Error('Cannot get canvas context'));
-          return;
-        }
-        
-        // Scale image for better OCR (aim for 1000px width)
-        const maxWidth = 1000;
-        const scale = img.width > maxWidth ? maxWidth / img.width : 1;
-        
-        canvas.width = img.width * scale;
-        canvas.height = img.height * scale;
-        
-        // Draw image with enhancements for better OCR
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.filter = 'contrast(200%) brightness(150%)';
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        
-        // Convert to high-quality data URL
-        resolve(canvas.toDataURL('image/png', 1.0));
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        // Remove the data URL prefix to get just the base64 string
+        const base64 = result.split(',')[1];
+        resolve(base64);
       };
-      img.onerror = () => reject(new Error('Failed to load image'));
-      img.src = URL.createObjectURL(file);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
     });
   };
 
@@ -201,48 +182,33 @@ export default function AdminPanel() {
       setOcrProgress(0);
       
       toast({
-        title: "Processing Image",
-        description: "Preprocessing image for better text recognition...",
+        title: "Analyzing Image",
+        description: "Using AI to extract football statistics...",
       });
 
-      // Preprocess image for better OCR
-      const processedImageUrl = await preprocessImage(file);
+      // Convert file to base64 for OpenAI
+      setOcrProgress(25);
+      const base64Image = await convertFileToBase64(file);
       
-      // Create Tesseract worker with progress tracking
-      const worker = await createWorker({
-        logger: (msg: any) => {
-          console.log(`OCR ${msg.status}: ${Math.round(msg.progress * 100)}%`);
-          setOcrProgress(Math.round(msg.progress * 100));
+      setOcrProgress(50);
+      
+      // Call OpenAI API via our backend
+      const response = await apiRequest('/api/extract-stats', {
+        method: 'POST',
+        body: JSON.stringify({
+          image: base64Image,
+          mimeType: file.type
+        }),
+        headers: {
+          'Content-Type': 'application/json'
         }
       });
 
-      await worker.load();
-      await worker.loadLanguage('eng');
-      await worker.initialize('eng');
+      setOcrProgress(75);
 
-      // Configure OCR for better number and text recognition
-      await worker.setParameters({
-        tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz:.%()- \n',
-        tessedit_pageseg_mode: 6, // Uniform block of text
-        preserve_interword_spaces: '1',
-      });
+      console.log("OpenAI OCR Results:", response);
 
-      console.log("Starting OCR recognition...");
-      const { data: { text, confidence } } = await worker.recognize(processedImageUrl);
-      await worker.terminate();
-
-      console.log("OCR Results:", { text, confidence });
-
-      if (!text || text.trim().length === 0) {
-        throw new Error("No text detected in image");
-      }
-
-      // Parse the extracted text to identify stats
-      const extractedStats = parseOcrText(text);
-      
-      console.log("Extracted stats:", extractedStats);
-
-      if (Object.keys(extractedStats).length === 0) {
+      if (!response.extractedStats || Object.keys(response.extractedStats).length === 0) {
         toast({
           title: "No Stats Found",
           description: "Could not identify football statistics in the image. Try a clearer image with visible stat labels.",
@@ -251,23 +217,25 @@ export default function AdminPanel() {
         return;
       }
       
+      setOcrProgress(100);
+      
       // Auto-fill the form with extracted data
-      Object.entries(extractedStats).forEach(([key, value]) => {
-        if (statsForm.getValues(key as keyof StatsFormData) !== undefined) {
+      Object.entries(response.extractedStats).forEach(([key, value]) => {
+        if (statsForm.getValues(key as keyof StatsFormData) !== undefined && typeof value === 'number') {
           statsForm.setValue(key as keyof StatsFormData, value);
         }
       });
 
       toast({
-        title: "OCR Complete",
-        description: `Successfully extracted ${Object.keys(extractedStats).length} stat values! Check the form fields.`,
+        title: "AI Analysis Complete",
+        description: `Successfully extracted ${Object.keys(response.extractedStats).length} stat values! Check the form fields.`,
       });
 
     } catch (error) {
-      console.error("OCR error:", error);
+      console.error("AI OCR error:", error);
       toast({
-        title: "OCR Failed",
-        description: error instanceof Error ? error.message : "Could not extract text from image. Please try again with a clearer image.",
+        title: "AI Analysis Failed",
+        description: error instanceof Error ? error.message : "Could not extract statistics from image. Please try again with a clearer image.",
         variant: "destructive",
       });
     } finally {
@@ -276,75 +244,6 @@ export default function AdminPanel() {
     }
   };
 
-  const parseOcrText = (text: string): Partial<StatsFormData> => {
-    const stats: Partial<StatsFormData> = {};
-    const lines = text.split('\n').filter(line => line.trim());
-    
-    console.log("Parsing OCR text lines:", lines);
-    
-    // Enhanced patterns for parsing football game stats
-    const patterns = {
-      // Basic stats
-      goals: [/goals?\s*:?\s*(\d+)/i, /(\d+)\s*goals?/i, /G\s*(\d+)/i],
-      assists: [/assists?\s*:?\s*(\d+)/i, /(\d+)\s*assists?/i, /A\s*(\d+)/i],
-      shots: [/shots?\s*:?\s*(\d+)/i, /(\d+)\s*shots?/i, /SH\s*(\d+)/i],
-      passes: [/passes?\s*:?\s*(\d+)/i, /(\d+)\s*passes?/i, /P\s*(\d+)/i],
-      tackles: [/tackles?\s*:?\s*(\d+)/i, /(\d+)\s*tackles?/i, /T\s*(\d+)/i],
-      saves: [/saves?\s*:?\s*(\d+)/i, /(\d+)\s*saves?/i, /SV\s*(\d+)/i],
-      dribbles: [/dribbles?\s*:?\s*(\d+)/i, /(\d+)\s*dribbles?/i, /DR\s*(\d+)/i],
-      offsides: [/offsides?\s*:?\s*(\d+)/i, /(\d+)\s*offsides?/i, /OFF\s*(\d+)/i],
-      foulsCommitted: [/fouls?\s*(committed)?\s*:?\s*(\d+)/i, /(\d+)\s*fouls?/i, /FC\s*(\d+)/i],
-      yellowCards: [/yellow\s*cards?\s*:?\s*(\d+)/i, /(\d+)\s*yellow/i, /YC\s*(\d+)/i],
-      redCards: [/red\s*cards?\s*:?\s*(\d+)/i, /(\d+)\s*red/i, /RC\s*(\d+)/i],
-      
-      // Percentage stats
-      avgRating: [/rating\s*:?\s*(\d+\.?\d*)/i, /(\d+\.?\d*)\s*rating/i, /RAT\s*(\d+\.?\d*)/i],
-      shotAccuracy: [/shot\s*acc(uracy)?\s*:?\s*(\d+)%?/i, /(\d+)%?\s*shot\s*acc/i, /SHA\s*(\d+)%?/i],
-      passAccuracy: [/pass\s*acc(uracy)?\s*:?\s*(\d+)%?/i, /(\d+)%?\s*pass\s*acc/i, /PA\s*(\d+)%?/i],
-      tackleSuccessRate: [/tackle\s*succ(ess)?\s*:?\s*(\d+)%?/i, /(\d+)%?\s*tackle/i, /TS\s*(\d+)%?/i],
-      dribbleSuccessRate: [/dribble\s*succ(ess)?\s*:?\s*(\d+)%?/i, /(\d+)%?\s*dribble/i, /DS\s*(\d+)%?/i],
-      
-      // Possession stats
-      possessionWon: [/possession\s*won\s*:?\s*(\d+)/i, /(\d+)\s*pos\s*won/i, /PW\s*(\d+)/i],
-      possessionLost: [/possession\s*lost\s*:?\s*(\d+)/i, /(\d+)\s*pos\s*lost/i, /PL\s*(\d+)/i],
-      cleanSheet: [/clean\s*sheet\s*:?\s*(\d+)/i, /(\d+)\s*clean/i, /CS\s*(\d+)/i],
-      pkSave: [/pk\s*save\s*:?\s*(\d+)/i, /penalty\s*save\s*:?\s*(\d+)/i, /(\d+)\s*pk\s*save/i, /PS\s*(\d+)/i],
-      
-      // Alternative forms
-      appearance: [/appear(ance)?\s*:?\s*(\d+)/i, /(\d+)\s*app/i, /APP\s*(\d+)/i],
-      motm: [/motm\s*:?\s*(\d+)/i, /man\s*of\s*match\s*:?\s*(\d+)/i, /(\d+)\s*motm/i],
-    };
-
-    // Try to extract stats using multiple patterns per stat
-    for (const [key, patternArray] of Object.entries(patterns)) {
-      let found = false;
-      
-      for (const pattern of patternArray) {
-        if (found) break;
-        
-        for (const line of lines) {
-          const match = line.match(pattern);
-          if (match) {
-            const value = parseFloat(match[match.length - 1]);
-            if (!isNaN(value)) {
-              (stats as any)[key] = key === 'avgRating' ? Math.round(value * 10) / 10 : Math.round(value);
-              console.log(`Found ${key}: ${value} from line: "${line}"`);
-              found = true;
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    // Look for numeric sequences that might be stats (fallback)
-    const numberSequences = text.match(/\d+/g);
-    if (numberSequences && numberSequences.length > 0) {
-      console.log("Found numbers:", numberSequences);
-    }
-
-    return stats;
-  };
 
   const { data: players, isLoading: playersLoading } = useQuery<Player[]>({
     queryKey: ["/api/players"],
@@ -910,14 +809,14 @@ export default function AdminPanel() {
                   <CardTitle>Edit Statistics</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {/* OCR Upload Section */}
-                  <div className="mb-6 p-4 border border-dashed border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-600">
-                    <h3 className="text-lg font-semibold mb-3 flex items-center">
+                  {/* AI Stats Extraction Section */}
+                  <div className="mb-6 p-4 border border-dashed border-primary/30 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 dark:border-primary/50">
+                    <h3 className="text-lg font-semibold mb-3 flex items-center text-primary">
                       <ImageIcon className="w-5 h-5 mr-2" />
-                      Auto-Extract Stats from Image
+                      AI Stats Extraction
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                      Upload a post-match statistics screenshot and automatically extract the numbers
+                      Upload a post-match statistics screenshot and let AI automatically extract all numbers with high accuracy
                     </p>
                     <div className="flex items-center space-x-4">
                       <input
@@ -928,20 +827,22 @@ export default function AdminPanel() {
                           if (file) handleOcrImageUpload(file);
                         }}
                         className="sr-only"
-                        id="ocr-image-upload"
+                        id="ai-stats-upload"
                         disabled={isOcrProcessing}
                       />
                       <label
-                        htmlFor="ocr-image-upload"
-                        className="cursor-pointer inline-flex items-center px-4 py-2 border border-primary text-primary bg-background hover:bg-primary hover:text-primary-foreground rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                        htmlFor="ai-stats-upload"
+                        className={`cursor-pointer inline-flex items-center px-4 py-2 border border-primary text-primary bg-background hover:bg-primary hover:text-primary-foreground rounded-lg font-medium transition-colors ${
+                          isOcrProcessing ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
                       >
                         <Upload className="w-4 h-4 mr-2" />
-                        {isOcrProcessing ? "Processing..." : "Upload Stats Image"}
+                        {isOcrProcessing ? "Analyzing..." : "Upload Stats Image"}
                       </label>
                       {isOcrProcessing && (
                         <div className="flex items-center space-x-2">
                           <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                          <span className="text-sm text-gray-600">{ocrProgress}%</span>
+                          <span className="text-sm font-medium text-primary">{ocrProgress}%</span>
                         </div>
                       )}
                     </div>

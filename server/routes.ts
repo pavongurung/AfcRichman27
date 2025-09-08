@@ -5,6 +5,12 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { insertPlayerSchema, insertPlayerStatsSchema, insertMatchSchema } from "@shared/schema";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 import { z } from "zod";
+import OpenAI from "openai";
+
+// Initialize OpenAI client
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware - temporarily disabled for testing
@@ -14,6 +20,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/auth/user', async (req: any, res) => {
     // Return mock user for testing
     res.json({ id: "test-user", email: "test@example.com" });
+  });
+
+  // OpenAI OCR endpoint for extracting stats from images
+  app.post("/api/extract-stats", async (req, res) => {
+    try {
+      const { image, mimeType } = req.body;
+      
+      if (!image) {
+        return res.status(400).json({ error: "No image provided" });
+      }
+
+      // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
+      const response = await openai.chat.completions.create({
+        model: "gpt-5",
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: `Analyze this football/soccer statistics image and extract the numerical values for each statistic. 
+
+Please extract stats for these fields and return ONLY a JSON object with the exact field names:
+- appearance (appearances/games played)
+- motm (man of the match awards)
+- goals
+- assists
+- avgRating (average rating, typically 0-10 scale)
+- shots
+- shotAccuracy (shot accuracy percentage, 0-100)
+- passes
+- passAccuracy (pass accuracy percentage, 0-100)
+- dribbles
+- dribbleSuccessRate (dribble success rate percentage, 0-100)
+- tackles
+- tackleSuccessRate (tackle success rate percentage, 0-100)
+- possessionWon
+- possessionLost
+- saves
+- pkSave (penalty saves)
+- cleanSheet (clean sheets)
+- yellowCards
+- redCards
+- offsides
+- foulsCommitted
+
+Return ONLY valid JSON in this exact format: {"fieldName": numberValue}. Do not include any explanation or additional text.`
+              },
+              {
+                type: "image_url",
+                image_url: {
+                  url: `data:${mimeType};base64,${image}`
+                }
+              }
+            ]
+          }
+        ],
+        response_format: { type: "json_object" },
+        max_tokens: 1000
+      });
+
+      const content = response.choices[0]?.message?.content;
+      if (!content) {
+        return res.status(500).json({ error: "No response from AI" });
+      }
+
+      try {
+        const extractedStats = JSON.parse(content);
+        console.log("Extracted stats from OpenAI:", extractedStats);
+        res.json({ extractedStats });
+      } catch (parseError) {
+        console.error("Failed to parse AI response:", content);
+        res.status(500).json({ error: "Invalid response format from AI" });
+      }
+
+    } catch (error) {
+      console.error("OpenAI OCR error:", error);
+      res.status(500).json({ error: "Failed to analyze image" });
+    }
   });
 
   // Player routes (public)
