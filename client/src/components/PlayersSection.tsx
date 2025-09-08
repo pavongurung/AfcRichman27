@@ -99,26 +99,29 @@ export default function PlayersSection() {
             <Link
               key={player.id}
               href={`/player/${player.id}`}
-              className="flex-none w-64 cursor-pointer transition-transform hover:scale-105 hover:ring-2 hover:ring-red-500 rounded-lg"
+              className="flex-none w-64 cursor-pointer group"
               data-testid={`player-card-${player.id}`}
             >
               <div className="flex flex-col items-center w-full">
-                <div
-                  className="relative h-80 w-full bg-cover bg-center rounded-md shadow-lg"
-                  style={{
-                    backgroundImage: `url('${player.imageUrl || "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=600"}')`,
-                  }}
-                >
-                  <div className="absolute top-3 left-3 bg-primary text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
-                    {player.jerseyNumber}
+                <div className="relative overflow-hidden rounded-md shadow-lg">
+                  <div
+                    className="relative h-80 w-full bg-cover bg-center transition-transform duration-300 group-hover:scale-110"
+                    style={{
+                      backgroundImage: `url('${player.imageUrl || "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=600"}')`,
+                    }}
+                  >
+                    <div className="absolute top-3 left-3 bg-primary text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
+                      {player.jerseyNumber}
+                    </div>
                   </div>
                 </div>
 
-                <div className="text-center mt-3">
+                <div className="text-center mt-3 w-full">
                   <p className="text-white font-semibold">
                     {player.jerseyNumber} / {player.firstName} {player.lastName}
                   </p>
-                  <p className="text-muted-foreground text-sm">
+                  <div className="w-full h-0.5 bg-red-500 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <p className="text-muted-foreground text-sm mt-1">
                     {player.position}
                   </p>
                 </div>
