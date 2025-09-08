@@ -82,8 +82,10 @@ export default function LatestSection() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold" data-testid="latest-title">
-            <span className="text-primary italic mr-2">LATEST</span>
-            <span className="text-muted-foreground">All news</span>
+            <span className="text-white italic mr-2">LATEST</span>
+            <span className="text-muted-foreground italic mr-2">/</span>
+            <span className="text-muted-foreground underline decoration-red-500 decoration-2">All news</span>
+            <span className="text-red-500 ml-2">→</span>
           </h2>
           <div className="flex items-center space-x-2">
             <Button
