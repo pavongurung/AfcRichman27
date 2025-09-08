@@ -96,10 +96,10 @@ export default function Statistics() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-4">
+    <div className="min-h-screen bg-background text-foreground p-4">
       <div className="max-w-full mx-auto">
         <div className="mb-4">
-          <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
             <span>Squad</span>
             <span>›</span>
             <span>Statistics</span>
@@ -107,10 +107,10 @@ export default function Statistics() {
           <div className="flex items-center justify-between">
             <h1 className="text-4xl font-bold italic">STATISTICS</h1>
             <div className="flex gap-4">
-              <select className="bg-gray-700 text-white px-3 py-1 rounded text-sm border border-gray-600">
+              <select className="bg-card text-foreground px-3 py-1 rounded text-sm border border-border">
                 <option>All players</option>
               </select>
-              <select className="bg-gray-700 text-white px-3 py-1 rounded text-sm border border-gray-600">
+              <select className="bg-card text-foreground px-3 py-1 rounded text-sm border border-border">
                 <option>All competitions</option>
               </select>
             </div>
@@ -120,9 +120,9 @@ export default function Statistics() {
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-b border-gray-700">
+              <TableRow className="border-b border-border">
                 <TableHead 
-                  className="text-gray-300 text-xs font-bold cursor-pointer hover:bg-gray-800 transition-colors py-4 px-3"
+                  className="text-muted-foreground text-xs font-bold cursor-pointer hover:bg-secondary transition-colors py-4 px-3"
                   onClick={() => handleSort("firstName")}
                 >
                   <div className="flex items-center">
@@ -343,12 +343,12 @@ export default function Statistics() {
               {sortedPlayers.map((player, index) => (
                 <TableRow 
                   key={player.id} 
-                  className={`${index % 2 === 0 ? 'bg-transparent' : 'bg-gray-900/30'} hover:bg-gray-700/50 border-0`}
+                  className={`${index % 2 === 0 ? 'bg-transparent' : 'bg-secondary/20'} hover:bg-secondary/40 border-0`}
                   data-testid={`player-row-${player.id}`}
                 >
-                  <TableCell className="text-white font-medium text-sm py-3 px-3">
+                  <TableCell className="text-foreground font-medium text-sm py-3 px-3">
                     <div className="flex items-center space-x-3">
-                      <span className="text-gray-300 font-bold w-6 text-center">{player.jerseyNumber}</span>
+                      <span className="text-muted-foreground font-bold w-6 text-center">{player.jerseyNumber}</span>
                       <span>{player.firstName}</span>
                     </div>
                   </TableCell>
