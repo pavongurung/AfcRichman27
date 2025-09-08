@@ -193,22 +193,17 @@ export default function AdminPanel() {
       setOcrProgress(50);
       
       // Call OpenAI API via our backend
-      const response = await apiRequest('/api/extract-stats', {
-        method: 'POST',
-        body: JSON.stringify({
-          image: base64Image,
-          mimeType: file.type
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+      const response = await apiRequest('POST', '/api/extract-stats', {
+        image: base64Image,
+        mimeType: file.type
       });
 
       setOcrProgress(75);
 
-      console.log("OpenAI OCR Results:", response);
+      const data = await response.json();
+      console.log("OpenAI OCR Results:", data);
 
-      if (!response.extractedStats || Object.keys(response.extractedStats).length === 0) {
+      if (!data.extractedStats || Object.keys(data.extractedStats).length === 0) {
         toast({
           title: "No Stats Found",
           description: "Could not identify football statistics in the image. Try a clearer image with visible stat labels.",
@@ -220,7 +215,7 @@ export default function AdminPanel() {
       setOcrProgress(100);
       
       // Auto-fill the form with extracted data
-      Object.entries(response.extractedStats).forEach(([key, value]) => {
+      Object.entries(data.extractedStats).forEach(([key, value]) => {
         if (statsForm.getValues(key as keyof StatsFormData) !== undefined && typeof value === 'number') {
           statsForm.setValue(key as keyof StatsFormData, value);
         }
@@ -228,7 +223,7 @@ export default function AdminPanel() {
 
       toast({
         title: "AI Analysis Complete",
-        description: `Successfully extracted ${Object.keys(response.extractedStats).length} stat values! Check the form fields.`,
+        description: `Successfully extracted ${Object.keys(data.extractedStats).length} stat values! Check the form fields.`,
       });
 
     } catch (error) {
