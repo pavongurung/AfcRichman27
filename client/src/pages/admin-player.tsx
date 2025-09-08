@@ -125,32 +125,114 @@ export default function AdminPlayer() {
   const parseStatsFromText = (text: string): Partial<PlayerStats> => {
     const stats: Partial<PlayerStats> = {};
     const normalizedText = text.toLowerCase();
+    const lines = text.split('\n');
     
-    // For each custom stat field, try to find matching patterns
-    customStatFields.forEach(field => {
-      field.patterns.forEach(pattern => {
-        // Create regex to find pattern followed by number or percentage
-        const regex = new RegExp(`${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[\\s:]*([\\d.]+)\\s*%?`, 'i');
-        const match = normalizedText.match(regex);
+    // Enhanced extraction for detailed performance screens
+    // Look for specific stat patterns in the text
+    const extractStat = (patterns: string[], isPercentage = false): number => {
+      for (const pattern of patterns) {
+        // Try multiple regex patterns for flexibility
+        const regexPatterns = [
+          // Pattern: "Stat Name 123" or "Stat Name: 123"
+          new RegExp(`${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[\\s:]*([\\d.]+)\\s*%?`, 'i'),
+          // Pattern: "123 Stat Name" 
+          new RegExp(`([\\d.]+)\\s*%?\\s*${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i'),
+          // Pattern with parentheses: "Stat Name (%) 123"
+          new RegExp(`${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\([%\\w]*\\)\\s*([\\d.]+)`, 'i'),
+        ];
         
-        if (match) {
-          let value = parseFloat(match[1]);
-          
-          // Handle special cases
-          if (field.key === 'avgRating') {
-            // Rating stored as integer (multiply by 10)
-            value = Math.round(value * 10);
-          } else if (field.display.includes('%')) {
-            // Percentage fields - ensure it's a whole number
-            value = Math.round(value);
-          } else {
-            // Regular integer fields
-            value = Math.round(value);
+        for (const regex of regexPatterns) {
+          const match = normalizedText.match(regex);
+          if (match && match[1]) {
+            return parseFloat(match[1]);
           }
-          
-          stats[field.key as keyof PlayerStats] = value;
         }
-      });
+        
+        // Try line-by-line approach for structured data
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i].toLowerCase();
+          if (line.includes(pattern)) {
+            // Look for numbers in the same line
+            const numberMatch = line.match(/([\\d.]+)/);
+            if (numberMatch) {
+              return parseFloat(numberMatch[1]);
+            }
+            // Look for numbers in next few lines
+            for (let j = i + 1; j <= Math.min(i + 3, lines.length - 1); j++) {
+              const nextLine = lines[j];
+              const nextNumberMatch = nextLine.match(/([\\d.]+)/);
+              if (nextNumberMatch) {
+                return parseFloat(nextNumberMatch[1]);
+              }
+            }
+          }
+        }
+      }
+      return 0;
+    };
+
+    // Extract specific stats from the image based on what's visible
+    // Goals and Assists (visible in image as "0")
+    stats.goals = extractStat(['goals', 'goal']);
+    stats.assists = extractStat(['assists', 'assist']);
+    
+    // Shots (visible as "5")
+    stats.shots = extractStat(['shots', 'shot']);
+    
+    // Shot Accuracy (visible as "80")
+    stats.shotAccuracy = extractStat(['shot accuracy', 'shooting accuracy'], true);
+    
+    // Passes (visible as "128") 
+    stats.passes = extractStat(['passes', 'pass', 'passing']);
+    
+    // Pass Accuracy (visible as "79")
+    stats.passAccuracy = extractStat(['pass accuracy', 'passing accuracy'], true);
+    
+    // Dribbles (visible as "109")
+    stats.dribbles = extractStat(['dribbles', 'dribble', 'dribbling']);
+    
+    // Dribble Success Rate (visible as "84")
+    stats.dribbleSuccessRate = extractStat(['dribble success', 'dribbling success'], true);
+    
+    // Tackles (visible as "52")
+    stats.tackles = extractStat(['tackles', 'tackle', 'tackling']);
+    
+    // Tackle Success Rate (visible as "13")
+    stats.tackleSuccessRate = extractStat(['tackle success', 'tackling success'], true);
+    
+    // Offsides (visible as "1")
+    stats.offsides = extractStat(['offsides', 'offside']);
+    
+    // Fouls Committed (visible as "1")
+    stats.foulsCommitted = extractStat(['fouls committed', 'fouls', 'foul']);
+    
+    // Possession Won (visible as "24")
+    stats.possessionWon = extractStat(['possession won', 'poss won']);
+    
+    // Possession Lost (visible as "33")
+    stats.possessionLost = extractStat(['possession lost', 'poss lost']);
+    
+    // Minutes (visible as "91")
+    stats.minutes = extractStat(['minutes', 'mins', 'minutes played']);
+    
+    // Average Rating (visible as "6.5" - should be stored as 65)
+    const avgRating = extractStat(['rating', 'mr', 'avg rating', 'average rating']);
+    if (avgRating > 0) {
+      stats.avgRating = Math.round(avgRating * 10);
+    }
+
+    // Try to extract any other custom stats
+    customStatFields.forEach(field => {
+      if (!stats[field.key as keyof PlayerStats]) {
+        const value = extractStat(field.patterns, field.display.includes('%'));
+        if (value > 0) {
+          if (field.key === 'avgRating') {
+            stats[field.key as keyof PlayerStats] = Math.round(value * 10);
+          } else {
+            stats[field.key as keyof PlayerStats] = Math.round(value);
+          }
+        }
+      }
     });
 
     return stats;
