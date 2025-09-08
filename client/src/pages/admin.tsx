@@ -68,8 +68,10 @@ export default function AdminPanel() {
   const handleImageUpload = async (file: File, onChange: (url: string) => void) => {
     try {
       setIsUploading(true);
+      console.log("Starting upload for file:", file.name, "size:", file.size, "type:", file.type);
       
       // Get upload URL from backend
+      console.log("Getting upload URL from backend...");
       const uploadResponse = await fetch("/api/objects/upload", {
         method: "POST",
         headers: {
@@ -77,13 +79,19 @@ export default function AdminPanel() {
         },
       });
       
+      console.log("Upload response status:", uploadResponse.status);
       if (!uploadResponse.ok) {
-        throw new Error("Failed to get upload URL");
+        const errorText = await uploadResponse.text();
+        console.error("Failed to get upload URL:", errorText);
+        throw new Error(`Failed to get upload URL: ${errorText}`);
       }
       
-      const { uploadURL } = await uploadResponse.json();
+      const responseData = await uploadResponse.json();
+      console.log("Upload URL response:", responseData);
+      const { uploadURL } = responseData;
       
       // Upload file to signed URL
+      console.log("Uploading file to signed URL...");
       const fileUploadResponse = await fetch(uploadURL, {
         method: "PUT",
         body: file,
@@ -92,18 +100,26 @@ export default function AdminPanel() {
         },
       });
       
+      console.log("File upload response status:", fileUploadResponse.status);
       if (!fileUploadResponse.ok) {
-        throw new Error("Failed to upload file");
+        const errorText = await fileUploadResponse.text();
+        console.error("Failed to upload file:", errorText);
+        throw new Error(`Failed to upload file: ${errorText}`);
       }
       
       // Extract the object path from the upload URL
+      console.log("Processing upload URL:", uploadURL);
       const url = new URL(uploadURL);
       const objectPath = url.pathname;
+      console.log("Object path:", objectPath);
+      
       // Extract the UUID from the path: /.private/uploads/{uuid}
       const pathParts = objectPath.split('/uploads/');
+      console.log("Path parts:", pathParts);
       if (pathParts.length > 1) {
-        const objectId = pathParts[1];
+        const objectId = pathParts[1].split('?')[0]; // Remove query parameters
         const normalizedPath = `/objects/uploads/${objectId}`;
+        console.log("Normalized path:", normalizedPath);
         onChange(normalizedPath);
       } else {
         throw new Error("Invalid upload URL format");
@@ -118,7 +134,7 @@ export default function AdminPanel() {
       console.error("Upload error:", error);
       toast({
         title: "Error",
-        description: "Failed to upload image. Please try again.",
+        description: `Failed to upload image: ${error.message}`,
         variant: "destructive",
       });
     } finally {
@@ -419,20 +435,70 @@ export default function AdminPanel() {
                               <FormItem>
                                 <FormLabel>Profile Image</FormLabel>
                                 <FormControl>
-                                  <Input
-                                    type="file"
-                                    accept="image/*"
-                                    disabled={isUploading}
-                                    onChange={async (e) => {
-                                      const file = e.target.files?.[0];
-                                      if (file) {
-                                        await handleImageUpload(file, field.onChange);
-                                      }
-                                    }}
-                                    className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/80 disabled:opacity-50"
-                                  />
+                                  <div className="flex items-center space-x-4">
+                                    {/* Image Preview Circle */}
+                                    <div className="relative">
+                                      <div className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center bg-gray-50 dark:bg-gray-800 dark:border-gray-600">
+                                        {field.value ? (
+                                          <img 
+                                            src={field.value} 
+                                            alt="Profile preview" 
+                                            className="w-18 h-18 rounded-full object-cover"
+                                          />
+                                        ) : (
+                                          <div className="text-center">
+                                            <svg className="w-8 h-8 text-gray-400 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                            </svg>
+                                            <p className="text-xs text-gray-500">Photo</p>
+                                          </div>
+                                        )}
+                                      </div>
+                                      {isUploading && (
+                                        <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center">
+                                          <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                        </div>
+                                      )}
+                                    </div>
+                                    
+                                    {/* Upload Button */}
+                                    <div className="flex-1">
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        disabled={isUploading}
+                                        onChange={async (e) => {
+                                          const file = e.target.files?.[0];
+                                          if (file) {
+                                            // Create a preview URL immediately
+                                            const previewUrl = URL.createObjectURL(file);
+                                            field.onChange(previewUrl);
+                                            
+                                            // Then upload the file
+                                            await handleImageUpload(file, (url) => {
+                                              URL.revokeObjectURL(previewUrl);
+                                              field.onChange(url);
+                                            });
+                                          }
+                                        }}
+                                        className="sr-only"
+                                        id="profile-image-upload"
+                                      />
+                                      <label
+                                        htmlFor="profile-image-upload"
+                                        className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                                      >
+                                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                        </svg>
+                                        {field.value ? "Change Photo" : "Upload Photo"}
+                                      </label>
+                                      {isUploading && (
+                                        <p className="text-sm text-muted-foreground mt-2">Uploading image...</p>
+                                      )}
+                                    </div>
+                                  </div>
                                 </FormControl>
-                                {isUploading && <p className="text-sm text-muted-foreground">Uploading image...</p>}
                                 <FormMessage />
                               </FormItem>
                             )}
