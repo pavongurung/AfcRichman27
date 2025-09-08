@@ -138,18 +138,54 @@ export default function AdminPlayer() {
       const lowerLine = line.toLowerCase();
       const lowerStatName = statName.toLowerCase();
       
-      // Look for the stat name in the line
+      // Only process lines that start with the stat name or have it clearly positioned
       if (lowerLine.includes(lowerStatName)) {
         // Extract all numbers from the line
         const numbers = line.match(/\b(\d+(?:\.\d+)?)\b/g);
         if (numbers && numbers.length > 0) {
-          // For percentage stats, look for the pattern "number number" and take first
-          if (lowerStatName.includes('accuracy') || lowerStatName.includes('success rate')) {
-            if (numbers.length >= 2) {
-              return parseInt(numbers[0]); // First number is individual stat
+          console.log(`Processing "${statName}" from line: "${line}" -> found numbers: [${numbers.join(', ')}]`);
+          
+          // For FC 25 stats format: "Stat Name Individual TeamAverage"
+          // We always want the FIRST number after the stat name
+          if (lowerStatName === 'goals') {
+            // "- hee i [7 Goals 0) 1" -> should be 0 (the number right after Goals)
+            // Find "goals" position and get next number
+            const goalsIndex = lowerLine.indexOf('goals');
+            if (goalsIndex !== -1) {
+              const afterGoals = line.substring(goalsIndex + 5);
+              const nextNumbers = afterGoals.match(/\b(\d+)\b/g);
+              if (nextNumbers) {
+                console.log(`Goals: taking ${nextNumbers[0]} from "${afterGoals}"`);
+                return parseInt(nextNumbers[0]);
+              }
+            }
+          } else if (lowerStatName === 'assists') {
+            return parseInt(numbers[0]);
+          } else if (lowerStatName === 'shots') {
+            // "Shots 0 5" - first number after "Shots"
+            const shotsIndex = lowerLine.indexOf('shots');
+            if (shotsIndex !== -1) {
+              const afterShots = line.substring(shotsIndex + 5);
+              const nextNumbers = afterShots.match(/\b(\d+)\b/g);
+              if (nextNumbers) {
+                console.log(`Shots: taking ${nextNumbers[0]} from "${afterShots}"`);
+                return parseInt(nextNumbers[0]);
+              }
+            }
+          } else if (lowerStatName.includes('accuracy') || lowerStatName.includes('success rate')) {
+            // "Shot Accuracy (%) 0 80" - first number after the %
+            if (lowerLine.includes('(%)')) {
+              const percentIndex = line.indexOf('(%)');
+              const afterPercent = line.substring(percentIndex + 3);
+              const nextNumbers = afterPercent.match(/\b(\d+)\b/g);
+              if (nextNumbers) {
+                console.log(`Accuracy: taking ${nextNumbers[0]} from "${afterPercent}"`);
+                return parseInt(nextNumbers[0]);
+              }
             }
           }
-          // For regular stats, take the first number found
+          
+          // Default: take first number
           return parseInt(numbers[0]);
         }
       }
@@ -188,23 +224,29 @@ export default function AdminPlayer() {
       value = parseStatLine(line, 'shot accuracy');
       if (value !== null) stats.shotAccuracy = value;
       
-      // Passing stats
-      value = parseStatLine(line, 'passes');
-      if (value !== null) stats.passes = value;
+      // Passing stats - avoid pass accuracy line
+      if (line.toLowerCase().includes('passes') && !line.toLowerCase().includes('pass accuracy')) {
+        value = parseStatLine(line, 'passes');
+        if (value !== null) stats.passes = value;
+      }
       
       value = parseStatLine(line, 'pass accuracy');
       if (value !== null) stats.passAccuracy = value;
       
-      // Dribbling stats
-      value = parseStatLine(line, 'dribbles');
-      if (value !== null) stats.dribbles = value;
+      // Dribbling stats - avoid success rate line
+      if (line.toLowerCase().includes('dribbles') && !line.toLowerCase().includes('success')) {
+        value = parseStatLine(line, 'dribbles');
+        if (value !== null) stats.dribbles = value;
+      }
       
       value = parseStatLine(line, 'dribble success rate');
       if (value !== null) stats.dribbleSuccessRate = value;
       
-      // Defensive stats
-      value = parseStatLine(line, 'tackles');
-      if (value !== null) stats.tackles = value;
+      // Defensive stats - avoid success rate line
+      if (line.toLowerCase().includes('tackles') && !line.toLowerCase().includes('success')) {
+        value = parseStatLine(line, 'tackles');
+        if (value !== null) stats.tackles = value;
+      }
       
       value = parseStatLine(line, 'tackle success rate');
       if (value !== null) stats.tackleSuccessRate = value;
@@ -244,12 +286,16 @@ export default function AdminPlayer() {
       value = parseStatLine(line, 'clean sheet');
       if (value !== null) stats.cleanSheet = value;
       
-      // Card stats
-      value = parseStatLine(line, 'yellow');
-      if (value !== null) stats.yellowCards = value;
+      // Card stats - be very specific to avoid wrong matches
+      if (line.toLowerCase().includes('yellow') && !line.toLowerCase().includes('second') && !line.toLowerCase().includes('distance')) {
+        value = parseStatLine(line, 'yellow');
+        if (value !== null) stats.yellowCards = value;
+      }
       
-      value = parseStatLine(line, 'red');
-      if (value !== null) stats.redCards = value;
+      if (line.toLowerCase().includes('red') && !line.toLowerCase().includes('covered') && !line.toLowerCase().includes('distance')) {
+        value = parseStatLine(line, 'red');
+        if (value !== null) stats.redCards = value;
+      }
     }
     
     // Calculate derived stats
