@@ -236,7 +236,7 @@ export default function AdminPanel() {
     playerForm.reset({
       jerseyNumber: player.jerseyNumber,
       firstName: player.firstName,
-      lastName: player.lastName,
+      lastName: player.lastName || "",
       position: player.position as any,
       consoleUsername: player.consoleUsername,
       joinDate: player.joinDate,
@@ -354,41 +354,26 @@ export default function AdminPanel() {
                             <span className="text-xs text-muted-foreground ml-2">200x240</span>
                           </div>
                           
-                          <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                              control={playerForm.control}
-                              name="firstName"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Player Name</FormLabel>
-                                  <FormControl>
-                                    <Input {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={playerForm.control}
-                              name="lastName"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Last Name</FormLabel>
-                                  <FormControl>
-                                    <Input {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
+                          <FormField
+                            control={playerForm.control}
+                            name="firstName"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Player Name</FormLabel>
+                                <FormControl>
+                                  <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
                           <FormField
                             control={playerForm.control}
                             name="consoleUsername"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Nickname</FormLabel>
+                                <FormLabel>EA Username</FormLabel>
                                 <FormControl>
                                   <Input {...field} />
                                 </FormControl>
