@@ -94,7 +94,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/admin/players/:id", isAuthenticated, async (req, res) => {
+  app.put("/api/admin/players/:id", async (req, res) => {
     try {
       const updates = insertPlayerSchema.partial().parse(req.body);
       const player = await storage.updatePlayer(req.params.id, updates);
