@@ -46,11 +46,13 @@ export default function AdminPlayer() {
 
   const updateStatsMutation = useMutation({
     mutationFn: async (updates: Partial<PlayerStats>) => {
-      return apiRequest(`/api/players/${playerId}/stats`, {
+      const response = await fetch(`/api/players/${playerId}/stats`, {
         method: "PATCH",
         body: JSON.stringify(updates),
         headers: { "Content-Type": "application/json" },
       });
+      if (!response.ok) throw new Error("Failed to update stats");
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/players", playerId, "stats"] });
@@ -233,11 +235,14 @@ export default function AdminPlayer() {
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {customStatFields.map(field => {
                       const value = stats[field.key as keyof PlayerStats] || 0;
+                      const displayValue = field.key === 'avgRating' && typeof value === 'number' && value > 0
+                        ? (value / 10).toFixed(1)
+                        : value?.toString() || '0';
                       return (
                         <div key={field.key}>
                           <Label className="text-xs">{field.display}</Label>
                           <div className="text-lg font-bold">
-                            {field.key === 'avgRating' && value ? (value / 10).toFixed(1) : value}
+                            {displayValue}
                             {field.display.includes('%') && value ? '%' : ''}
                           </div>
                         </div>
@@ -327,6 +332,9 @@ export default function AdminPlayer() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {customStatFields.map(field => {
                   const value = extractedStats[field.key as keyof PlayerStats] || 0;
+                  const displayValue = field.key === 'avgRating' && typeof value === 'number' && value > 0
+                    ? (value / 10).toFixed(1)
+                    : value?.toString() || '0';
                   return (
                     <div key={field.key}>
                       <Label htmlFor={field.key}>{field.display}</Label>
@@ -335,7 +343,7 @@ export default function AdminPlayer() {
                         type="number"
                         min="0"
                         step={field.key === 'avgRating' ? '0.1' : '1'}
-                        value={field.key === 'avgRating' && value ? (value / 10).toFixed(1) : value}
+                        value={displayValue}
                         onChange={(e) => {
                           let newValue = e.target.value;
                           if (field.key === 'avgRating') {
