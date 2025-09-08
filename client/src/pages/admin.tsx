@@ -21,12 +21,10 @@ import { isUnauthorizedError } from "@/lib/authUtils";
 
 const playerFormSchema = z.object({
   jerseyNumber: z.number().min(1).max(99),
-  firstName: z.string().min(1, "First name is required"),
+  firstName: z.string().min(1, "Player name is required"),
   lastName: z.string(),
   position: z.enum(["Goalkeeper", "Defender", "Midfielder", "Forward"]),
-  nationality: z.string().min(1, "Nationality is required"),
-  dateOfBirth: z.string().min(1, "Date of birth is required"),
-  height: z.string().min(1, "Height is required"),
+  consoleUsername: z.string().min(1, "Console username is required"),
   joinDate: z.string().min(1, "Join date is required"),
   imageUrl: z.string().optional(),
 });
@@ -78,9 +76,7 @@ export default function AdminPanel() {
       firstName: "",
       lastName: "",
       position: "Midfielder",
-      nationality: "",
-      dateOfBirth: "",
-      height: "",
+      consoleUsername: "",
       joinDate: "",
       imageUrl: "",
     },
@@ -242,9 +238,7 @@ export default function AdminPanel() {
       firstName: player.firstName,
       lastName: player.lastName,
       position: player.position as any,
-      nationality: player.nationality,
-      dateOfBirth: player.dateOfBirth,
-      height: player.height,
+      consoleUsername: player.consoleUsername,
       joinDate: player.joinDate,
       imageUrl: player.imageUrl || "",
     });
@@ -355,47 +349,9 @@ export default function AdminPanel() {
                       </DialogHeader>
                       <Form {...playerForm}>
                         <form onSubmit={playerForm.handleSubmit(onPlayerSubmit)} className="space-y-4">
-                          <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                              control={playerForm.control}
-                              name="jerseyNumber"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Jersey #</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      {...field}
-                                      onChange={(e) => field.onChange(parseInt(e.target.value))}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={playerForm.control}
-                              name="position"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Position</FormLabel>
-                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl>
-                                      <SelectTrigger>
-                                        <SelectValue placeholder="Select position" />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                      <SelectItem value="Goalkeeper">Goalkeeper</SelectItem>
-                                      <SelectItem value="Defender">Defender</SelectItem>
-                                      <SelectItem value="Midfielder">Midfielder</SelectItem>
-                                      <SelectItem value="Forward">Forward</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
+                          <div className="flex items-center justify-center w-24 h-24 mx-auto bg-muted rounded-lg mb-4">
+                            <Upload className="w-8 h-8 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground ml-2">200x240</span>
                           </div>
                           
                           <div className="grid grid-cols-2 gap-4">
@@ -404,7 +360,7 @@ export default function AdminPanel() {
                               name="firstName"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>First Name</FormLabel>
+                                  <FormLabel>Player Name</FormLabel>
                                   <FormControl>
                                     <Input {...field} />
                                   </FormControl>
@@ -429,10 +385,10 @@ export default function AdminPanel() {
 
                           <FormField
                             control={playerForm.control}
-                            name="nationality"
+                            name="consoleUsername"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Nationality</FormLabel>
+                                <FormLabel>Nickname</FormLabel>
                                 <FormControl>
                                   <Input {...field} />
                                 </FormControl>
@@ -441,13 +397,54 @@ export default function AdminPanel() {
                             )}
                           />
 
+                          <FormField
+                            control={playerForm.control}
+                            name="position"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Player Position</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select position" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="Goalkeeper">Goalkeeper</SelectItem>
+                                    <SelectItem value="Defender">Defender</SelectItem>
+                                    <SelectItem value="Midfielder">Midfielder</SelectItem>
+                                    <SelectItem value="Forward">Forward</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
                           <div className="grid grid-cols-2 gap-4">
                             <FormField
                               control={playerForm.control}
-                              name="dateOfBirth"
+                              name="jerseyNumber"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Date of Birth</FormLabel>
+                                  <FormLabel>Jersey Number</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      {...field}
+                                      onChange={(e) => field.onChange(parseInt(e.target.value))}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={playerForm.control}
+                              name="joinDate"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Since</FormLabel>
                                   <FormControl>
                                     <Input type="date" {...field} />
                                   </FormControl>
@@ -455,34 +452,7 @@ export default function AdminPanel() {
                                 </FormItem>
                               )}
                             />
-                            <FormField
-                              control={playerForm.control}
-                              name="height"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Height</FormLabel>
-                                  <FormControl>
-                                    <Input placeholder="1.80m" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
                           </div>
-
-                          <FormField
-                            control={playerForm.control}
-                            name="joinDate"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Join Date</FormLabel>
-                                <FormControl>
-                                  <Input type="date" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
 
                           <FormField
                             control={playerForm.control}
@@ -525,7 +495,7 @@ export default function AdminPanel() {
                               {player.firstName} {player.lastName}
                             </div>
                             <div className="text-sm text-muted-foreground">
-                              {player.position} • {player.nationality}
+                              {player.position} • @{player.consoleUsername}
                             </div>
                           </div>
                         </div>
