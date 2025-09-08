@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash2, Plus, Upload, Save } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ObjectUploader } from "@/components/ObjectUploader";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +19,7 @@ import { z } from "zod";
 import type { Player, PlayerStats, InsertPlayer, InsertPlayerStats } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
+import type { UploadResult } from "@uppy/core";
 
 const playerFormSchema = z.object({
   jerseyNumber: z.number().min(1).max(99),
@@ -349,9 +351,51 @@ export default function AdminPanel() {
                       </DialogHeader>
                       <Form {...playerForm}>
                         <form onSubmit={playerForm.handleSubmit(onPlayerSubmit)} className="space-y-4">
-                          <div className="flex items-center justify-center w-24 h-24 mx-auto bg-muted rounded-lg mb-4">
-                            <Upload className="w-8 h-8 text-muted-foreground" />
-                            <span className="text-xs text-muted-foreground ml-2">200x240</span>
+                          <div className="flex justify-center mb-4">
+                            <ObjectUploader
+                              maxNumberOfFiles={1}
+                              maxFileSize={5242880} // 5MB
+                              onGetUploadParameters={async () => {
+                                const response = await fetch("/api/objects/upload", {
+                                  method: "POST",
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                  },
+                                });
+                                if (!response.ok) throw new Error("Failed to get upload URL");
+                                const data = await response.json();
+                                return {
+                                  method: "PUT" as const,
+                                  url: data.uploadURL,
+                                };
+                              }}
+                              onComplete={(result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
+                                if (result.successful[0]) {
+                                  const uploadURL = result.successful[0].uploadURL;
+                                  // Set the ACL policy and get the normalized path
+                                  fetch("/api/player-images", {
+                                    method: "PUT",
+                                    headers: {
+                                      "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({ imageURL: uploadURL }),
+                                  })
+                                  .then(res => res.json())
+                                  .then(data => {
+                                    // Update the form with the object path
+                                    playerForm.setValue("imageUrl", data.objectPath);
+                                  })
+                                  .catch(err => {
+                                    console.error("Error setting image ACL:", err);
+                                  });
+                                }
+                              }}
+                            >
+                              <div className="flex flex-col items-center justify-center w-24 h-24 bg-muted rounded-lg cursor-pointer hover:bg-muted/80 transition-colors">
+                                <Upload className="w-6 h-6 text-muted-foreground mb-1" />
+                                <span className="text-xs text-muted-foreground">200x240</span>
+                              </div>
+                            </ObjectUploader>
                           </div>
                           
                           <FormField
