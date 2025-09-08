@@ -55,8 +55,11 @@ export default function AdminPlayer() {
       return response.json();
     },
     onSuccess: () => {
+      // Invalidate all related queries to refresh the UI across all pages
       queryClient.invalidateQueries({ queryKey: ["/api/players", playerId, "stats"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/players", playerId] });
       queryClient.invalidateQueries({ queryKey: ["/api/players-with-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/players"] });
       toast({ title: "Stats updated successfully!" });
       setShowConfirmDialog(false);
       setUploadedImage(null);
@@ -191,7 +194,7 @@ export default function AdminPlayer() {
               const passPattern = /(\d+)\s+(\d+)$/;
               const passMatch = line.match(passPattern);
               if (passMatch) {
-                console.log(`Passes: taking ${passMatch[1]} from pattern match`);
+                console.log(`Passes: taking ${passMatch[1]} from pattern match in line: "${line}"`);
                 return parseInt(passMatch[1]);
               }
             } else {
@@ -280,7 +283,10 @@ export default function AdminPlayer() {
       if ((line.toLowerCase().includes('passes') && !line.toLowerCase().includes('pass accuracy')) || 
           (line.includes('AL P') && line.match(/\d+\s+\d+$/))) {
         value = parseStatLine(line, 'passes');
-        if (value !== null) stats.passes = value;
+        if (value !== null) {
+          console.log('Found passes value:', value);
+          stats.passes = value;
+        }
       }
       
       value = parseStatLine(line, 'pass accuracy');
