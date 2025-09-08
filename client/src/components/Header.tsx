@@ -35,6 +35,9 @@ export default function Header() {
             <Link href="/matches" className="text-foreground hover:text-primary transition-colors" data-testid="nav-matches">
               Matches
             </Link>
+            <Link href="/match-center" className="text-foreground hover:text-primary transition-colors" data-testid="nav-match-center">
+              Match Center
+            </Link>
           </nav>
 
           {/* Right side */}
