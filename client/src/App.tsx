@@ -9,6 +9,7 @@ import Squad from "@/pages/squad";
 import Statistics from "@/pages/statistics";
 import AdminPlayer from "@/pages/admin-player";
 import AdminPanel from "@/pages/admin";
+import MatchesPage from "@/pages/matches";
 import NotFound from "@/pages/not-found";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -23,6 +24,7 @@ function Router() {
           <Route path="/player/:id" component={PlayerDetail} />
           <Route path="/squad" component={Squad} />
           <Route path="/statistics" component={Statistics} />
+          <Route path="/matches" component={MatchesPage} />
           <Route path="/admin/player/:id" component={AdminPlayer} />
           <Route path="/admin" component={AdminPanel} />
           <Route component={NotFound} />

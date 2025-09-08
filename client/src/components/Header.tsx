@@ -32,9 +32,9 @@ export default function Header() {
             <Link href="/statistics" className="text-foreground hover:text-primary transition-colors" data-testid="nav-statistics">
               Statistics
             </Link>
-            <a href="#" className="text-foreground hover:text-primary transition-colors" data-testid="nav-matches">
+            <Link href="/matches" className="text-foreground hover:text-primary transition-colors" data-testid="nav-matches">
               Matches
-            </a>
+            </Link>
           </nav>
 
           {/* Right side */}
