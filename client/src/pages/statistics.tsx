@@ -60,13 +60,29 @@ export default function Statistics() {
                   <TableHead className="text-left font-semibold">LAST NAME</TableHead>
                   <TableHead className="text-left font-semibold">FIRST NAME</TableHead>
                   <TableHead className="text-left font-semibold">POSITION</TableHead>
-                  <TableHead className="text-left font-semibold">NAT.</TableHead>
-                  <TableHead className="text-left font-semibold">GAMES PLAYED</TableHead>
-                  <TableHead className="text-left font-semibold">MINUTES</TableHead>
+                  <TableHead className="text-left font-semibold">APPEARANCE</TableHead>
+                  <TableHead className="text-left font-semibold">MOTM</TableHead>
                   <TableHead className="text-left font-semibold">GOALS</TableHead>
                   <TableHead className="text-left font-semibold">ASSISTS</TableHead>
+                  <TableHead className="text-left font-semibold">POSS WON</TableHead>
+                  <TableHead className="text-left font-semibold">POSS LOST</TableHead>
+                  <TableHead className="text-left font-semibold">POSS DIFF</TableHead>
+                  <TableHead className="text-left font-semibold">CLEAN SHEET</TableHead>
                   <TableHead className="text-left font-semibold">🟨</TableHead>
                   <TableHead className="text-left font-semibold">🟥</TableHead>
+                  <TableHead className="text-left font-semibold">SAVES</TableHead>
+                  <TableHead className="text-left font-semibold">PK SAVE</TableHead>
+                  <TableHead className="text-left font-semibold">AVG RATING</TableHead>
+                  <TableHead className="text-left font-semibold">SHOTS</TableHead>
+                  <TableHead className="text-left font-semibold">SHOT ACC (%)</TableHead>
+                  <TableHead className="text-left font-semibold">PASSES</TableHead>
+                  <TableHead className="text-left font-semibold">PASS ACC (%)</TableHead>
+                  <TableHead className="text-left font-semibold">DRIBBLES</TableHead>
+                  <TableHead className="text-left font-semibold">DRIBBLE SUC (%)</TableHead>
+                  <TableHead className="text-left font-semibold">TACKLES</TableHead>
+                  <TableHead className="text-left font-semibold">TACKLE SUC (%)</TableHead>
+                  <TableHead className="text-left font-semibold">OFFSIDES</TableHead>
+                  <TableHead className="text-left font-semibold">FOULS</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -82,13 +98,29 @@ export default function Statistics() {
                       <TableCell>{player.lastName}</TableCell>
                       <TableCell>{player.firstName}</TableCell>
                       <TableCell>{player.position}</TableCell>
-                      <TableCell>{player.nationality}</TableCell>
-                      <TableCell>{player.stats?.gamesPlayed || 0}</TableCell>
-                      <TableCell>{player.stats?.minutes || 0}</TableCell>
+                      <TableCell>{player.stats?.appearance || 0}</TableCell>
+                      <TableCell>{player.stats?.motm || 0}</TableCell>
                       <TableCell>{player.stats?.goals || 0}</TableCell>
                       <TableCell>{player.stats?.assists || 0}</TableCell>
+                      <TableCell>{player.stats?.possessionWon || 0}</TableCell>
+                      <TableCell>{player.stats?.possessionLost || 0}</TableCell>
+                      <TableCell>{player.stats?.possessionDifference || 0}</TableCell>
+                      <TableCell>{player.stats?.cleanSheet || 0}</TableCell>
                       <TableCell>{player.stats?.yellowCards || 0}</TableCell>
                       <TableCell>{player.stats?.redCards || 0}</TableCell>
+                      <TableCell>{player.stats?.saves || 0}</TableCell>
+                      <TableCell>{player.stats?.pkSave || 0}</TableCell>
+                      <TableCell>{player.stats?.avgRating ? (player.stats.avgRating / 10).toFixed(1) : '0.0'}</TableCell>
+                      <TableCell>{player.stats?.shots || 0}</TableCell>
+                      <TableCell>{player.stats?.shotAccuracy || 0}%</TableCell>
+                      <TableCell>{player.stats?.passes || 0}</TableCell>
+                      <TableCell>{player.stats?.passAccuracy || 0}%</TableCell>
+                      <TableCell>{player.stats?.dribbles || 0}</TableCell>
+                      <TableCell>{player.stats?.dribbleSuccessRate || 0}%</TableCell>
+                      <TableCell>{player.stats?.tackles || 0}</TableCell>
+                      <TableCell>{player.stats?.tackleSuccessRate || 0}%</TableCell>
+                      <TableCell>{player.stats?.offsides || 0}</TableCell>
+                      <TableCell>{player.stats?.foulsCommitted || 0}</TableCell>
                     </TableRow>
                   ))}
               </TableBody>
