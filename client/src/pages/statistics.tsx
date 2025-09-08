@@ -96,7 +96,7 @@ export default function Statistics() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white p-4">
+    <div className="min-h-screen bg-gray-950 text-white p-4">
       <div className="max-w-full mx-auto">
         <div className="mb-4">
           <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
@@ -107,22 +107,22 @@ export default function Statistics() {
           <div className="flex items-center justify-between">
             <h1 className="text-4xl font-bold italic">STATISTICS</h1>
             <div className="flex gap-4">
-              <select className="bg-gray-800 text-white px-3 py-1 rounded text-sm">
+              <select className="bg-gray-700 text-white px-3 py-1 rounded text-sm border border-gray-600">
                 <option>All players</option>
               </select>
-              <select className="bg-gray-800 text-white px-3 py-1 rounded text-sm">
+              <select className="bg-gray-700 text-white px-3 py-1 rounded text-sm border border-gray-600">
                 <option>All competitions</option>
               </select>
             </div>
           </div>
         </div>
         
-        <div className="overflow-x-auto bg-gray-900 rounded">
+        <div className="overflow-x-auto bg-gray-800 rounded-lg border border-gray-700">
           <Table>
             <TableHeader>
-              <TableRow className="bg-gray-800 border-gray-700">
+              <TableRow className="bg-gray-700 border-gray-600">
                 <TableHead 
-                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors"
+                  className="text-gray-200 text-xs font-semibold cursor-pointer hover:bg-gray-600 transition-colors"
                   onClick={() => handleSort("firstName")}
                 >
                   <div className="flex items-center">
@@ -343,7 +343,7 @@ export default function Statistics() {
               {sortedPlayers.map((player, index) => (
                 <TableRow 
                   key={player.id} 
-                  className={`${index % 2 === 0 ? 'bg-gray-900' : 'bg-gray-800'} hover:bg-gray-700 border-gray-700`}
+                  className={`${index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-750'} hover:bg-gray-600 border-gray-600`}
                   data-testid={`player-row-${player.id}`}
                 >
                   <TableCell className="text-white font-medium text-sm py-2">
@@ -427,36 +427,6 @@ export default function Statistics() {
           </Table>
         </div>
 
-        {/* Team Summary - matching EA Sports style */}
-        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-gray-800 p-4 rounded text-center">
-            <h3 className="text-2xl font-bold text-white">
-              {sortedPlayers.reduce((sum, player) => sum + (player.stats?.goals || 0), 0)}
-            </h3>
-            <p className="text-gray-400 text-sm">TOTAL GOALS</p>
-          </div>
-          
-          <div className="bg-gray-800 p-4 rounded text-center">
-            <h3 className="text-2xl font-bold text-white">
-              {sortedPlayers.reduce((sum, player) => sum + (player.stats?.assists || 0), 0)}
-            </h3>
-            <p className="text-gray-400 text-sm">TOTAL ASSISTS</p>
-          </div>
-          
-          <div className="bg-gray-800 p-4 rounded text-center">
-            <h3 className="text-2xl font-bold text-yellow-400">
-              {sortedPlayers.reduce((sum, player) => sum + (player.stats?.yellowCards || 0), 0)}
-            </h3>
-            <p className="text-gray-400 text-sm">YELLOW CARDS</p>
-          </div>
-          
-          <div className="bg-gray-800 p-4 rounded text-center">
-            <h3 className="text-2xl font-bold text-red-400">
-              {sortedPlayers.reduce((sum, player) => sum + (player.stats?.redCards || 0), 0)}
-            </h3>
-            <p className="text-gray-400 text-sm">RED CARDS</p>
-          </div>
-        </div>
       </div>
     </div>
   );
