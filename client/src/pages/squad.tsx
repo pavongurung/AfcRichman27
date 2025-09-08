@@ -46,7 +46,7 @@ export default function Squad() {
             {player.firstName}
           </div>
           <div className="font-semibold text-base text-muted-foreground">
-            {player.lastName}
+            @{player.consoleUsername}
           </div>
         </div>
       </div>
