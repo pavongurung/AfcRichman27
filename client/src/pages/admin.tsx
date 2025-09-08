@@ -209,10 +209,10 @@ export default function AdminPanel() {
       const processedImageUrl = await preprocessImage(file);
       
       // Create Tesseract worker with progress tracking
-      const worker = createWorker({
-        logger: ({ status, progress }) => {
-          console.log(`OCR ${status}: ${Math.round(progress * 100)}%`);
-          setOcrProgress(Math.round(progress * 100));
+      const worker = await createWorker({
+        logger: (msg: any) => {
+          console.log(`OCR ${msg.status}: ${Math.round(msg.progress * 100)}%`);
+          setOcrProgress(Math.round(msg.progress * 100));
         }
       });
 
