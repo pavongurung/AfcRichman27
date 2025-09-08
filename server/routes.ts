@@ -194,7 +194,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     // Gets the authenticated user id.
-    const userId = req.user?.claims?.sub;
+    const userId = (req.user as any)?.sub || (req.user as any)?.id;
 
     try {
       const objectStorageService = new ObjectStorageService();

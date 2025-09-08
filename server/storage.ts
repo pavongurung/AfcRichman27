@@ -99,7 +99,7 @@ export class DatabaseStorage implements IStorage {
       .update(players)
       .set({ isActive: false })
       .where(eq(players.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   // Player Stats operations
@@ -175,7 +175,7 @@ export class DatabaseStorage implements IStorage {
 
     return result.map(row => ({
       ...row,
-      stats: row.stats.id ? row.stats : null
+      stats: row.stats?.id ? row.stats : null
     }));
   }
 

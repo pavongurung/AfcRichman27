@@ -370,7 +370,7 @@ export default function AdminPanel() {
                                 };
                               }}
                               onComplete={(result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
-                                if (result.successful[0]) {
+                                if (result.successful && result.successful[0]) {
                                   const uploadURL = result.successful[0].uploadURL;
                                   // Set the ACL policy and get the normalized path
                                   fetch("/api/player-images", {
