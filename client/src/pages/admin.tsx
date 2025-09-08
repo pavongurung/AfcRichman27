@@ -70,11 +70,18 @@ export default function AdminPanel() {
       setIsUploading(true);
       
       // Get upload URL from backend
-      const uploadResponse = await apiRequest("/api/objects/upload", {
+      const uploadResponse = await fetch("/api/objects/upload", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       
-      const { uploadURL } = uploadResponse;
+      if (!uploadResponse.ok) {
+        throw new Error("Failed to get upload URL");
+      }
+      
+      const { uploadURL } = await uploadResponse.json();
       
       // Upload file to signed URL
       const fileUploadResponse = await fetch(uploadURL, {
@@ -92,9 +99,15 @@ export default function AdminPanel() {
       // Extract the object path from the upload URL
       const url = new URL(uploadURL);
       const objectPath = url.pathname;
-      const normalizedPath = `/objects${objectPath.split('/uploads/')[1] ? '/uploads/' + objectPath.split('/uploads/')[1] : ''}`;
-      
-      onChange(normalizedPath);
+      // Extract the UUID from the path: /.private/uploads/{uuid}
+      const pathParts = objectPath.split('/uploads/');
+      if (pathParts.length > 1) {
+        const objectId = pathParts[1];
+        const normalizedPath = `/objects/uploads/${objectId}`;
+        onChange(normalizedPath);
+      } else {
+        throw new Error("Invalid upload URL format");
+      }
       
       toast({
         title: "Success",
