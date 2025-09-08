@@ -392,6 +392,29 @@ export default function PlayerDetail() {
                 </div>
               </div>
             </div>
+
+            {/* Physical Performance */}
+            <div className="bg-secondary p-6 rounded-lg">
+              <h3 className="text-white font-semibold mb-4 border-l-4 border-orange-500 pl-3">Physical Performance</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Minutes Played</span>
+                  <span className="text-white font-medium">{stats.minutesPlayed || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Distance Covered (km)</span>
+                  <span className="text-white font-medium">
+                    {stats.distanceCovered ? (stats.distanceCovered / 1000).toFixed(1) : "0.0"}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Distance Sprinted (km)</span>
+                  <span className="text-white font-medium">
+                    {stats.distanceSprinted ? (stats.distanceSprinted / 1000).toFixed(1) : "0.0"}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

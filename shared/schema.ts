@@ -22,34 +22,52 @@ export const playerStats = pgTable("player_stats", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   playerId: varchar("player_id").references(() => players.id).notNull(),
   season: text("season").notNull().default("2024-25"),
-  // Basic stats
+  // Basic stats - matching FC 25 Pro Clubs exactly
   appearance: integer("appearance").default(0),
   motm: integer("motm").default(0), // Man of the Match
   goals: integer("goals").default(0),
   assists: integer("assists").default(0),
-  // Possession stats
-  possessionWon: integer("possession_won").default(0),
-  possessionLost: integer("possession_lost").default(0),
-  possessionDifference: integer("possession_difference").default(0),
-  // Defensive stats
-  cleanSheet: integer("clean_sheet").default(0),
-  yellowCards: integer("yellow_cards").default(0),
-  redCards: integer("red_cards").default(0),
-  saves: integer("saves").default(0),
-  pkSave: integer("pk_save").default(0),
-  tackles: integer("tackles").default(0),
-  tackleSuccessRate: integer("tackle_success_rate").default(0), // percentage
-  // Performance stats
   avgRating: integer("avg_rating").default(0), // stored as integer (rating * 10)
+  
+  // Shooting stats
   shots: integer("shots").default(0),
   shotAccuracy: integer("shot_accuracy").default(0), // percentage
+  
+  // Passing stats  
   passes: integer("passes").default(0),
   passAccuracy: integer("pass_accuracy").default(0), // percentage
+  
+  // Dribbling stats
   dribbles: integer("dribbles").default(0),
   dribbleSuccessRate: integer("dribble_success_rate").default(0), // percentage
+  
+  // Defensive stats
+  tackles: integer("tackles").default(0),
+  tackleSuccessRate: integer("tackle_success_rate").default(0), // percentage
+  
   // Disciplinary stats
   offsides: integer("offsides").default(0),
   foulsCommitted: integer("fouls_committed").default(0),
+  
+  // Possession stats
+  possessionWon: integer("possession_won").default(0),
+  possessionLost: integer("possession_lost").default(0),
+  possessionDifference: integer("possession_difference").default(0), // calculated: won - lost
+  
+  // Time and distance stats
+  minutesPlayed: integer("minutes_played").default(0),
+  distanceCovered: integer("distance_covered").default(0), // in meters, divide by 1000 for km
+  distanceSprinted: integer("distance_sprinted").default(0), // in meters, divide by 1000 for km
+  
+  // Goalkeeping stats
+  saves: integer("saves").default(0),
+  pkSave: integer("pk_save").default(0),
+  cleanSheet: integer("clean_sheet").default(0),
+  
+  // Card stats
+  yellowCards: integer("yellow_cards").default(0),
+  redCards: integer("red_cards").default(0),
+  
   // Legacy fields for backwards compatibility
   gamesPlayed: integer("games_played").default(0),
   minutes: integer("minutes").default(0),

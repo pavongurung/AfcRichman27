@@ -94,198 +94,171 @@ export default function AdminPlayer() {
     }
   };
 
-  // Custom stat field mapping system
+  // FC 25 Pro Clubs stat field mapping - matches exactly what appears in Player Performance screen
   const customStatFields = [
     { key: 'appearance', display: 'Appearance', patterns: ['appearance', 'appearances', 'apps'] },
     { key: 'motm', display: 'MOTM', patterns: ['motm', 'man of the match', 'player of the match'] },
-    { key: 'goals', display: 'Goals', patterns: ['goals', 'goal', 'scored'] },
-    { key: 'assists', display: 'Assists', patterns: ['assists', 'assist'] },
-    { key: 'possessionWon', display: 'Possession Won', patterns: ['possession won', 'poss won', 'possession+'] },
-    { key: 'possessionLost', display: 'Possession Lost', patterns: ['possession lost', 'poss lost', 'possession-'] },
-    { key: 'possessionDifference', display: 'Possession Difference', patterns: ['possession difference', 'poss diff', 'possession +/-'] },
-    { key: 'cleanSheet', display: 'Clean Sheet', patterns: ['clean sheet', 'clean sheets', 'cs'] },
-    { key: 'yellowCards', display: 'Yellow', patterns: ['yellow', 'yellow cards', 'yellow card', 'yc'] },
-    { key: 'redCards', display: 'Red', patterns: ['red', 'red cards', 'red card', 'rc'] },
-    { key: 'saves', display: 'Saves', patterns: ['saves', 'save'] },
-    { key: 'pkSave', display: 'PK Save', patterns: ['pk save', 'penalty save', 'pen save'] },
+    { key: 'goals', display: 'Goals', patterns: ['goals'] },
+    { key: 'assists', display: 'Assists', patterns: ['assists'] },
+    { key: 'shots', display: 'Shots', patterns: ['shots'] },
+    { key: 'shotAccuracy', display: 'Shot Accuracy (%)', patterns: ['shot accuracy'] },
+    { key: 'passes', display: 'Passes', patterns: ['passes'] },
+    { key: 'passAccuracy', display: 'Pass Accuracy (%)', patterns: ['pass accuracy'] },
+    { key: 'dribbles', display: 'Dribbles', patterns: ['dribbles'] },
+    { key: 'dribbleSuccessRate', display: 'Dribble Success Rate (%)', patterns: ['dribble success rate'] },
+    { key: 'tackles', display: 'Tackles', patterns: ['tackles'] },
+    { key: 'tackleSuccessRate', display: 'Tackle Success Rate (%)', patterns: ['tackle success rate'] },
+    { key: 'offsides', display: 'Offsides', patterns: ['offsides'] },
+    { key: 'foulsCommitted', display: 'Fouls Committed', patterns: ['fouls committed'] },
+    { key: 'possessionWon', display: 'Possession Won', patterns: ['possession won'] },
+    { key: 'possessionLost', display: 'Possession Lost', patterns: ['possession lost'] },
+    { key: 'minutesPlayed', display: 'Minutes Played', patterns: ['minutes played'] },
+    { key: 'distanceCovered', display: 'Distance Covered (km)', patterns: ['distance covered'] },
+    { key: 'distanceSprinted', display: 'Distance Sprinted (km)', patterns: ['distance sprinted'] },
+    { key: 'saves', display: 'Saves', patterns: ['saves'] },
+    { key: 'pkSave', display: 'PK Save', patterns: ['pk save'] },
+    { key: 'cleanSheet', display: 'Clean Sheet', patterns: ['clean sheet'] },
+    { key: 'yellowCards', display: 'Yellow', patterns: ['yellow'] },
+    { key: 'redCards', display: 'Red', patterns: ['red'] },
     { key: 'avgRating', display: 'Avg Rating', patterns: ['avg rating', 'average rating', 'rating'] },
-    { key: 'shots', display: 'Shots', patterns: ['shots', 'shot'] },
-    { key: 'shotAccuracy', display: 'Shot Accuracy (%)', patterns: ['shot accuracy', 'shooting accuracy', 'shot acc'] },
-    { key: 'passes', display: 'Passes', patterns: ['passes', 'pass'] },
-    { key: 'passAccuracy', display: 'Pass Accuracy (%)', patterns: ['pass accuracy', 'passing accuracy', 'pass acc'] },
-    { key: 'dribbles', display: 'Dribbles', patterns: ['dribbles', 'dribble'] },
-    { key: 'dribbleSuccessRate', display: 'Dribble Success Rate (%)', patterns: ['dribble success', 'dribbling success', 'dribble acc'] },
-    { key: 'tackles', display: 'Tackles', patterns: ['tackles', 'tackle'] },
-    { key: 'tackleSuccessRate', display: 'Tackle Success Rate (%)', patterns: ['tackle success', 'tackling success', 'tackle acc'] },
-    { key: 'offsides', display: 'Offsides', patterns: ['offsides', 'offside'] },
-    { key: 'foulsCommitted', display: 'Fouls Committed', patterns: ['fouls committed', 'fouls', 'foul'] },
-    { key: 'minutes', display: 'Minutes', patterns: ['minutes', 'mins'] },
   ];
 
   const parseStatsFromText = (text: string): Partial<PlayerStats> => {
     const stats: Partial<PlayerStats> = {};
     const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
     
-    // Function to extract stats from the specific right-side format visible in the image
-    const extractFromRightColumn = (): Partial<PlayerStats> => {
-      const rightColumnStats: Partial<PlayerStats> = {};
+    console.log('Extracting from text:', text);
+    console.log('Lines:', lines);
+    
+    // Enhanced parsing for FC 25 Pro Clubs Player Performance screen
+    // This screen shows stats in "Stat Name" followed by two columns: Individual | Team Average
+    // We want only the FIRST column (individual player stats)
+    
+    const parseStatLine = (line: string, statName: string): number | null => {
+      const lowerLine = line.toLowerCase();
+      const lowerStatName = statName.toLowerCase();
       
-      // Look for the exact patterns from the performance screen
-      // These are the individual player stats from the right column
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].toLowerCase();
-        
-        // Goals: Look for "goals" followed by number
-        if (line.includes('goals') && !line.includes('footed')) {
-          const match = line.match(/\\b(\\d+)\\b/);
-          if (match) rightColumnStats.goals = parseInt(match[1]);
-        }
-        
-        // Assists: Look for "assists" followed by number  
-        if (line.includes('assists')) {
-          const match = line.match(/\\b(\\d+)\\b/);
-          if (match) rightColumnStats.assists = parseInt(match[1]);
-        }
-        
-        // Shots: Look for "shots" followed by number (should find 0 and 5, take smaller)
-        if (line.includes('shots') && !line.includes('accuracy')) {
-          const numbers = line.match(/\\b(\\d+)\\b/g);
-          if (numbers) {
-            // Take the first number (individual stat)
-            rightColumnStats.shots = parseInt(numbers[0]);
+      // Look for the stat name in the line
+      if (lowerLine.includes(lowerStatName)) {
+        // Extract all numbers from the line
+        const numbers = line.match(/\b(\d+(?:\.\d+)?)\b/g);
+        if (numbers && numbers.length > 0) {
+          // For percentage stats, look for the pattern "number number" and take first
+          if (lowerStatName.includes('accuracy') || lowerStatName.includes('success rate')) {
+            if (numbers.length >= 2) {
+              return parseInt(numbers[0]); // First number is individual stat
+            }
           }
-        }
-        
-        // Shot Accuracy: Look for "shot accuracy" with percentage
-        if (line.includes('shot accuracy')) {
-          const numbers = line.match(/\\b(\\d+)\\b/g);
-          if (numbers) {
-            // Take the first number (individual percentage)
-            rightColumnStats.shotAccuracy = parseInt(numbers[0]);
-          }
-        }
-        
-        // Passes: Look for "passes" followed by number (should find 86 and 128, take smaller)
-        if (line.includes('passes') && !line.includes('accuracy')) {
-          const numbers = line.match(/\\b(\\d+)\\b/g);
-          if (numbers) {
-            rightColumnStats.passes = parseInt(numbers[0]);
-          }
-        }
-        
-        // Pass Accuracy: Look for "pass accuracy" with percentage
-        if (line.includes('pass accuracy')) {
-          const numbers = line.match(/\\b(\\d+)\\b/g);
-          if (numbers) {
-            rightColumnStats.passAccuracy = parseInt(numbers[0]);
-          }
-        }
-        
-        // Dribbles: Look for "dribbles" followed by number (should find 17 and 109, take smaller)
-        if (line.includes('dribbles') && !line.includes('success')) {
-          const numbers = line.match(/\\b(\\d+)\\b/g);
-          if (numbers) {
-            // Sort numbers and take smallest (individual stat)
-            const sortedNumbers = numbers.map(n => parseInt(n)).sort((a, b) => a - b);
-            rightColumnStats.dribbles = sortedNumbers[0];
-          }
-        }
-        
-        // Dribble Success Rate
-        if (line.includes('dribble success')) {
-          const numbers = line.match(/\\b(\\d+)\\b/g);
-          if (numbers) {
-            rightColumnStats.dribbleSuccessRate = parseInt(numbers[0]);
-          }
-        }
-        
-        // Tackles: Look for "tackles" followed by number (should find smaller number)
-        if (line.includes('tackles') && !line.includes('success')) {
-          const numbers = line.match(/\\b(\\d+)\\b/g);
-          if (numbers) {
-            const sortedNumbers = numbers.map(n => parseInt(n)).sort((a, b) => a - b);
-            rightColumnStats.tackles = sortedNumbers[0];
-          }
-        }
-        
-        // Tackle Success Rate
-        if (line.includes('tackle success')) {
-          const numbers = line.match(/\\b(\\d+)\\b/g);
-          if (numbers) {
-            rightColumnStats.tackleSuccessRate = parseInt(numbers[0]);
-          }
-        }
-        
-        // Offsides
-        if (line.includes('offsides')) {
-          const numbers = line.match(/\\b(\\d+)\\b/g);
-          if (numbers) {
-            rightColumnStats.offsides = parseInt(numbers[0]);
-          }
-        }
-        
-        // Fouls Committed
-        if (line.includes('fouls committed')) {
-          const numbers = line.match(/\\b(\\d+)\\b/g);
-          if (numbers) {
-            rightColumnStats.foulsCommitted = parseInt(numbers[0]);
-          }
-        }
-        
-        // Possession Won
-        if (line.includes('possession won')) {
-          const numbers = line.match(/\\b(\\d+)\\b/g);
-          if (numbers) {
-            rightColumnStats.possessionWon = parseInt(numbers[0]);
-          }
-        }
-        
-        // Possession Lost
-        if (line.includes('possession lost')) {
-          const numbers = line.match(/\\b(\\d+)\\b/g);
-          if (numbers) {
-            rightColumnStats.possessionLost = parseInt(numbers[0]);
-          }
-        }
-        
-        // Minutes Played (should find 91, not team average)
-        if (line.includes('minutes') && (line.includes('played') || line.includes('vs'))) {
-          const numbers = line.match(/\\b(\\d+)\\b/g);
-          if (numbers) {
-            // Look for the individual minutes (usually the smaller number)
-            const sortedNumbers = numbers.map(n => parseInt(n)).sort((a, b) => a - b);
-            rightColumnStats.minutes = sortedNumbers[0];
-          }
+          // For regular stats, take the first number found
+          return parseInt(numbers[0]);
         }
       }
-      
-      return rightColumnStats;
+      return null;
     };
     
-    // Extract from left column table (player ratings)
-    const extractFromLeftColumn = (): Partial<PlayerStats> => {
-      const leftColumnStats: Partial<PlayerStats> = {};
+    // Enhanced distance parsing for km values
+    const parseDistanceLine = (line: string, statName: string): number | null => {
+      const lowerLine = line.toLowerCase();
+      const lowerStatName = statName.toLowerCase();
       
-      // Look for "vmoshmosh" or "mosh" in the table to find the player's row
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].toLowerCase();
-        if (line.includes('vmoshmosh') || line.includes('mosh')) {
-          // Extract rating from this line (should be 6.5)
-          const ratingMatch = line.match(/\\b(\\d+\\.\\d+)\\b/);
-          if (ratingMatch) {
-            leftColumnStats.avgRating = Math.round(parseFloat(ratingMatch[1]) * 10);
-          }
+      if (lowerLine.includes(lowerStatName)) {
+        // Look for decimal numbers (e.g., "17.2" for km)
+        const decimalNumbers = line.match(/\b(\d+\.\d+)\b/g);
+        if (decimalNumbers && decimalNumbers.length > 0) {
+          // Convert km to meters for storage, take first value (individual)
+          return Math.round(parseFloat(decimalNumbers[0]) * 1000);
         }
       }
-      
-      return leftColumnStats;
+      return null;
     };
     
-    // Combine stats from both columns
-    const rightStats = extractFromRightColumn();
-    const leftStats = extractFromLeftColumn();
+    // Parse each line for all possible stats
+    for (const line of lines) {
+      // Basic stats
+      let value = parseStatLine(line, 'goals');
+      if (value !== null) stats.goals = value;
+      
+      value = parseStatLine(line, 'assists');
+      if (value !== null) stats.assists = value;
+      
+      // Shooting stats  
+      value = parseStatLine(line, 'shots');
+      if (value !== null) stats.shots = value;
+      
+      value = parseStatLine(line, 'shot accuracy');
+      if (value !== null) stats.shotAccuracy = value;
+      
+      // Passing stats
+      value = parseStatLine(line, 'passes');
+      if (value !== null) stats.passes = value;
+      
+      value = parseStatLine(line, 'pass accuracy');
+      if (value !== null) stats.passAccuracy = value;
+      
+      // Dribbling stats
+      value = parseStatLine(line, 'dribbles');
+      if (value !== null) stats.dribbles = value;
+      
+      value = parseStatLine(line, 'dribble success rate');
+      if (value !== null) stats.dribbleSuccessRate = value;
+      
+      // Defensive stats
+      value = parseStatLine(line, 'tackles');
+      if (value !== null) stats.tackles = value;
+      
+      value = parseStatLine(line, 'tackle success rate');
+      if (value !== null) stats.tackleSuccessRate = value;
+      
+      // Disciplinary stats
+      value = parseStatLine(line, 'offsides');
+      if (value !== null) stats.offsides = value;
+      
+      value = parseStatLine(line, 'fouls committed');
+      if (value !== null) stats.foulsCommitted = value;
+      
+      // Possession stats
+      value = parseStatLine(line, 'possession won');
+      if (value !== null) stats.possessionWon = value;
+      
+      value = parseStatLine(line, 'possession lost');
+      if (value !== null) stats.possessionLost = value;
+      
+      // Time stats
+      value = parseStatLine(line, 'minutes played');
+      if (value !== null) stats.minutesPlayed = value;
+      
+      // Distance stats (convert km to meters)
+      value = parseDistanceLine(line, 'distance covered');
+      if (value !== null) stats.distanceCovered = value;
+      
+      value = parseDistanceLine(line, 'distance sprinted');
+      if (value !== null) stats.distanceSprinted = value;
+      
+      // Goalkeeping stats
+      value = parseStatLine(line, 'saves');
+      if (value !== null) stats.saves = value;
+      
+      value = parseStatLine(line, 'pk save');
+      if (value !== null) stats.pkSave = value;
+      
+      value = parseStatLine(line, 'clean sheet');
+      if (value !== null) stats.cleanSheet = value;
+      
+      // Card stats
+      value = parseStatLine(line, 'yellow');
+      if (value !== null) stats.yellowCards = value;
+      
+      value = parseStatLine(line, 'red');
+      if (value !== null) stats.redCards = value;
+    }
     
-    return { ...rightStats, ...leftStats };
+    // Calculate derived stats
+    if (stats.possessionWon !== undefined && stats.possessionLost !== undefined) {
+      stats.possessionDifference = stats.possessionWon - stats.possessionLost;
+    }
+    
+    console.log('Parsed stats:', stats);
+    return stats;
   };
 
   const handleConfirmStats = () => {
