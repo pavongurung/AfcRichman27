@@ -498,19 +498,6 @@ export default function AdminPanel() {
                             />
                           </div>
 
-                          <FormField
-                            control={playerForm.control}
-                            name="imageUrl"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Image URL</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="/assets/player-image.png" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
 
                           <Button type="submit" className="w-full" disabled={createPlayerMutation.isPending || updatePlayerMutation.isPending}>
                             {createPlayerMutation.isPending || updatePlayerMutation.isPending ? "Saving..." : "Save Player"}
