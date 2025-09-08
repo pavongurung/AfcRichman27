@@ -1,8 +1,11 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu, Settings } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Header() {
+  const { isAuthenticated } = useAuth();
+  
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       <div className="container mx-auto px-4">
@@ -36,6 +39,14 @@ export default function Header() {
 
           {/* Right side */}
           <div className="flex items-center space-x-4">
+            {isAuthenticated && (
+              <Link href="/admin" data-testid="admin-link">
+                <Button variant="outline" size="sm" className="hidden md:flex">
+                  <Settings className="w-4 h-4 mr-2" />
+                  Admin
+                </Button>
+              </Link>
+            )}
             <Button variant="ghost" size="icon" className="md:hidden" data-testid="mobile-menu-button">
               <Menu className="h-5 w-5" />
             </Button>
