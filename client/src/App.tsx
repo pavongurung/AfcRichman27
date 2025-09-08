@@ -8,6 +8,7 @@ import PlayerDetail from "@/pages/player-detail";
 import Squad from "@/pages/squad";
 import Statistics from "@/pages/statistics";
 import AdminPlayer from "@/pages/admin-player";
+import AdminPanel from "@/pages/admin";
 import NotFound from "@/pages/not-found";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -23,6 +24,7 @@ function Router() {
           <Route path="/squad" component={Squad} />
           <Route path="/statistics" component={Statistics} />
           <Route path="/admin/player/:id" component={AdminPlayer} />
+          <Route path="/admin" component={AdminPanel} />
           <Route component={NotFound} />
         </Switch>
       </main>

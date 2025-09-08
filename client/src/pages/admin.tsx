@@ -253,7 +253,10 @@ export default function AdminPanel() {
 
   const handleEditStats = async (player: Player) => {
     try {
-      const stats = await apiRequest(`/api/players/${player.id}/stats`);
+      const response = await fetch(`/api/players/${player.id}/stats`);
+      if (!response.ok) throw new Error("Failed to fetch stats");
+      const stats = await response.json();
+      
       setEditingStats(stats);
       statsForm.reset({
         appearance: stats.appearance || 0,
