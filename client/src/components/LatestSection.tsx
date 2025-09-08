@@ -181,7 +181,7 @@ export default function LatestSection() {
                     variant="outline"
                     size="sm"
                     className="w-full"
-                    onClick={() => window.open(match.replayUrl, '_blank')}
+                    onClick={() => match.replayUrl && window.open(match.replayUrl, '_blank')}
                   >
                     <Play className="w-4 h-4 mr-2" />
                     Watch Replay
