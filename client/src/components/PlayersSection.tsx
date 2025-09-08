@@ -120,7 +120,7 @@ export default function PlayersSection() {
                   <p className="text-white font-semibold">
                     {player.jerseyNumber} / {player.firstName} {player.lastName}
                   </p>
-                  <div className="w-full h-0.5 bg-red-500 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="w-full h-0.5 bg-red-500 mt-2 opacity-0 group-hover:opacity-100"></div>
                   <p className="text-muted-foreground text-sm mt-1">
                     {player.position}
                   </p>
