@@ -1,8 +1,11 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import multer from "multer";
 import { storage } from "./storage";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Configure multer for file uploads
+  const upload = multer({ storage: multer.memoryStorage() });
   // Players routes
   app.get("/api/players", async (req, res) => {
     try {
@@ -53,6 +56,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(playersWithStats);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch players with stats" });
+    }
+  });
+
+  app.patch("/api/players/:id/stats", async (req, res) => {
+    try {
+      const playerId = req.params.id;
+      const updates = req.body;
+      
+      const updatedStats = await storage.updatePlayerStats(playerId, updates);
+      if (!updatedStats) {
+        return res.status(404).json({ message: "Player stats not found" });
+      }
+      
+      res.json(updatedStats);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update player stats" });
     }
   });
 

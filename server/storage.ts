@@ -12,6 +12,7 @@ export interface IStorage {
   getPlayerStats(playerId: string, season?: string): Promise<PlayerStats | undefined>;
   getAllPlayersWithStats(season?: string): Promise<PlayerWithStats[]>;
   createPlayerStats(stats: InsertPlayerStats): Promise<PlayerStats>;
+  updatePlayerStats(playerId: string, updates: Partial<PlayerStats>): Promise<PlayerStats | undefined>;
   
   // Matches
   getAllMatches(): Promise<Match[]>;
@@ -181,6 +182,18 @@ export class MemStorage implements IStorage {
     };
     this.playerStats.set(id, stats);
     return stats;
+  }
+
+  async updatePlayerStats(playerId: string, updates: Partial<PlayerStats>): Promise<PlayerStats | undefined> {
+    const existingStats = await this.getPlayerStats(playerId);
+    if (!existingStats) return undefined;
+
+    const updatedStats: PlayerStats = {
+      ...existingStats,
+      ...updates,
+    };
+    this.playerStats.set(existingStats.id, updatedStats);
+    return updatedStats;
   }
 
   async getAllMatches(): Promise<Match[]> {
