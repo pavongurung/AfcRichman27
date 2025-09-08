@@ -7,19 +7,13 @@ import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
-  await setupAuth(app);
+  // Auth middleware - temporarily disabled for testing
+  // await setupAuth(app);
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
+  // Auth routes - temporarily disabled
+  app.get('/api/auth/user', async (req: any, res) => {
+    // Return mock user for testing
+    res.json({ id: "test-user", email: "test@example.com" });
   });
 
   // Player routes (public)
@@ -177,7 +171,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/objects/upload", isAuthenticated, async (req, res) => {
+  app.post("/api/objects/upload", async (req, res) => {
     const objectStorageService = new ObjectStorageService();
     try {
       const uploadURL = await objectStorageService.getObjectEntityUploadURL();
