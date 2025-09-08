@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Trash2, Plus, Save } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Pencil, Trash2, Plus, Save, Upload, ImageIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
@@ -18,6 +19,7 @@ import { z } from "zod";
 import type { Player, PlayerStats, InsertPlayer, InsertPlayerStats } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
+import { createWorker } from "tesseract.js";
 
 const playerFormSchema = z.object({
   jerseyNumber: z.number().min(1).max(99),
@@ -30,23 +32,39 @@ const playerFormSchema = z.object({
 });
 
 const statsFormSchema = z.object({
+  // Basic Performance Stats
   appearance: z.number().min(0).default(0),
   motm: z.number().min(0).default(0),
   goals: z.number().min(0).default(0),
   assists: z.number().min(0).default(0),
   avgRating: z.number().min(0).max(100).default(0),
+  
+  // Shooting Stats
   shots: z.number().min(0).default(0),
   shotAccuracy: z.number().min(0).max(100).default(0),
+  
+  // Passing Stats
   passes: z.number().min(0).default(0),
   passAccuracy: z.number().min(0).max(100).default(0),
+  
+  // Dribbling Stats
   dribbles: z.number().min(0).default(0),
   dribbleSuccessRate: z.number().min(0).max(100).default(0),
+  
+  // Defensive Stats
   tackles: z.number().min(0).default(0),
   tackleSuccessRate: z.number().min(0).max(100).default(0),
+  
+  // Possession Stats
   possessionWon: z.number().min(0).default(0),
   possessionLost: z.number().min(0).default(0),
-  cleanSheet: z.number().min(0).default(0),
+  
+  // Goalkeeping Stats
   saves: z.number().min(0).default(0),
+  pkSave: z.number().min(0).default(0),
+  cleanSheet: z.number().min(0).default(0),
+  
+  // Disciplinary Stats
   yellowCards: z.number().min(0).default(0),
   redCards: z.number().min(0).default(0),
   offsides: z.number().min(0).default(0),
@@ -63,6 +81,8 @@ export default function AdminPanel() {
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
   const [editingStats, setEditingStats] = useState<PlayerStats | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isOcrProcessing, setIsOcrProcessing] = useState(false);
+  const [ocrProgress, setOcrProgress] = useState(0);
   const queryClient = useQueryClient();
   
   const handleImageUpload = async (file: File, onChange: (url: string) => void) => {
@@ -141,6 +161,103 @@ export default function AdminPanel() {
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const handleOcrImageUpload = async (file: File) => {
+    try {
+      setIsOcrProcessing(true);
+      setOcrProgress(0);
+      
+      // Create Tesseract worker with progress tracking
+      const worker = createWorker({
+        logger: ({ progress }) => {
+          setOcrProgress(Math.round(progress * 100));
+        }
+      });
+
+      await worker.load();
+      await worker.loadLanguage('eng');
+      await worker.initialize('eng');
+
+      // Optimize OCR for numbers and text
+      await worker.setParameters({
+        tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz:.%()-',
+        tessedit_pageseg_mode: 6, // Uniform block of text
+      });
+
+      const { data: { text } } = await worker.recognize(file);
+      await worker.terminate();
+
+      // Parse the extracted text to identify stats
+      const extractedStats = parseOcrText(text);
+      
+      // Auto-fill the form with extracted data
+      Object.entries(extractedStats).forEach(([key, value]) => {
+        if (statsForm.getValues(key as keyof StatsFormData) !== undefined) {
+          statsForm.setValue(key as keyof StatsFormData, value);
+        }
+      });
+
+      toast({
+        title: "OCR Complete",
+        description: `Extracted text processed. Found ${Object.keys(extractedStats).length} stat values.`,
+      });
+
+    } catch (error) {
+      console.error("OCR error:", error);
+      toast({
+        title: "OCR Failed",
+        description: "Could not extract text from image. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsOcrProcessing(false);
+      setOcrProgress(0);
+    }
+  };
+
+  const parseOcrText = (text: string): Partial<StatsFormData> => {
+    const stats: Partial<StatsFormData> = {};
+    const lines = text.split('\n').filter(line => line.trim());
+    
+    // Common patterns for parsing FC stats
+    const patterns = {
+      goals: /goals?\s*:?\s*(\d+)/i,
+      assists: /assists?\s*:?\s*(\d+)/i,
+      shots: /shots?\s*:?\s*(\d+)/i,
+      passes: /passes?\s*:?\s*(\d+)/i,
+      tackles: /tackles?\s*:?\s*(\d+)/i,
+      saves: /saves?\s*:?\s*(\d+)/i,
+      dribbles: /dribbles?\s*:?\s*(\d+)/i,
+      offsides: /offsides?\s*:?\s*(\d+)/i,
+      foulsCommitted: /fouls?\s*(committed)?\s*:?\s*(\d+)/i,
+      yellowCards: /yellow\s*cards?\s*:?\s*(\d+)/i,
+      redCards: /red\s*cards?\s*:?\s*(\d+)/i,
+      avgRating: /rating\s*:?\s*(\d+\.?\d*)/i,
+      shotAccuracy: /shot\s*accuracy\s*:?\s*(\d+)%?/i,
+      passAccuracy: /pass\s*accuracy\s*:?\s*(\d+)%?/i,
+      tackleSuccessRate: /tackle\s*success\s*:?\s*(\d+)%?/i,
+      dribbleSuccessRate: /dribble\s*success\s*:?\s*(\d+)%?/i,
+      possessionWon: /possession\s*won\s*:?\s*(\d+)/i,
+      possessionLost: /possession\s*lost\s*:?\s*(\d+)/i,
+      cleanSheet: /clean\s*sheet\s*:?\s*(\d+)/i,
+    };
+
+    // Try to extract stats using patterns
+    for (const [key, pattern] of Object.entries(patterns)) {
+      for (const line of lines) {
+        const match = line.match(pattern);
+        if (match) {
+          const value = parseFloat(match[match.length - 1]);
+          if (!isNaN(value)) {
+            (stats as any)[key] = Math.round(value);
+            break;
+          }
+        }
+      }
+    }
+
+    return stats;
   };
 
   const { data: players, isLoading: playersLoading } = useQuery<Player[]>({
@@ -707,213 +824,395 @@ export default function AdminPanel() {
                   <CardTitle>Edit Statistics</CardTitle>
                 </CardHeader>
                 <CardContent>
+                  {/* OCR Upload Section */}
+                  <div className="mb-6 p-4 border border-dashed border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-600">
+                    <h3 className="text-lg font-semibold mb-3 flex items-center">
+                      <ImageIcon className="w-5 h-5 mr-2" />
+                      Auto-Extract Stats from Image
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                      Upload a post-match statistics screenshot and automatically extract the numbers
+                    </p>
+                    <div className="flex items-center space-x-4">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleOcrImageUpload(file);
+                        }}
+                        className="sr-only"
+                        id="ocr-image-upload"
+                        disabled={isOcrProcessing}
+                      />
+                      <label
+                        htmlFor="ocr-image-upload"
+                        className="cursor-pointer inline-flex items-center px-4 py-2 border border-primary text-primary bg-background hover:bg-primary hover:text-primary-foreground rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        {isOcrProcessing ? "Processing..." : "Upload Stats Image"}
+                      </label>
+                      {isOcrProcessing && (
+                        <div className="flex items-center space-x-2">
+                          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                          <span className="text-sm text-gray-600">{ocrProgress}%</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                   <Form {...statsForm}>
-                    <form onSubmit={statsForm.handleSubmit(onStatsSubmit)} className="space-y-6">
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <FormField
-                          control={statsForm.control}
-                          name="appearance"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Appearances</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={statsForm.control}
-                          name="motm"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>MOTM</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={statsForm.control}
-                          name="goals"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Goals</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={statsForm.control}
-                          name="assists"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Assists</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
+                    <form onSubmit={statsForm.handleSubmit(onStatsSubmit)} className="space-y-8">
+                      
+                      {/* Basic Performance Stats */}
+                      <div>
+                        <h3 className="text-lg font-semibold mb-4">Basic Performance</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                          <FormField
+                            control={statsForm.control}
+                            name="appearance"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>APPEARANCE</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={statsForm.control}
+                            name="motm"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>MOTM</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={statsForm.control}
+                            name="goals"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>GOALS</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={statsForm.control}
+                            name="assists"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>ASSISTS</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={statsForm.control}
+                            name="avgRating"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>AVG RATING</FormLabel>
+                                <FormControl>
+                                  <Input type="number" step="0.1" {...field} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
                       </div>
 
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <FormField
-                          control={statsForm.control}
-                          name="shots"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Shots</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={statsForm.control}
-                          name="shotAccuracy"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Shot Accuracy (%)</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={statsForm.control}
-                          name="passes"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Passes</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={statsForm.control}
-                          name="passAccuracy"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Pass Accuracy (%)</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
+                      <Separator />
+
+                      {/* Shooting Stats */}
+                      <div>
+                        <h3 className="text-lg font-semibold mb-4">Shooting</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                          <FormField
+                            control={statsForm.control}
+                            name="shots"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>SHOTS</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={statsForm.control}
+                            name="shotAccuracy"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>SHOT ACC (%)</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
                       </div>
 
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <FormField
-                          control={statsForm.control}
-                          name="tackles"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Tackles</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={statsForm.control}
-                          name="tackleSuccessRate"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Tackle Success Rate (%)</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={statsForm.control}
-                          name="yellowCards"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Yellow Cards</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={statsForm.control}
-                          name="redCards"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Red Cards</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
+                      <Separator />
+
+                      {/* Passing Stats */}
+                      <div>
+                        <h3 className="text-lg font-semibold mb-4">Passing</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                          <FormField
+                            control={statsForm.control}
+                            name="passes"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>PASSES</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={statsForm.control}
+                            name="passAccuracy"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>PASS ACC (%)</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
                       </div>
 
-                      <Button type="submit" disabled={updateStatsMutation.isPending}>
-                        <Save className="w-4 h-4 mr-2" />
-                        {updateStatsMutation.isPending ? "Saving..." : "Save Statistics"}
-                      </Button>
+                      <Separator />
+
+                      {/* Dribbling Stats */}
+                      <div>
+                        <h3 className="text-lg font-semibold mb-4">Dribbling</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                          <FormField
+                            control={statsForm.control}
+                            name="dribbles"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>DRIBBLES</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={statsForm.control}
+                            name="dribbleSuccessRate"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>DRIBBLE SUCC RATE (%)</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      {/* Defensive Stats */}
+                      <div>
+                        <h3 className="text-lg font-semibold mb-4">Defending</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                          <FormField
+                            control={statsForm.control}
+                            name="tackles"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>TACKLES</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={statsForm.control}
+                            name="tackleSuccessRate"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>TACKLE SUCC RATE (%)</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      {/* Possession Stats */}
+                      <div>
+                        <h3 className="text-lg font-semibold mb-4">Possession</h3>
+                        <div className="grid grid-cols-3 gap-4">
+                          <FormField
+                            control={statsForm.control}
+                            name="possessionWon"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>POS. WON</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={statsForm.control}
+                            name="possessionLost"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>POS. LOST</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <div className="flex items-center space-x-2">
+                            <Label className="text-sm font-medium">POS. DIFF</Label>
+                            <div className="px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded border text-sm">
+                              {(statsForm.watch('possessionWon') || 0) - (statsForm.watch('possessionLost') || 0)}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      {/* Goalkeeping Stats */}
+                      <div>
+                        <h3 className="text-lg font-semibold mb-4">Goalkeeping</h3>
+                        <div className="grid grid-cols-3 gap-4">
+                          <FormField
+                            control={statsForm.control}
+                            name="saves"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>SAVES</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={statsForm.control}
+                            name="pkSave"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>PK SAVE</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={statsForm.control}
+                            name="cleanSheet"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>CLEAN SHEET</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      {/* Disciplinary Stats */}
+                      <div>
+                        <h3 className="text-lg font-semibold mb-4">Disciplinary</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          <FormField
+                            control={statsForm.control}
+                            name="yellowCards"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>YELLOW</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={statsForm.control}
+                            name="redCards"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>RED</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={statsForm.control}
+                            name="offsides"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>OFFSIDES</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={statsForm.control}
+                            name="foulsCommitted"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>FOULS COMMITTED</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex space-x-4 pt-6">
+                        <Button type="submit" disabled={updateStatsMutation.isPending}>
+                          <Save className="w-4 h-4 mr-2" />
+                          {updateStatsMutation.isPending ? "Saving..." : "Save Statistics"}
+                        </Button>
+                        <Button type="button" variant="outline" onClick={() => setEditingStats(null)}>
+                          Cancel
+                        </Button>
+                      </div>
                     </form>
                   </Form>
                 </CardContent>
