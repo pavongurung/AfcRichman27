@@ -60,23 +60,72 @@ export class MemStorage implements IStorage {
 
       // Create stats for each player
       const statsId = randomUUID();
+      const goals = playerData.position === "Forward" ? Math.floor(Math.random() * 20) : playerData.position === "Midfielder" ? Math.floor(Math.random() * 10) : Math.floor(Math.random() * 3);
+      const assists = Math.floor(Math.random() * 15);
+      const possessionWon = Math.floor(Math.random() * 50) + 10;
+      const possessionLost = Math.floor(Math.random() * 40) + 5;
+      
       const stats: PlayerStats = {
         id: statsId,
         playerId: id,
         season: "2024-25",
-        gamesPlayed: Math.floor(Math.random() * 25) + 1,
-        minutes: Math.floor(Math.random() * 2000) + 500,
-        goals: playerData.position === "Forward" ? Math.floor(Math.random() * 20) : playerData.position === "Midfielder" ? Math.floor(Math.random() * 10) : Math.floor(Math.random() * 3),
-        assists: Math.floor(Math.random() * 15),
+        createdAt: new Date(),
+        
+        // Basic stats - FC 25 Pro Clubs
+        appearance: Math.floor(Math.random() * 25) + 1,
+        motm: Math.floor(Math.random() * 5),
+        goals: goals,
+        assists: assists,
+        avgRating: Math.floor(Math.random() * 30) + 60, // 6.0-9.0 rating (stored as 60-90)
+        
+        // Shooting stats
+        shots: Math.floor(Math.random() * 50) + 10,
+        shotAccuracy: Math.floor(Math.random() * 60) + 20, // 20-80%
+        
+        // Passing stats
+        passes: Math.floor(Math.random() * 500) + 100,
+        passAccuracy: Math.floor(Math.random() * 30) + 65, // 65-95%
+        
+        // Dribbling stats
+        dribbles: Math.floor(Math.random() * 30) + 5,
+        dribbleSuccessRate: Math.floor(Math.random() * 40) + 50, // 50-90%
+        
+        // Defensive stats
+        tackles: Math.floor(Math.random() * 40) + 5,
+        tackleSuccessRate: Math.floor(Math.random() * 50) + 40, // 40-90%
+        
+        // Disciplinary stats
+        offsides: Math.floor(Math.random() * 8),
+        foulsCommitted: Math.floor(Math.random() * 15),
+        
+        // Possession stats
+        possessionWon: possessionWon,
+        possessionLost: possessionLost,
+        possessionDifference: possessionWon - possessionLost,
+        
+        // Time and distance stats
+        minutesPlayed: Math.floor(Math.random() * 2000) + 500,
+        distanceCovered: Math.floor(Math.random() * 5000) + 8000, // 8-13km in meters
+        distanceSprinted: Math.floor(Math.random() * 2000) + 1000, // 1-3km in meters
+        
+        // Goalkeeping stats
+        saves: playerData.position === "Goalkeeper" ? Math.floor(Math.random() * 100) + 20 : Math.floor(Math.random() * 5),
+        pkSave: playerData.position === "Goalkeeper" ? Math.floor(Math.random() * 3) : 0,
+        cleanSheet: playerData.position === "Goalkeeper" ? Math.floor(Math.random() * 15) : 0,
+        
+        // Card stats
         yellowCards: Math.floor(Math.random() * 8),
         redCards: Math.floor(Math.random() * 2),
+        
+        // Legacy fields for backwards compatibility
+        gamesPlayed: Math.floor(Math.random() * 25) + 1,
+        minutes: Math.floor(Math.random() * 2000) + 500,
         starts: Math.floor(Math.random() * 20) + 5,
         substituteOn: Math.floor(Math.random() * 5),
         substituteOff: Math.floor(Math.random() * 10),
         leftFootedGoals: Math.floor(Math.random() * 5),
         rightFootedGoals: Math.floor(Math.random() * 8),
         headedGoals: Math.floor(Math.random() * 3),
-        createdAt: new Date(),
       };
       this.playerStats.set(statsId, stats);
     });
