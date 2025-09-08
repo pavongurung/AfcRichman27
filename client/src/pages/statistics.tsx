@@ -9,9 +9,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { PlayerWithStats } from "@shared/schema";
+import type { PlayerWithStats, PlayerStats } from "@shared/schema";
 
-type SortField = keyof PlayerWithStats["stats"] | "firstName" | "position" | "jerseyNumber";
+type SortField = keyof PlayerStats | "firstName";
 type SortDirection = "asc" | "desc" | null;
 
 export default function Statistics() {
@@ -55,12 +55,6 @@ export default function Statistics() {
     if (sortField === "firstName") {
       aValue = a.firstName;
       bValue = b.firstName;
-    } else if (sortField === "position") {
-      aValue = a.position;
-      bValue = b.position;
-    } else if (sortField === "jerseyNumber") {
-      aValue = a.jerseyNumber;
-      bValue = b.jerseyNumber;
     } else {
       aValue = a.stats?.[sortField] || 0;
       bValue = b.stats?.[sortField] || 0;
@@ -78,11 +72,11 @@ export default function Statistics() {
   // Helper function to render sort icon
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field || !sortDirection) {
-      return <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />;
+      return <ChevronsUpDown className="ml-1 h-3 w-3 text-muted-foreground" />;
     }
     return sortDirection === "asc" ? 
-      <ChevronUp className="ml-1 h-4 w-4 text-primary" /> : 
-      <ChevronDown className="ml-1 h-4 w-4 text-primary" />;
+      <ChevronUp className="ml-1 h-3 w-3 text-primary" /> : 
+      <ChevronDown className="ml-1 h-3 w-3 text-primary" />;
   };
 
   if (isLoading) {
@@ -102,197 +96,332 @@ export default function Statistics() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-white p-8">
+    <div className="min-h-screen bg-black text-white p-4">
       <div className="max-w-full mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-center">Team Statistics</h1>
+        <div className="mb-4">
+          <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
+            <span>Squad</span>
+            <span>›</span>
+            <span>Statistics</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <h1 className="text-4xl font-bold italic">STATISTICS</h1>
+            <div className="flex gap-4">
+              <select className="bg-gray-800 text-white px-3 py-1 rounded text-sm">
+                <option>All players</option>
+              </select>
+              <select className="bg-gray-800 text-white px-3 py-1 rounded text-sm">
+                <option>All competitions</option>
+              </select>
+            </div>
+          </div>
+        </div>
         
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto bg-gray-900 rounded">
           <Table>
             <TableHeader>
-              <TableRow className="bg-secondary">
+              <TableRow className="bg-gray-800 border-gray-700">
                 <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors"
                   onClick={() => handleSort("firstName")}
                 >
                   <div className="flex items-center">
-                    Player
+                    PLAYER
                     <SortIcon field="firstName" />
                   </div>
                 </TableHead>
                 <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
-                  onClick={() => handleSort("position")}
-                >
-                  <div className="flex items-center">
-                    Position
-                    <SortIcon field="position" />
-                  </div>
-                </TableHead>
-                <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
                   onClick={() => handleSort("appearance")}
                 >
-                  <div className="flex items-center">
-                    Apps
+                  <div className="flex items-center justify-center">
+                    APPEARANCE
                     <SortIcon field="appearance" />
                   </div>
                 </TableHead>
                 <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
+                  onClick={() => handleSort("motm")}
+                >
+                  <div className="flex items-center justify-center">
+                    MOTM
+                    <SortIcon field="motm" />
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
                   onClick={() => handleSort("goals")}
                 >
-                  <div className="flex items-center">
-                    Goals
+                  <div className="flex items-center justify-center">
+                    GOALS
                     <SortIcon field="goals" />
                   </div>
                 </TableHead>
                 <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
                   onClick={() => handleSort("assists")}
                 >
-                  <div className="flex items-center">
-                    Assists
+                  <div className="flex items-center justify-center">
+                    ASSISTS
                     <SortIcon field="assists" />
                   </div>
                 </TableHead>
                 <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
-                  onClick={() => handleSort("shots")}
-                >
-                  <div className="flex items-center">
-                    Shots
-                    <SortIcon field="shots" />
-                  </div>
-                </TableHead>
-                <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
-                  onClick={() => handleSort("shotAccuracy")}
-                >
-                  <div className="flex items-center">
-                    Shot Acc%
-                    <SortIcon field="shotAccuracy" />
-                  </div>
-                </TableHead>
-                <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
-                  onClick={() => handleSort("passes")}
-                >
-                  <div className="flex items-center">
-                    Passes
-                    <SortIcon field="passes" />
-                  </div>
-                </TableHead>
-                <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
-                  onClick={() => handleSort("passAccuracy")}
-                >
-                  <div className="flex items-center">
-                    Pass Acc%
-                    <SortIcon field="passAccuracy" />
-                  </div>
-                </TableHead>
-                <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
-                  onClick={() => handleSort("dribbles")}
-                >
-                  <div className="flex items-center">
-                    Dribbles
-                    <SortIcon field="dribbles" />
-                  </div>
-                </TableHead>
-                <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
-                  onClick={() => handleSort("tackles")}
-                >
-                  <div className="flex items-center">
-                    Tackles
-                    <SortIcon field="tackles" />
-                  </div>
-                </TableHead>
-                <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
-                  onClick={() => handleSort("foulsCommitted")}
-                >
-                  <div className="flex items-center">
-                    Fouls
-                    <SortIcon field="foulsCommitted" />
-                  </div>
-                </TableHead>
-                <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
                   onClick={() => handleSort("possessionWon")}
                 >
-                  <div className="flex items-center">
-                    Poss Won
+                  <div className="flex items-center justify-center">
+                    POS. WON
                     <SortIcon field="possessionWon" />
                   </div>
                 </TableHead>
                 <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
-                  onClick={() => handleSort("minutesPlayed")}
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
+                  onClick={() => handleSort("possessionLost")}
                 >
-                  <div className="flex items-center">
-                    Minutes
-                    <SortIcon field="minutesPlayed" />
+                  <div className="flex items-center justify-center">
+                    POS. LOST
+                    <SortIcon field="possessionLost" />
                   </div>
                 </TableHead>
                 <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
+                  onClick={() => handleSort("possessionDifference")}
+                >
+                  <div className="flex items-center justify-center">
+                    POS. DIFF
+                    <SortIcon field="possessionDifference" />
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
+                  onClick={() => handleSort("cleanSheet")}
+                >
+                  <div className="flex items-center justify-center">
+                    CLEAN SHEET
+                    <SortIcon field="cleanSheet" />
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
                   onClick={() => handleSort("yellowCards")}
                 >
-                  <div className="flex items-center">
-                    🟨
+                  <div className="flex items-center justify-center">
+                    YELLOW
                     <SortIcon field="yellowCards" />
                   </div>
                 </TableHead>
                 <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
                   onClick={() => handleSort("redCards")}
                 >
-                  <div className="flex items-center">
-                    🟥
+                  <div className="flex items-center justify-center">
+                    RED
                     <SortIcon field="redCards" />
                   </div>
                 </TableHead>
                 <TableHead 
-                  className="cursor-pointer hover:bg-secondary/80 transition-colors"
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
+                  onClick={() => handleSort("saves")}
+                >
+                  <div className="flex items-center justify-center">
+                    SAVES
+                    <SortIcon field="saves" />
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
+                  onClick={() => handleSort("pkSave")}
+                >
+                  <div className="flex items-center justify-center">
+                    PK SAVE
+                    <SortIcon field="pkSave" />
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
                   onClick={() => handleSort("avgRating")}
                 >
-                  <div className="flex items-center">
-                    Rating
+                  <div className="flex items-center justify-center">
+                    AVG RATING
                     <SortIcon field="avgRating" />
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
+                  onClick={() => handleSort("shots")}
+                >
+                  <div className="flex items-center justify-center">
+                    SHOTS
+                    <SortIcon field="shots" />
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
+                  onClick={() => handleSort("shotAccuracy")}
+                >
+                  <div className="flex items-center justify-center">
+                    SHOT ACC (%)
+                    <SortIcon field="shotAccuracy" />
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
+                  onClick={() => handleSort("passes")}
+                >
+                  <div className="flex items-center justify-center">
+                    PASSES
+                    <SortIcon field="passes" />
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
+                  onClick={() => handleSort("passAccuracy")}
+                >
+                  <div className="flex items-center justify-center">
+                    PASS ACC (%)
+                    <SortIcon field="passAccuracy" />
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
+                  onClick={() => handleSort("dribbles")}
+                >
+                  <div className="flex items-center justify-center">
+                    DRIBBLES
+                    <SortIcon field="dribbles" />
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
+                  onClick={() => handleSort("dribbleSuccessRate")}
+                >
+                  <div className="flex items-center justify-center">
+                    DRIBBLE SUCC RATE (%)
+                    <SortIcon field="dribbleSuccessRate" />
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
+                  onClick={() => handleSort("tackles")}
+                >
+                  <div className="flex items-center justify-center">
+                    TACKLES
+                    <SortIcon field="tackles" />
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
+                  onClick={() => handleSort("tackleSuccessRate")}
+                >
+                  <div className="flex items-center justify-center">
+                    TACKLE SUCC RATE (%)
+                    <SortIcon field="tackleSuccessRate" />
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
+                  onClick={() => handleSort("offsides")}
+                >
+                  <div className="flex items-center justify-center">
+                    OFFSIDES
+                    <SortIcon field="offsides" />
+                  </div>
+                </TableHead>
+                <TableHead 
+                  className="text-gray-300 text-xs font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center"
+                  onClick={() => handleSort("foulsCommitted")}
+                >
+                  <div className="flex items-center justify-center">
+                    FOULS COMMITTED
+                    <SortIcon field="foulsCommitted" />
                   </div>
                 </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedPlayers.map((player) => (
-                <TableRow key={player.id} className="hover:bg-secondary/50">
-                  <TableCell className="font-medium">
+              {sortedPlayers.map((player, index) => (
+                <TableRow 
+                  key={player.id} 
+                  className={`${index % 2 === 0 ? 'bg-gray-900' : 'bg-gray-800'} hover:bg-gray-700 border-gray-700`}
+                  data-testid={`player-row-${player.id}`}
+                >
+                  <TableCell className="text-white font-medium text-sm py-2">
                     <div className="flex items-center space-x-3">
                       <div className="bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">
                         {player.jerseyNumber}
                       </div>
-                      <span>{player.firstName} {player.lastName}</span>
+                      <span>{player.firstName}</span>
                     </div>
                   </TableCell>
-                  <TableCell>{player.position}</TableCell>
-                  <TableCell>{player.stats?.appearance || 0}</TableCell>
-                  <TableCell className="font-semibold text-green-400">{player.stats?.goals || 0}</TableCell>
-                  <TableCell className="font-semibold text-blue-400">{player.stats?.assists || 0}</TableCell>
-                  <TableCell>{player.stats?.shots || 0}</TableCell>
-                  <TableCell>{player.stats?.shotAccuracy || 0}%</TableCell>
-                  <TableCell>{player.stats?.passes || 0}</TableCell>
-                  <TableCell>{player.stats?.passAccuracy || 0}%</TableCell>
-                  <TableCell>{player.stats?.dribbles || 0}</TableCell>
-                  <TableCell>{player.stats?.tackles || 0}</TableCell>
-                  <TableCell>{player.stats?.foulsCommitted || 0}</TableCell>
-                  <TableCell>{player.stats?.possessionWon || 0}</TableCell>
-                  <TableCell>{player.stats?.minutesPlayed || 0}</TableCell>
-                  <TableCell className="text-yellow-400">{player.stats?.yellowCards || 0}</TableCell>
-                  <TableCell className="text-red-400">{player.stats?.redCards || 0}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`appearance-${player.id}`}>
+                    {player.stats?.appearance || 0}
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`motm-${player.id}`}>
+                    {player.stats?.motm || 0}
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2 font-semibold" data-testid={`goals-${player.id}`}>
+                    {player.stats?.goals || 0}
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2 font-semibold" data-testid={`assists-${player.id}`}>
+                    {player.stats?.assists || 0}
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`possession-won-${player.id}`}>
+                    {player.stats?.possessionWon || 0}
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`possession-lost-${player.id}`}>
+                    {player.stats?.possessionLost || 0}
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`possession-diff-${player.id}`}>
+                    {player.stats?.possessionDifference || 0}
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`clean-sheet-${player.id}`}>
+                    {player.stats?.cleanSheet || 0}
+                  </TableCell>
+                  <TableCell className="text-center text-sm py-2" data-testid={`yellow-cards-${player.id}`}>
+                    <span className="text-yellow-400 font-semibold">{player.stats?.yellowCards || 0}</span>
+                  </TableCell>
+                  <TableCell className="text-center text-sm py-2" data-testid={`red-cards-${player.id}`}>
+                    <span className="text-red-400 font-semibold">{player.stats?.redCards || 0}</span>
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`saves-${player.id}`}>
+                    {player.stats?.saves || 0}
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`pk-save-${player.id}`}>
+                    {player.stats?.pkSave || 0}
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`avg-rating-${player.id}`}>
                     {player.stats?.avgRating ? (player.stats.avgRating / 10).toFixed(1) : "0.0"}
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`shots-${player.id}`}>
+                    {player.stats?.shots || 0}
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`shot-accuracy-${player.id}`}>
+                    {player.stats?.shotAccuracy || 0}%
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`passes-${player.id}`}>
+                    {player.stats?.passes || 0}
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`pass-accuracy-${player.id}`}>
+                    {player.stats?.passAccuracy || 0}%
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`dribbles-${player.id}`}>
+                    {player.stats?.dribbles || 0}
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`dribble-success-${player.id}`}>
+                    {player.stats?.dribbleSuccessRate || 0}%
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`tackles-${player.id}`}>
+                    {player.stats?.tackles || 0}
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`tackle-success-${player.id}`}>
+                    {player.stats?.tackleSuccessRate || 0}%
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`offsides-${player.id}`}>
+                    {player.stats?.offsides || 0}
+                  </TableCell>
+                  <TableCell className="text-white text-center text-sm py-2" data-testid={`fouls-committed-${player.id}`}>
+                    {player.stats?.foulsCommitted || 0}
                   </TableCell>
                 </TableRow>
               ))}
@@ -300,48 +429,34 @@ export default function Statistics() {
           </Table>
         </div>
 
-        {/* Team Summary */}
-        <div className="mt-12 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          <div className="bg-secondary p-6 rounded-lg text-center">
-            <h3 className="text-2xl font-bold text-green-400">
+        {/* Team Summary - matching EA Sports style */}
+        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-gray-800 p-4 rounded text-center">
+            <h3 className="text-2xl font-bold text-white">
               {sortedPlayers.reduce((sum, player) => sum + (player.stats?.goals || 0), 0)}
             </h3>
-            <p className="text-muted-foreground">Total Goals</p>
+            <p className="text-gray-400 text-sm">TOTAL GOALS</p>
           </div>
           
-          <div className="bg-secondary p-6 rounded-lg text-center">
-            <h3 className="text-2xl font-bold text-blue-400">
+          <div className="bg-gray-800 p-4 rounded text-center">
+            <h3 className="text-2xl font-bold text-white">
               {sortedPlayers.reduce((sum, player) => sum + (player.stats?.assists || 0), 0)}
             </h3>
-            <p className="text-muted-foreground">Total Assists</p>
-          </div>
-
-          <div className="bg-secondary p-6 rounded-lg text-center">
-            <h3 className="text-2xl font-bold text-purple-400">
-              {sortedPlayers.reduce((sum, player) => sum + (player.stats?.shots || 0), 0)}
-            </h3>
-            <p className="text-muted-foreground">Total Shots</p>
-          </div>
-
-          <div className="bg-secondary p-6 rounded-lg text-center">
-            <h3 className="text-2xl font-bold text-cyan-400">
-              {sortedPlayers.reduce((sum, player) => sum + (player.stats?.passes || 0), 0)}
-            </h3>
-            <p className="text-muted-foreground">Total Passes</p>
+            <p className="text-gray-400 text-sm">TOTAL ASSISTS</p>
           </div>
           
-          <div className="bg-secondary p-6 rounded-lg text-center">
+          <div className="bg-gray-800 p-4 rounded text-center">
             <h3 className="text-2xl font-bold text-yellow-400">
               {sortedPlayers.reduce((sum, player) => sum + (player.stats?.yellowCards || 0), 0)}
             </h3>
-            <p className="text-muted-foreground">Yellow Cards</p>
+            <p className="text-gray-400 text-sm">YELLOW CARDS</p>
           </div>
           
-          <div className="bg-secondary p-6 rounded-lg text-center">
+          <div className="bg-gray-800 p-4 rounded text-center">
             <h3 className="text-2xl font-bold text-red-400">
               {sortedPlayers.reduce((sum, player) => sum + (player.stats?.redCards || 0), 0)}
             </h3>
-            <p className="text-muted-foreground">Red Cards</p>
+            <p className="text-gray-400 text-sm">RED CARDS</p>
           </div>
         </div>
       </div>
