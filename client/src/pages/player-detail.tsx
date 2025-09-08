@@ -271,35 +271,20 @@ export default function PlayerDetail() {
             </div>
           </div>
 
-          {/* Detailed Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Games Stats */}
+          {/* Detailed Stats Grid - FC 25 Pro Clubs Style */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Basic Stats */}
             <div className="bg-secondary p-6 rounded-lg">
-              <h3 className="text-white font-semibold mb-4 border-l-4 border-red-500 pl-3">Games</h3>
+              <h3 className="text-white font-semibold mb-4 border-l-4 border-red-500 pl-3">Basic</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Starts</span>
-                  <span className="text-white font-medium">{stats.starts || 0}</span>
+                  <span className="text-muted-foreground">Appearance</span>
+                  <span className="text-white font-medium">{stats.appearance || 0}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Substitute on</span>
-                  <span className="text-white font-medium">{stats.substituteOn || 0}</span>
+                  <span className="text-muted-foreground">MOTM</span>
+                  <span className="text-white font-medium">{stats.motm || 0}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Substitute off</span>
-                  <span className="text-white font-medium">{stats.substituteOff || 0}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Time played</span>
-                  <span className="text-white font-medium">{stats.minutes || 0}'</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Scoring Stats */}
-            <div className="bg-secondary p-6 rounded-lg">
-              <h3 className="text-white font-semibold mb-4 border-l-4 border-green-500 pl-3">Scoring</h3>
-              <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Goals</span>
                   <span className="text-white font-medium">{stats.goals || 0}</span>
@@ -309,46 +294,101 @@ export default function PlayerDetail() {
                   <span className="text-white font-medium">{stats.assists || 0}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Left-footed goals</span>
-                  <span className="text-white font-medium">{stats.leftFootedGoals || 0}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Right-footed goals</span>
-                  <span className="text-white font-medium">{stats.rightFootedGoals || 0}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Headed goals</span>
-                  <span className="text-white font-medium">{stats.headedGoals || 0}</span>
+                  <span className="text-muted-foreground">Avg Rating</span>
+                  <span className="text-white font-medium">{stats.avgRating ? ((stats.avgRating || 0) / 10).toFixed(1) : "0.0"}</span>
                 </div>
               </div>
             </div>
 
-            {/* Discipline */}
+            {/* Possession & Defensive */}
             <div className="bg-secondary p-6 rounded-lg">
-              <h3 className="text-white font-semibold mb-4 border-l-4 border-yellow-500 pl-3">Discipline</h3>
+              <h3 className="text-white font-semibold mb-4 border-l-4 border-blue-500 pl-3">Possession & Defense</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Yellow cards</span>
+                  <span className="text-muted-foreground">Possession Won</span>
+                  <span className="text-white font-medium">{stats.possessionWon || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Possession Lost</span>
+                  <span className="text-white font-medium">{stats.possessionLost || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Possession Difference</span>
+                  <span className="text-white font-medium">{stats.possessionDifference || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Clean Sheet</span>
+                  <span className="text-white font-medium">{stats.cleanSheet || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Tackles</span>
+                  <span className="text-white font-medium">{stats.tackles || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Tackle Success Rate (%)</span>
+                  <span className="text-white font-medium">{stats.tackleSuccessRate || 0}%</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Attacking & Skills */}
+            <div className="bg-secondary p-6 rounded-lg">
+              <h3 className="text-white font-semibold mb-4 border-l-4 border-green-500 pl-3">Attacking & Skills</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Shots</span>
+                  <span className="text-white font-medium">{stats.shots || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Shot Accuracy (%)</span>
+                  <span className="text-white font-medium">{stats.shotAccuracy || 0}%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Passes</span>
+                  <span className="text-white font-medium">{stats.passes || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Pass Accuracy (%)</span>
+                  <span className="text-white font-medium">{stats.passAccuracy || 0}%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Dribbles</span>
+                  <span className="text-white font-medium">{stats.dribbles || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Dribble Success Rate (%)</span>
+                  <span className="text-white font-medium">{stats.dribbleSuccessRate || 0}%</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Goalkeeping & Discipline */}
+            <div className="bg-secondary p-6 rounded-lg">
+              <h3 className="text-white font-semibold mb-4 border-l-4 border-purple-500 pl-3">Goalkeeping & Discipline</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Saves</span>
+                  <span className="text-white font-medium">{stats.saves || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">PK Save</span>
+                  <span className="text-white font-medium">{stats.pkSave || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Yellow</span>
                   <span className="text-white font-medium">{stats.yellowCards || 0}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Red cards</span>
+                  <span className="text-muted-foreground">Red</span>
                   <span className="text-white font-medium">{stats.redCards || 0}</span>
                 </div>
-              </div>
-            </div>
-
-            {/* Performance */}
-            <div className="bg-secondary p-6 rounded-lg">
-              <h3 className="text-white font-semibold mb-4 border-l-4 border-blue-500 pl-3">Performance</h3>
-              <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Average rating</span>
-                  <span className="text-white font-medium">{stats.avgRating ? ((stats.avgRating || 0) / 10).toFixed(1) : "0.0"}</span>
+                  <span className="text-muted-foreground">Offsides</span>
+                  <span className="text-white font-medium">{stats.offsides || 0}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Minutes played</span>
-                  <span className="text-white font-medium">{stats.minutes || 0}</span>
+                  <span className="text-muted-foreground">Fouls Committed</span>
+                  <span className="text-white font-medium">{stats.foulsCommitted || 0}</span>
                 </div>
               </div>
             </div>
