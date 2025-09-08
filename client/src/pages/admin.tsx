@@ -132,9 +132,10 @@ export default function AdminPanel() {
       
     } catch (error) {
       console.error("Upload error:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
       toast({
         title: "Error",
-        description: `Failed to upload image: ${error.message}`,
+        description: `Failed to upload image: ${errorMessage}`,
         variant: "destructive",
       });
     } finally {
