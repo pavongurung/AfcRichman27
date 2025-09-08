@@ -351,52 +351,6 @@ export default function AdminPanel() {
                       </DialogHeader>
                       <Form {...playerForm}>
                         <form onSubmit={playerForm.handleSubmit(onPlayerSubmit)} className="space-y-4">
-                          <div className="flex justify-center mb-4">
-                            <ObjectUploader
-                              maxNumberOfFiles={1}
-                              maxFileSize={5242880} // 5MB
-                              onGetUploadParameters={async () => {
-                                const response = await fetch("/api/objects/upload", {
-                                  method: "POST",
-                                  headers: {
-                                    "Content-Type": "application/json",
-                                  },
-                                });
-                                if (!response.ok) throw new Error("Failed to get upload URL");
-                                const data = await response.json();
-                                return {
-                                  method: "PUT" as const,
-                                  url: data.uploadURL,
-                                };
-                              }}
-                              onComplete={(result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
-                                if (result.successful && result.successful[0]) {
-                                  const uploadURL = result.successful[0].uploadURL;
-                                  // Set the ACL policy and get the normalized path
-                                  fetch("/api/player-images", {
-                                    method: "PUT",
-                                    headers: {
-                                      "Content-Type": "application/json",
-                                    },
-                                    body: JSON.stringify({ imageURL: uploadURL }),
-                                  })
-                                  .then(res => res.json())
-                                  .then(data => {
-                                    // Update the form with the object path
-                                    playerForm.setValue("imageUrl", data.objectPath);
-                                  })
-                                  .catch(err => {
-                                    console.error("Error setting image ACL:", err);
-                                  });
-                                }
-                              }}
-                            >
-                              <div className="flex flex-col items-center justify-center w-24 h-24 bg-muted rounded-lg cursor-pointer hover:bg-muted/80 transition-colors">
-                                <Upload className="w-6 h-6 text-muted-foreground mb-1" />
-                                <span className="text-xs text-muted-foreground">Upload</span>
-                              </div>
-                            </ObjectUploader>
-                          </div>
                           
                           <div className="grid grid-cols-2 gap-4">
                             <FormField
