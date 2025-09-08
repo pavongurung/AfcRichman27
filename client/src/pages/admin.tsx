@@ -62,7 +62,56 @@ export default function AdminPanel() {
   const [isPlayerDialogOpen, setIsPlayerDialogOpen] = useState(false);
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
   const [editingStats, setEditingStats] = useState<PlayerStats | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const queryClient = useQueryClient();
+  
+  const handleImageUpload = async (file: File, onChange: (url: string) => void) => {
+    try {
+      setIsUploading(true);
+      
+      // Get upload URL from backend
+      const uploadResponse = await apiRequest("/api/objects/upload", {
+        method: "POST",
+      });
+      
+      const { uploadURL } = uploadResponse;
+      
+      // Upload file to signed URL
+      const fileUploadResponse = await fetch(uploadURL, {
+        method: "PUT",
+        body: file,
+        headers: {
+          "Content-Type": file.type,
+        },
+      });
+      
+      if (!fileUploadResponse.ok) {
+        throw new Error("Failed to upload file");
+      }
+      
+      // Extract the object path from the upload URL
+      const url = new URL(uploadURL);
+      const objectPath = url.pathname;
+      const normalizedPath = `/objects${objectPath.split('/uploads/')[1] ? '/uploads/' + objectPath.split('/uploads/')[1] : ''}`;
+      
+      onChange(normalizedPath);
+      
+      toast({
+        title: "Success",
+        description: "Image uploaded successfully!",
+      });
+      
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to upload image. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const { data: players, isLoading: playersLoading } = useQuery<Player[]>({
     queryKey: ["/api/players"],
@@ -360,16 +409,17 @@ export default function AdminPanel() {
                                   <Input
                                     type="file"
                                     accept="image/*"
-                                    onChange={(e) => {
+                                    disabled={isUploading}
+                                    onChange={async (e) => {
                                       const file = e.target.files?.[0];
                                       if (file) {
-                                        // For now, just use a placeholder URL
-                                        field.onChange(`/objects/uploads/${file.name}`);
+                                        await handleImageUpload(file, field.onChange);
                                       }
                                     }}
-                                    className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/80"
+                                    className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/80 disabled:opacity-50"
                                   />
                                 </FormControl>
+                                {isUploading && <p className="text-sm text-muted-foreground">Uploading image...</p>}
                                 <FormMessage />
                               </FormItem>
                             )}
