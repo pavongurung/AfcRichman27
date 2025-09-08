@@ -350,6 +350,31 @@ export default function AdminPanel() {
                       <Form {...playerForm}>
                         <form onSubmit={playerForm.handleSubmit(onPlayerSubmit)} className="space-y-4">
                           
+                          <FormField
+                            control={playerForm.control}
+                            name="imageUrl"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Profile Image</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) {
+                                        // For now, just use a placeholder URL
+                                        field.onChange(`/objects/uploads/${file.name}`);
+                                      }
+                                    }}
+                                    className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/80"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
                           <div className="grid grid-cols-2 gap-4">
                             <FormField
                               control={playerForm.control}
