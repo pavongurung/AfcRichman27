@@ -651,10 +651,15 @@ export default function AdminPanel() {
   };
 
   const onMatchSubmit = (data: MatchFormData) => {
-    // Convert the datetime-local string to proper Date object
-    const matchData = {
+    // Convert the datetime-local string to ISO string for the API
+    const matchData: any = {
       ...data,
-      matchDate: new Date(data.matchDate),
+      matchDate: data.matchDate, // Keep as string - server will handle conversion
+      // Convert empty strings to null for optional fields
+      homeTeamLogo: data.homeTeamLogo || null,
+      awayTeamLogo: data.awayTeamLogo || null,
+      venue: data.venue || null,
+      replayUrl: data.replayUrl || null,
     };
 
     if (editingMatch) {

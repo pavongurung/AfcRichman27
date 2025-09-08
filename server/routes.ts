@@ -347,7 +347,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/admin/matches", async (req, res) => {
     try {
-      const matchData = insertMatchSchema.parse(req.body);
+      // Convert date string to Date object before validation
+      const processedData = {
+        ...req.body,
+        matchDate: new Date(req.body.matchDate),
+      };
+      
+      const matchData = insertMatchSchema.parse(processedData);
       const match = await storage.createMatch(matchData);
       res.status(201).json(match);
     } catch (error) {
@@ -361,7 +367,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/admin/matches/:id", async (req, res) => {
     try {
-      const updates = insertMatchSchema.partial().parse(req.body);
+      // Convert date string to Date object before validation if present
+      const processedData = {
+        ...req.body,
+        ...(req.body.matchDate && { matchDate: new Date(req.body.matchDate) }),
+      };
+      
+      const updates = insertMatchSchema.partial().parse(processedData);
       const match = await storage.updateMatch(req.params.id, updates);
       
       if (!match) {
