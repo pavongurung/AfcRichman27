@@ -348,9 +348,7 @@ export default function Statistics() {
                 >
                   <TableCell className="text-white font-medium text-sm py-2">
                     <div className="flex items-center space-x-3">
-                      <div className="bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">
-                        {player.jerseyNumber}
-                      </div>
+                      <span className="text-gray-300 font-bold w-6 text-center">{player.jerseyNumber}</span>
                       <span>{player.firstName}</span>
                     </div>
                   </TableCell>
