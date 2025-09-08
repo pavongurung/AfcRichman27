@@ -183,6 +183,58 @@ export default function AdminPlayer() {
                 return parseInt(nextNumbers[0]);
               }
             }
+          } else if (lowerStatName === 'passes') {
+            // "AL P 14 128" - find "passes" context and get first number
+            const passesIndex = lowerLine.indexOf('passes');
+            if (passesIndex === -1) {
+              // Look for lines that contain numbers that could be passes (like "AL P 14 128")
+              const passPattern = /(\d+)\s+(\d+)$/;
+              const passMatch = line.match(passPattern);
+              if (passMatch) {
+                console.log(`Passes: taking ${passMatch[1]} from pattern match`);
+                return parseInt(passMatch[1]);
+              }
+            } else {
+              const afterPasses = line.substring(passesIndex + 6);
+              const nextNumbers = afterPasses.match(/\b(\d+)\b/g);
+              if (nextNumbers) {
+                console.log(`Passes: taking ${nextNumbers[0]} from "${afterPasses}"`);
+                return parseInt(nextNumbers[0]);
+              }
+            }
+          } else if (lowerStatName === 'fouls committed') {
+            // "Fouls Committed 1 1" - first number after stat name
+            const foulsIndex = lowerLine.indexOf('fouls committed');
+            if (foulsIndex !== -1) {
+              const afterFouls = line.substring(foulsIndex + 15);
+              const nextNumbers = afterFouls.match(/\b(\d+)\b/g);
+              if (nextNumbers) {
+                console.log(`Fouls: taking ${nextNumbers[0]} from "${afterFouls}"`);
+                return parseInt(nextNumbers[0]);
+              }
+            }
+          } else if (lowerStatName === 'possession won') {
+            // "Possession Won 1 24" - first number after stat name
+            const possIndex = lowerLine.indexOf('possession won');
+            if (possIndex !== -1) {
+              const afterPoss = line.substring(possIndex + 14);
+              const nextNumbers = afterPoss.match(/\b(\d+)\b/g);
+              if (nextNumbers) {
+                console.log(`Possession Won: taking ${nextNumbers[0]} from "${afterPoss}"`);
+                return parseInt(nextNumbers[0]);
+              }
+            }
+          } else if (lowerStatName === 'possession lost') {
+            // "Possession Lost 5 33" - first number after stat name
+            const possIndex = lowerLine.indexOf('possession lost');
+            if (possIndex !== -1) {
+              const afterPoss = line.substring(possIndex + 15);
+              const nextNumbers = afterPoss.match(/\b(\d+)\b/g);
+              if (nextNumbers) {
+                console.log(`Possession Lost: taking ${nextNumbers[0]} from "${afterPoss}"`);
+                return parseInt(nextNumbers[0]);
+              }
+            }
           }
           
           // Default: take first number
@@ -224,8 +276,9 @@ export default function AdminPlayer() {
       value = parseStatLine(line, 'shot accuracy');
       if (value !== null) stats.shotAccuracy = value;
       
-      // Passing stats - avoid pass accuracy line
-      if (line.toLowerCase().includes('passes') && !line.toLowerCase().includes('pass accuracy')) {
+      // Passing stats - avoid pass accuracy line, look for "AL P" pattern too
+      if ((line.toLowerCase().includes('passes') && !line.toLowerCase().includes('pass accuracy')) || 
+          (line.includes('AL P') && line.match(/\d+\s+\d+$/))) {
         value = parseStatLine(line, 'passes');
         if (value !== null) stats.passes = value;
       }
