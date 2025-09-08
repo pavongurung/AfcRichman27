@@ -6,15 +6,21 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div>
+            {/* Logo */}
             <div className="flex items-center space-x-4 mb-6">
-              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-xl">R</span>
-              </div>
+              <img
+                src="/richmanlogo.png"
+                alt="AFC Richman Logo"
+                className="w-12 h-12 object-contain"
+              />
               <div className="text-2xl font-bold">AFC Richman</div>
             </div>
+
             <p className="text-muted-foreground mb-4">
               Leading the charge in modern football with passion, dedication, and excellence.
             </p>
+
+            {/* Social icons */}
             <div className="flex space-x-4">
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors" data-testid="social-twitter">
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -38,17 +44,17 @@ export default function Footer() {
               </a>
             </div>
           </div>
-          
+
+          {/* Other sections unchanged */}
           <div>
             <h3 className="font-semibold mb-4">Team</h3>
             <ul className="space-y-2 text-muted-foreground">
               <li><Link href="/squad" className="hover:text-primary transition-colors" data-testid="footer-squad">Squad</Link></li>
               <li><Link href="/statistics" className="hover:text-primary transition-colors" data-testid="footer-statistics">Statistics</Link></li>
               <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-coaching">Coaching Staff</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-academy">Academy</a></li>
             </ul>
           </div>
-          
+
           <div>
             <h3 className="font-semibold mb-4">Matches</h3>
             <ul className="space-y-2 text-muted-foreground">
@@ -58,18 +64,17 @@ export default function Footer() {
               <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-livestream">Live Stream</a></li>
             </ul>
           </div>
-          
+
           <div>
             <h3 className="font-semibold mb-4">Club</h3>
             <ul className="space-y-2 text-muted-foreground">
               <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-about">About</a></li>
               <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-history">History</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-store">Store</a></li>
               <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-contact">Contact</a></li>
             </ul>
           </div>
         </div>
-        
+
         <div className="border-t border-border pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-muted-foreground text-sm mb-4 md:mb-0">

@@ -9,12 +9,15 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-4" data-testid="logo-link">
-            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center" data-testid="logo-icon">
-              <span className="text-primary-foreground font-bold text-lg">R</span>
-            </div>
+            <img
+              src="/richmanlogo.png"
+              alt="AFC Richman Logo"
+              className="w-10 h-10 object-contain"
+              data-testid="logo-icon"
+            />
             <div className="text-xl font-bold">AFC Richman</div>
           </Link>
-          
+
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link href="/" className="text-foreground hover:text-primary transition-colors" data-testid="nav-latest">
@@ -29,22 +32,10 @@ export default function Header() {
             <a href="#" className="text-foreground hover:text-primary transition-colors" data-testid="nav-matches">
               Matches
             </a>
-            <a href="#" className="text-foreground hover:text-primary transition-colors" data-testid="nav-news">
-              News
-            </a>
-            <a href="#" className="text-foreground hover:text-primary transition-colors" data-testid="nav-store">
-              Store
-            </a>
           </nav>
-          
+
           {/* Right side */}
           <div className="flex items-center space-x-4">
-            <Button 
-              className="bg-primary text-primary-foreground hover:bg-primary/90" 
-              data-testid="login-button"
-            >
-              Login
-            </Button>
             <Button variant="ghost" size="icon" className="md:hidden" data-testid="mobile-menu-button">
               <Menu className="h-5 w-5" />
             </Button>
