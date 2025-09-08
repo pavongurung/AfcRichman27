@@ -1,15 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import { useRoute } from "wouter";
-import { ArrowLeft } from "lucide-react";
+import { useRoute, Link } from "wouter";
+import { ArrowLeft, Calendar, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
 import type { Player, PlayerStats } from "@shared/schema";
 
 export default function PlayerDetail() {
   const [, params] = useRoute("/player/:id");
   const playerId = params?.id;
 
-  const { data: player } = useQuery<Player>({
+  const { data: player, isLoading: playerLoading } = useQuery<Player>({
     queryKey: ["/api/players", playerId],
     queryFn: async () => {
       const response = await fetch(`/api/players/${playerId}`);
@@ -19,7 +18,7 @@ export default function PlayerDetail() {
     enabled: !!playerId,
   });
 
-  const { data: stats } = useQuery<PlayerStats>({
+  const { data: stats, isLoading: statsLoading } = useQuery<PlayerStats>({
     queryKey: ["/api/players", playerId, "stats"],
     queryFn: async () => {
       const response = await fetch(`/api/players/${playerId}/stats`);
@@ -29,93 +28,332 @@ export default function PlayerDetail() {
     enabled: !!playerId,
   });
 
-  if (!player || !stats) {
+  if (playerLoading || statsLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white">
+      <div className="min-h-screen flex items-center justify-center bg-background text-white">
         Loading...
       </div>
     );
   }
 
+  if (!player || !stats) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background text-white">
+        Player not found
+      </div>
+    );
+  }
+
+  // Format date
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+  };
+
+  // Calculate completion percentage for stats
+  const getCompletionPercentage = (value: number, max: number = 100) => {
+    return Math.min((value / max) * 100, 100);
+  };
+
   return (
-    <div className="min-h-screen bg-background text-white">
-      {/* Hero image */}
-      <div
-        className="relative h-96 bg-cover bg-center"
-        style={{
-          backgroundImage: `url('${player.imageUrl || "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&h=800"}')`,
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-        <Link href="/">
-          <Button
-            variant="secondary"
-            size="icon"
-            className="absolute top-4 left-4 bg-secondary/80 hover:bg-secondary"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <div className="absolute bottom-8 left-8">
-          <div className="flex items-center space-x-4 mb-4">
-            <div className="bg-primary text-primary-foreground w-16 h-16 rounded-full flex items-center justify-center font-bold text-2xl">
+    <div className="min-h-screen bg-background">
+      {/* Navigation Header */}
+      <div className="bg-black/80 backdrop-blur-sm border-b border-border">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center space-x-6">
+              <Link href="/">
+                <div className="flex items-center space-x-2">
+                  <img src="/richmanlogo.png" alt="AFC Richman" className="w-8 h-8" />
+                  <span className="text-white font-bold">AFC Richman</span>
+                </div>
+              </Link>
+              <nav className="flex space-x-8 text-sm">
+                <Link href="/" className="text-muted-foreground hover:text-white transition-colors">Latest</Link>
+                <Link href="/squad" className="text-muted-foreground hover:text-white transition-colors">Team</Link>
+                <Link href="/statistics" className="text-muted-foreground hover:text-white transition-colors">Statistics</Link>
+                <span className="text-muted-foreground">Matches</span>
+              </nav>
+            </div>
+            <Link href="/squad">
+              <Button variant="ghost" size="sm" className="text-white">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Squad
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Hero Section */}
+      <div className="relative h-96 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url('${player.imageUrl || "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"}')`
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent"></div>
+        </div>
+
+        {/* Player Info */}
+        <div className="relative z-10 container mx-auto px-4 h-full flex items-end pb-8">
+          <div className="flex items-center space-x-6">
+            {/* Jersey Number Badge */}
+            <div className="bg-red-600 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold">
               {player.jerseyNumber}
             </div>
+            
             <div>
-              <div className="uppercase text-sm text-gray-300">{player.position}</div>
-              <div className="text-4xl font-bold">
-                {player.firstName.toUpperCase()} {player.lastName.toUpperCase()}
+              <div className="text-red-500 uppercase text-sm font-semibold mb-1">{player.position}</div>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+                {player.jerseyNumber} / {player.firstName.toUpperCase()} {player.lastName.toUpperCase()}
+              </h1>
+              
+              {/* Player Details */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-4 text-sm">
+                <div>
+                  <div className="text-muted-foreground">Nationality:</div>
+                  <div className="text-white font-medium">{player.nationality}</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground">Date of birth:</div>
+                  <div className="text-white font-medium">{formatDate(player.dateOfBirth)}</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground">Height:</div>
+                  <div className="text-white font-medium">{player.height}</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground">At AFC Richman since:</div>
+                  <div className="text-white font-medium">{formatDate(player.joinDate)}</div>
+                </div>
               </div>
-              <div className="text-sm text-gray-400 mt-1">At AFC Richman since: {player.joinDate}</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Stats Table */}
-      <div className="p-8 overflow-x-auto">
-        <h2 className="text-2xl font-bold mb-4">Full Statistics</h2>
-        <table className="min-w-full text-sm bg-secondary rounded-lg overflow-hidden">
-          <thead className="bg-gray-800">
-            <tr>
-              {[
-                "APPEARANCE", "MOTM", "GOALS", "ASSISTS", "POSS WON", "POSS LOST", "POSS DIFF",
-                "CLEAN SHEET", "🟨", "🟥", "SAVES", "PK SAVE", "AVG RATING", "SHOTS",
-                "SHOT ACC (%)", "PASSES", "PASS ACC (%)", "DRIBBLES", "DRIBBLE SUC (%)",
-                "TACKLES", "TACKLE SUC (%)", "OFFSIDES", "FOULS"
-              ].map((header) => (
-                <th key={header} className="p-2 whitespace-nowrap text-left">{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="text-center bg-background border-t border-border">
-              <td>{stats.appearance}</td>
-              <td>{stats.motm}</td>
-              <td>{stats.goals}</td>
-              <td>{stats.assists}</td>
-              <td>{stats.possessionWon}</td>
-              <td>{stats.possessionLost}</td>
-              <td>{stats.possessionDifference}</td>
-              <td>{stats.cleanSheet}</td>
-              <td>{stats.yellowCards}</td>
-              <td>{stats.redCards}</td>
-              <td>{stats.saves}</td>
-              <td>{stats.pkSave}</td>
-              <td>{(stats.avgRating / 10).toFixed(1)}</td>
-              <td>{stats.shots}</td>
-              <td>{stats.shotAccuracy}%</td>
-              <td>{stats.passes}</td>
-              <td>{stats.passAccuracy}%</td>
-              <td>{stats.dribbles}</td>
-              <td>{stats.dribbleSuccessRate}%</td>
-              <td>{stats.tackles}</td>
-              <td>{stats.tackleSuccessRate}%</td>
-              <td>{stats.offsides}</td>
-              <td>{stats.foulsCommitted}</td>
-            </tr>
-          </tbody>
-        </table>
+      {/* Statistics Section */}
+      <div className="py-12 bg-background">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-white mb-8">Statistics</h2>
+          
+          {/* Circular Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            {/* Games Played */}
+            <div className="text-center">
+              <div className="relative w-24 h-24 mx-auto mb-4">
+                <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    className="text-gray-700"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="transparent"
+                    d="M18 2.0845
+                      a 15.9155 15.9155 0 0 1 0 31.831
+                      a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <path
+                    className="text-red-500"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="transparent"
+                    strokeDasharray={`${getCompletionPercentage(stats.gamesPlayed || 0, 30)}, 100`}
+                    d="M18 2.0845
+                      a 15.9155 15.9155 0 0 1 0 31.831
+                      a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-white">{stats.gamesPlayed || 0}</span>
+                </div>
+              </div>
+              <div className="text-white font-medium">Games played</div>
+            </div>
+
+            {/* Goals */}
+            <div className="text-center">
+              <div className="relative w-24 h-24 mx-auto mb-4">
+                <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    className="text-gray-700"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="transparent"
+                    d="M18 2.0845
+                      a 15.9155 15.9155 0 0 1 0 31.831
+                      a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <path
+                    className="text-green-500"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="transparent"
+                    strokeDasharray={`${getCompletionPercentage(stats.goals || 0, 25)}, 100`}
+                    d="M18 2.0845
+                      a 15.9155 15.9155 0 0 1 0 31.831
+                      a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-white">{stats.goals || 0}</span>
+                </div>
+              </div>
+              <div className="text-white font-medium">Goals</div>
+            </div>
+
+            {/* Assists */}
+            <div className="text-center">
+              <div className="relative w-24 h-24 mx-auto mb-4">
+                <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    className="text-gray-700"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="transparent"
+                    d="M18 2.0845
+                      a 15.9155 15.9155 0 0 1 0 31.831
+                      a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <path
+                    className="text-blue-500"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="transparent"
+                    strokeDasharray={`${getCompletionPercentage(stats.assists || 0, 15)}, 100`}
+                    d="M18 2.0845
+                      a 15.9155 15.9155 0 0 1 0 31.831
+                      a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-white">{stats.assists || 0}</span>
+                </div>
+              </div>
+              <div className="text-white font-medium">Assists</div>
+            </div>
+
+            {/* Cards */}
+            <div className="text-center">
+              <div className="relative w-24 h-24 mx-auto mb-4">
+                <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    className="text-gray-700"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="transparent"
+                    d="M18 2.0845
+                      a 15.9155 15.9155 0 0 1 0 31.831
+                      a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <path
+                    className="text-yellow-500"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="transparent"
+                    strokeDasharray={`${getCompletionPercentage((stats.yellowCards || 0) + (stats.redCards || 0), 10)}, 100`}
+                    d="M18 2.0845
+                      a 15.9155 15.9155 0 0 1 0 31.831
+                      a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-white">{(stats.yellowCards || 0) + (stats.redCards || 0)}</span>
+                </div>
+              </div>
+              <div className="text-white font-medium">Cards</div>
+            </div>
+          </div>
+
+          {/* Detailed Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Games Stats */}
+            <div className="bg-secondary p-6 rounded-lg">
+              <h3 className="text-white font-semibold mb-4 border-l-4 border-red-500 pl-3">Games</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Starts</span>
+                  <span className="text-white font-medium">{stats.starts || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Substitute on</span>
+                  <span className="text-white font-medium">{stats.substituteOn || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Substitute off</span>
+                  <span className="text-white font-medium">{stats.substituteOff || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Time played</span>
+                  <span className="text-white font-medium">{stats.minutes || 0}'</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Scoring Stats */}
+            <div className="bg-secondary p-6 rounded-lg">
+              <h3 className="text-white font-semibold mb-4 border-l-4 border-green-500 pl-3">Scoring</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Goals</span>
+                  <span className="text-white font-medium">{stats.goals || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Assists</span>
+                  <span className="text-white font-medium">{stats.assists || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Left-footed goals</span>
+                  <span className="text-white font-medium">{stats.leftFootedGoals || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Right-footed goals</span>
+                  <span className="text-white font-medium">{stats.rightFootedGoals || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Headed goals</span>
+                  <span className="text-white font-medium">{stats.headedGoals || 0}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Discipline */}
+            <div className="bg-secondary p-6 rounded-lg">
+              <h3 className="text-white font-semibold mb-4 border-l-4 border-yellow-500 pl-3">Discipline</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Yellow cards</span>
+                  <span className="text-white font-medium">{stats.yellowCards || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Red cards</span>
+                  <span className="text-white font-medium">{stats.redCards || 0}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Performance */}
+            <div className="bg-secondary p-6 rounded-lg">
+              <h3 className="text-white font-semibold mb-4 border-l-4 border-blue-500 pl-3">Performance</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Average rating</span>
+                  <span className="text-white font-medium">{stats.avgRating ? ((stats.avgRating || 0) / 10).toFixed(1) : "0.0"}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Minutes played</span>
+                  <span className="text-white font-medium">{stats.minutes || 0}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
