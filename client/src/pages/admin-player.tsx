@@ -171,52 +171,73 @@ export default function AdminPlayer() {
       return 0;
     };
 
-    // Extract specific stats from the image based on what's visible
-    // Goals and Assists (visible in image as "0")
-    stats.goals = extractStat(['goals', 'goal']);
-    stats.assists = extractStat(['assists', 'assist']);
+    // Enhanced extraction that prioritizes individual player stats (left column)
+    // over team overall stats (right column)
     
-    // Shots (visible as "5")
-    stats.shots = extractStat(['shots', 'shot']);
+    // Find individual player stats by looking for smaller numbers first
+    const extractPlayerStat = (patterns: string[], isPercentage = false): number => {
+      const allMatches: number[] = [];
+      
+      for (const pattern of patterns) {
+        const regexPatterns = [
+          new RegExp(`${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[\\s:]*([\\d.]+)\\s*%?`, 'i'),
+          new RegExp(`([\\d.]+)\\s*%?\\s*${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i'),
+        ];
+        
+        for (const regex of regexPatterns) {
+          let match;
+          let searchText = normalizedText;
+          while ((match = regex.exec(searchText)) !== null) {
+            allMatches.push(parseFloat(match[1]));
+            searchText = searchText.substring(match.index + match[0].length);
+          }
+        }
+        
+        // Line-by-line search for structured data
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i].toLowerCase();
+          if (line.includes(pattern)) {
+            const numbers = line.match(/([\\d.]+)/g);
+            if (numbers) {
+              numbers.forEach(num => allMatches.push(parseFloat(num)));
+            }
+          }
+        }
+      }
+      
+      // Remove duplicates and sort
+      const uniqueMatches = [...new Set(allMatches)].sort((a, b) => a - b);
+      
+      // For player stats, typically choose the smaller number (individual vs team)
+      // Unless it's a percentage where we want the first occurrence
+      if (isPercentage && uniqueMatches.length > 0) {
+        return uniqueMatches[0]; // First percentage found
+      } else if (uniqueMatches.length > 0) {
+        return uniqueMatches[0]; // Smallest number (likely individual stat)
+      }
+      
+      return 0;
+    };
+
+    // Extract individual player stats (prioritizing left column values)
+    stats.goals = extractPlayerStat(['goals', 'goal']);
+    stats.assists = extractPlayerStat(['assists', 'assist']);
+    stats.shots = extractPlayerStat(['shots', 'shot']);
+    stats.shotAccuracy = extractPlayerStat(['shot accuracy', 'shooting accuracy'], true);
+    stats.passes = extractPlayerStat(['passes', 'pass']);
+    stats.passAccuracy = extractPlayerStat(['pass accuracy', 'passing accuracy'], true);
+    stats.dribbles = extractPlayerStat(['dribbles', 'dribble']); // Should get 17, not 109
+    stats.dribbleSuccessRate = extractPlayerStat(['dribble success', 'dribbling success'], true);
+    stats.tackles = extractPlayerStat(['tackles', 'tackle']);
+    stats.tackleSuccessRate = extractPlayerStat(['tackle success', 'tackling success'], true);
+    stats.offsides = extractPlayerStat(['offsides', 'offside']);
+    stats.foulsCommitted = extractPlayerStat(['fouls committed', 'fouls', 'foul']);
+    stats.possessionWon = extractPlayerStat(['possession won', 'poss won']);
+    stats.possessionLost = extractPlayerStat(['possession lost', 'poss lost']);
+    stats.minutes = extractPlayerStat(['minutes', 'mins', 'minutes played']);
     
-    // Shot Accuracy (visible as "80")
-    stats.shotAccuracy = extractStat(['shot accuracy', 'shooting accuracy'], true);
-    
-    // Passes (visible as "128") 
-    stats.passes = extractStat(['passes', 'pass', 'passing']);
-    
-    // Pass Accuracy (visible as "79")
-    stats.passAccuracy = extractStat(['pass accuracy', 'passing accuracy'], true);
-    
-    // Dribbles (visible as "109")
-    stats.dribbles = extractStat(['dribbles', 'dribble', 'dribbling']);
-    
-    // Dribble Success Rate (visible as "84")
-    stats.dribbleSuccessRate = extractStat(['dribble success', 'dribbling success'], true);
-    
-    // Tackles (visible as "52")
-    stats.tackles = extractStat(['tackles', 'tackle', 'tackling']);
-    
-    // Tackle Success Rate (visible as "13")
-    stats.tackleSuccessRate = extractStat(['tackle success', 'tackling success'], true);
-    
-    // Offsides (visible as "1")
-    stats.offsides = extractStat(['offsides', 'offside']);
-    
-    // Fouls Committed (visible as "1")
-    stats.foulsCommitted = extractStat(['fouls committed', 'fouls', 'foul']);
-    
-    // Possession Won (visible as "24")
-    stats.possessionWon = extractStat(['possession won', 'poss won']);
-    
-    // Possession Lost (visible as "33")
-    stats.possessionLost = extractStat(['possession lost', 'poss lost']);
-    
-    // Minutes (visible as "91")
-    stats.minutes = extractStat(['minutes', 'mins', 'minutes played']);
-    
-    // Average Rating (visible as "6.5" - should be stored as 65)
-    const avgRating = extractStat(['rating', 'mr', 'avg rating', 'average rating']);
+    // Average Rating (should get 6.5 from player section)
+    const avgRating = extractPlayerStat(['rating', 'mr', 'avg rating', 'average rating']);
     if (avgRating > 0) {
       stats.avgRating = Math.round(avgRating * 10);
     }
