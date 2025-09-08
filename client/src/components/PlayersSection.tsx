@@ -105,7 +105,7 @@ export default function PlayersSection() {
               <div className="flex flex-col items-center w-full">
                 <div className="relative overflow-hidden rounded-md shadow-lg">
                   <div
-                    className="relative h-80 w-full bg-cover bg-center transition-transform duration-300 group-hover:scale-110"
+                    className="relative h-80 w-64 bg-cover bg-center bg-black transition-transform duration-300 group-hover:scale-110"
                     style={{
                       backgroundImage: `url('${player.imageUrl || "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=600"}')`,
                     }}
