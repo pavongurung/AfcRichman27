@@ -345,7 +345,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/matches", isAuthenticated, async (req, res) => {
+  app.post("/api/admin/matches", async (req, res) => {
     try {
       const matchData = insertMatchSchema.parse(req.body);
       const match = await storage.createMatch(matchData);
@@ -356,6 +356,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       console.error("Error creating match:", error);
       res.status(500).json({ message: "Failed to create match" });
+    }
+  });
+
+  app.put("/api/admin/matches/:id", async (req, res) => {
+    try {
+      const updates = insertMatchSchema.partial().parse(req.body);
+      const match = await storage.updateMatch(req.params.id, updates);
+      
+      if (!match) {
+        return res.status(404).json({ message: "Match not found" });
+      }
+      
+      res.json(match);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid match data", errors: error.errors });
+      }
+      console.error("Error updating match:", error);
+      res.status(500).json({ message: "Failed to update match" });
+    }
+  });
+
+  app.delete("/api/admin/matches/:id", async (req, res) => {
+    try {
+      const success = await storage.deleteMatch(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Match not found" });
+      }
+      res.json({ message: "Match deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting match:", error);
+      res.status(500).json({ message: "Failed to delete match" });
     }
   });
 

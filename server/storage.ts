@@ -38,7 +38,10 @@ export interface IStorage {
   // Matches
   getAllMatches(): Promise<Match[]>;
   getRecentMatches(limit?: number): Promise<Match[]>;
+  getMatch(id: string): Promise<Match | undefined>;
   createMatch(match: InsertMatch): Promise<Match>;
+  updateMatch(id: string, updates: Partial<Match>): Promise<Match | undefined>;
+  deleteMatch(id: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -205,12 +208,31 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(matches).orderBy(desc(matches.matchDate)).limit(limit);
   }
 
+  async getMatch(id: string): Promise<Match | undefined> {
+    const [match] = await db.select().from(matches).where(eq(matches.id, id));
+    return match;
+  }
+
   async createMatch(matchData: InsertMatch): Promise<Match> {
     const [match] = await db
       .insert(matches)
       .values(matchData)
       .returning();
     return match;
+  }
+
+  async updateMatch(id: string, updates: Partial<Match>): Promise<Match | undefined> {
+    const [match] = await db
+      .update(matches)
+      .set(updates)
+      .where(eq(matches.id, id))
+      .returning();
+    return match;
+  }
+
+  async deleteMatch(id: string): Promise<boolean> {
+    const result = await db.delete(matches).where(eq(matches.id, id));
+    return (result.rowCount || 0) > 0;
   }
 }
 

@@ -16,7 +16,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import type { Player, PlayerStats, InsertPlayer, InsertPlayerStats } from "@shared/schema";
+import type { Player, PlayerStats, InsertPlayer, InsertPlayerStats, Match, InsertMatch } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
 
@@ -70,15 +70,32 @@ const statsFormSchema = z.object({
   foulsCommitted: z.number().min(0).default(0),
 });
 
+const matchFormSchema = z.object({
+  homeTeam: z.string().min(1, "Home team is required"),
+  awayTeam: z.string().min(1, "Away team is required"),
+  homeTeamLogo: z.string().optional(),
+  awayTeamLogo: z.string().optional(),
+  homeScore: z.number().min(0).optional(),
+  awayScore: z.number().min(0).optional(),
+  competition: z.string().min(1, "Competition is required"),
+  matchDate: z.string().min(1, "Match date is required"),
+  venue: z.string().optional(),
+  status: z.enum(["FT", "Upcoming", "Live"]),
+  replayUrl: z.string().optional(),
+});
+
 type PlayerFormData = z.infer<typeof playerFormSchema>;
 type StatsFormData = z.infer<typeof statsFormSchema>;
+type MatchFormData = z.infer<typeof matchFormSchema>;
 
 export default function AdminPanel() {
   const { toast } = useToast();
   const { isAuthenticated, isLoading } = useAuth();
   const [isPlayerDialogOpen, setIsPlayerDialogOpen] = useState(false);
+  const [isMatchDialogOpen, setIsMatchDialogOpen] = useState(false);
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
   const [editingStats, setEditingStats] = useState<PlayerStats | null>(null);
+  const [editingMatch, setEditingMatch] = useState<Match | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isOcrProcessing, setIsOcrProcessing] = useState(false);
   const [ocrProgress, setOcrProgress] = useState(0);
@@ -268,6 +285,11 @@ export default function AdminPanel() {
     enabled: isAuthenticated,
   });
 
+  const { data: matches, isLoading: matchesLoading } = useQuery<Match[]>({
+    queryKey: ["/api/matches"],
+    enabled: isAuthenticated,
+  });
+
   const playerForm = useForm<PlayerFormData>({
     resolver: zodResolver(playerFormSchema),
     defaultValues: {
@@ -283,6 +305,21 @@ export default function AdminPanel() {
 
   const statsForm = useForm<StatsFormData>({
     resolver: zodResolver(statsFormSchema),
+  });
+
+  const matchForm = useForm<MatchFormData>({
+    resolver: zodResolver(matchFormSchema),
+    defaultValues: {
+      homeTeam: "",
+      awayTeam: "",
+      homeTeamLogo: "",
+      awayTeamLogo: "",
+      competition: "",
+      matchDate: "",
+      venue: "",
+      status: "Upcoming",
+      replayUrl: "",
+    },
   });
 
   // Redirect to login if not authenticated
@@ -430,6 +467,104 @@ export default function AdminPanel() {
     },
   });
 
+  // Match Mutations
+  const createMatchMutation = useMutation({
+    mutationFn: async (data: InsertMatch) => {
+      return await apiRequest("POST", "/api/admin/matches", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
+      toast({
+        title: "Success",
+        description: "Match created successfully!",
+      });
+      setIsMatchDialogOpen(false);
+      matchForm.reset();
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Error",
+        description: "Failed to create match. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateMatchMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<InsertMatch> }) => {
+      return await apiRequest("PUT", `/api/admin/matches/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
+      toast({
+        title: "Success",
+        description: "Match updated successfully!",
+      });
+      setEditingMatch(null);
+      matchForm.reset();
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Error",
+        description: "Failed to update match. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteMatchMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return await apiRequest(`/api/admin/matches/${id}`, "DELETE");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
+      toast({
+        title: "Success",
+        description: "Match deleted successfully!",
+      });
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Error",
+        description: "Failed to delete match. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleEditPlayer = (player: Player) => {
     setEditingPlayer(player);
     playerForm.reset({
@@ -497,6 +632,38 @@ export default function AdminPanel() {
     }
   };
 
+  const handleEditMatch = (match: Match) => {
+    setEditingMatch(match);
+    matchForm.reset({
+      homeTeam: match.homeTeam,
+      awayTeam: match.awayTeam,
+      homeTeamLogo: match.homeTeamLogo || "",
+      awayTeamLogo: match.awayTeamLogo || "",
+      homeScore: match.homeScore || 0,
+      awayScore: match.awayScore || 0,
+      competition: match.competition,
+      matchDate: new Date(match.matchDate).toISOString().slice(0, 16), // Format for datetime-local input
+      venue: match.venue || "",
+      status: match.status as "FT" | "Upcoming" | "Live",
+      replayUrl: match.replayUrl || "",
+    });
+    setIsMatchDialogOpen(true);
+  };
+
+  const onMatchSubmit = (data: MatchFormData) => {
+    // Convert the datetime-local string to proper Date object
+    const matchData = {
+      ...data,
+      matchDate: new Date(data.matchDate),
+    };
+
+    if (editingMatch) {
+      updateMatchMutation.mutate({ id: editingMatch.id, data: matchData });
+    } else {
+      createMatchMutation.mutate(matchData);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-white">
@@ -523,9 +690,10 @@ export default function AdminPanel() {
         </div>
 
         <Tabs defaultValue="players" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="players">Player Management</TabsTrigger>
             <TabsTrigger value="stats">Statistics Management</TabsTrigger>
+            <TabsTrigger value="matches">Match Calendar</TabsTrigger>
           </TabsList>
 
           <TabsContent value="players">
@@ -1223,6 +1391,291 @@ export default function AdminPanel() {
                 </CardContent>
               </Card>
             )}
+          </TabsContent>
+
+          <TabsContent value="matches">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle>Match Calendar</CardTitle>
+                  <Dialog open={isMatchDialogOpen} onOpenChange={setIsMatchDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button onClick={() => setEditingMatch(null)}>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Match
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl">
+                      <DialogHeader>
+                        <DialogTitle>
+                          {editingMatch ? "Edit Match" : "Add New Match"}
+                        </DialogTitle>
+                      </DialogHeader>
+                      <Form {...matchForm}>
+                        <form onSubmit={matchForm.handleSubmit(onMatchSubmit)} className="space-y-4">
+                          <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                              control={matchForm.control}
+                              name="homeTeam"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Home Team</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} data-testid="input-home-team" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={matchForm.control}
+                              name="awayTeam"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Away Team</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} data-testid="input-away-team" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                              control={matchForm.control}
+                              name="homeTeamLogo"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Home Team Logo URL (Optional)</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} data-testid="input-home-logo" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={matchForm.control}
+                              name="awayTeamLogo"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Away Team Logo URL (Optional)</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} data-testid="input-away-logo" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-3 gap-4">
+                            <FormField
+                              control={matchForm.control}
+                              name="competition"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Competition</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} placeholder="e.g., Bundesliga" data-testid="input-competition" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={matchForm.control}
+                              name="matchDate"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Match Date & Time</FormLabel>
+                                  <FormControl>
+                                    <Input type="datetime-local" {...field} data-testid="input-match-date" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={matchForm.control}
+                              name="status"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Status</FormLabel>
+                                  <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl>
+                                      <SelectTrigger data-testid="select-status">
+                                        <SelectValue placeholder="Select status" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value="Upcoming">Upcoming</SelectItem>
+                                      <SelectItem value="Live">Live</SelectItem>
+                                      <SelectItem value="FT">Finished</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          <FormField
+                            control={matchForm.control}
+                            name="venue"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Venue (Optional)</FormLabel>
+                                <FormControl>
+                                  <Input {...field} placeholder="e.g., Allianz Arena" data-testid="input-venue" />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          {matchForm.watch("status") === "FT" && (
+                            <div className="grid grid-cols-2 gap-4">
+                              <FormField
+                                control={matchForm.control}
+                                name="homeScore"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Home Score</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        type="number" 
+                                        {...field} 
+                                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} 
+                                        data-testid="input-home-score"
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={matchForm.control}
+                                name="awayScore"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Away Score</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        type="number" 
+                                        {...field} 
+                                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} 
+                                        data-testid="input-away-score"
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                          )}
+
+                          <FormField
+                            control={matchForm.control}
+                            name="replayUrl"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Replay/Highlights URL (Optional)</FormLabel>
+                                <FormControl>
+                                  <Input {...field} placeholder="https://twitch.tv/sevlakev" data-testid="input-replay-url" />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <div className="flex space-x-4 pt-4">
+                            <Button type="submit" disabled={createMatchMutation.isPending || updateMatchMutation.isPending} data-testid="button-save-match">
+                              <Save className="w-4 h-4 mr-2" />
+                              {(createMatchMutation.isPending || updateMatchMutation.isPending) ? "Saving..." : (editingMatch ? "Update Match" : "Create Match")}
+                            </Button>
+                            <Button type="button" variant="outline" onClick={() => setIsMatchDialogOpen(false)} data-testid="button-cancel-match">
+                              Cancel
+                            </Button>
+                          </div>
+                        </form>
+                      </Form>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {matchesLoading ? (
+                  <div className="text-center py-8">Loading matches...</div>
+                ) : !matches || matches.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No matches found. Add your first match to get started!
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {matches.map((match) => (
+                      <div key={match.id} className="flex items-center justify-between p-4 border rounded-lg" data-testid={`match-card-${match.id}`}>
+                        <div className="flex items-center space-x-4">
+                          <div className="flex items-center space-x-2">
+                            {match.homeTeamLogo && (
+                              <img src={match.homeTeamLogo} alt={match.homeTeam} className="w-8 h-8" />
+                            )}
+                            <span className="font-semibold">{match.homeTeam}</span>
+                          </div>
+                          <div className="text-center">
+                            <Badge variant={
+                              match.status === "FT" ? "default" : 
+                              match.status === "Live" ? "destructive" : 
+                              "secondary"
+                            }>
+                              {match.status}
+                            </Badge>
+                            {match.status === "FT" && (
+                              <div className="text-xl font-bold mt-1">
+                                {match.homeScore} - {match.awayScore}
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="font-semibold">{match.awayTeam}</span>
+                            {match.awayTeamLogo && (
+                              <img src={match.awayTeamLogo} alt={match.awayTeam} className="w-8 h-8" />
+                            )}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            <div>{match.competition}</div>
+                            <div>{new Date(match.matchDate).toLocaleDateString()}</div>
+                            <div>{new Date(match.matchDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                            {match.venue && <div>{match.venue}</div>}
+                          </div>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditMatch(match)}
+                            data-testid={`button-edit-match-${match.id}`}
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => deleteMatchMutation.mutate(match.id)}
+                            disabled={deleteMatchMutation.isPending}
+                            data-testid={`button-delete-match-${match.id}`}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
