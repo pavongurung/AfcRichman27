@@ -47,6 +47,7 @@ export class MemStorage implements IStorage {
       { jerseyNumber: 7, firstName: "Luis", lastName: "Martinez", position: "Forward", nationality: "Spain", dateOfBirth: "1994-05-20", height: "1.77m", joinDate: "2021-06-15", imageUrl: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=600", isActive: true },
       { jerseyNumber: 9, firstName: "Marcus", lastName: "Thompson", position: "Forward", nationality: "England", dateOfBirth: "1995-03-15", height: "1.83m", joinDate: "2022-07-01", imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=600", isActive: true },
       { jerseyNumber: 10, firstName: "Carlos", lastName: "Silva", position: "Forward", nationality: "Portugal", dateOfBirth: "1993-07-12", height: "1.81m", joinDate: "2021-01-20", imageUrl: "https://images.unsplash.com/photo-1560272564-c83b66b1ad12?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=600", isActive: true },
+      { jerseyNumber: 14, firstName: "Mosh", lastName: "Hamedani", position: "Midfielder", nationality: "Canada", dateOfBirth: "1990-08-15", height: "1.79m", joinDate: "2023-06-01", imageUrl: "https://images.unsplash.com/photo-1553778263-73a83bab9b0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=600", isActive: true },
     ];
 
     playersData.forEach(playerData => {

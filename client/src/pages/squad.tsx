@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Settings } from "lucide-react";
 import { useState } from "react";
 import type { Player } from "@shared/schema";
 
@@ -26,28 +28,36 @@ export default function Squad() {
   };
 
   const PlayerCard = ({ player }: { player: Player }) => (
-    <Link
-      href={`/player/${player.id}`}
-      className="bg-card rounded-lg overflow-hidden player-card cursor-pointer"
-      data-testid={`squad-player-${player.id}`}
-    >
-      <div 
-        className="relative h-48 bg-cover bg-center"
-        style={{
-          backgroundImage: `url('${player.imageUrl || 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400'}')`
-        }}
+    <div className="bg-card rounded-lg overflow-hidden player-card">
+      <Link
+        href={`/player/${player.id}`}
+        className="block cursor-pointer"
+        data-testid={`squad-player-${player.id}`}
       >
-        <div className="absolute top-2 left-2 bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
-          {player.jerseyNumber}
+        <div 
+          className="relative h-48 bg-cover bg-center"
+          style={{
+            backgroundImage: `url('${player.imageUrl || 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400'}')`
+          }}
+        >
+          <div className="absolute top-2 left-2 bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
+            {player.jerseyNumber}
+          </div>
         </div>
-      </div>
+      </Link>
       <div className="p-3">
         <div className="font-semibold text-sm">
           {player.firstName} {player.lastName}
         </div>
-        <div className="text-xs text-muted-foreground">{player.position}</div>
+        <div className="text-xs text-muted-foreground mb-2">{player.position}</div>
+        <Link href={`/admin/player/${player.id}`}>
+          <Button size="sm" variant="outline" className="w-full" data-testid={`admin-button-${player.id}`}>
+            <Settings className="h-3 w-3 mr-1" />
+            Admin
+          </Button>
+        </Link>
       </div>
-    </Link>
+    </div>
   );
 
   if (isLoading) {
