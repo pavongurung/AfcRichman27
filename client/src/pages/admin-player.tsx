@@ -92,41 +92,64 @@ export default function AdminPlayer() {
     }
   };
 
+  // Custom stat field mapping system
+  const customStatFields = [
+    { key: 'appearance', display: 'Appearance', patterns: ['appearance', 'appearances', 'apps'] },
+    { key: 'motm', display: 'MOTM', patterns: ['motm', 'man of the match', 'player of the match'] },
+    { key: 'goals', display: 'Goals', patterns: ['goals', 'goal', 'scored'] },
+    { key: 'assists', display: 'Assists', patterns: ['assists', 'assist'] },
+    { key: 'possessionWon', display: 'Possession Won', patterns: ['possession won', 'poss won', 'possession+'] },
+    { key: 'possessionLost', display: 'Possession Lost', patterns: ['possession lost', 'poss lost', 'possession-'] },
+    { key: 'possessionDifference', display: 'Possession Difference', patterns: ['possession difference', 'poss diff', 'possession +/-'] },
+    { key: 'cleanSheet', display: 'Clean Sheet', patterns: ['clean sheet', 'clean sheets', 'cs'] },
+    { key: 'yellowCards', display: 'Yellow', patterns: ['yellow', 'yellow cards', 'yellow card', 'yc'] },
+    { key: 'redCards', display: 'Red', patterns: ['red', 'red cards', 'red card', 'rc'] },
+    { key: 'saves', display: 'Saves', patterns: ['saves', 'save'] },
+    { key: 'pkSave', display: 'PK Save', patterns: ['pk save', 'penalty save', 'pen save'] },
+    { key: 'avgRating', display: 'Avg Rating', patterns: ['avg rating', 'average rating', 'rating'] },
+    { key: 'shots', display: 'Shots', patterns: ['shots', 'shot'] },
+    { key: 'shotAccuracy', display: 'Shot Accuracy (%)', patterns: ['shot accuracy', 'shooting accuracy', 'shot acc'] },
+    { key: 'passes', display: 'Passes', patterns: ['passes', 'pass'] },
+    { key: 'passAccuracy', display: 'Pass Accuracy (%)', patterns: ['pass accuracy', 'passing accuracy', 'pass acc'] },
+    { key: 'dribbles', display: 'Dribbles', patterns: ['dribbles', 'dribble'] },
+    { key: 'dribbleSuccessRate', display: 'Dribble Success Rate (%)', patterns: ['dribble success', 'dribbling success', 'dribble acc'] },
+    { key: 'tackles', display: 'Tackles', patterns: ['tackles', 'tackle'] },
+    { key: 'tackleSuccessRate', display: 'Tackle Success Rate (%)', patterns: ['tackle success', 'tackling success', 'tackle acc'] },
+    { key: 'offsides', display: 'Offsides', patterns: ['offsides', 'offside'] },
+    { key: 'foulsCommitted', display: 'Fouls Committed', patterns: ['fouls committed', 'fouls', 'foul'] },
+    { key: 'minutes', display: 'Minutes', patterns: ['minutes', 'mins'] },
+  ];
+
   const parseStatsFromText = (text: string): Partial<PlayerStats> => {
-    const lines = text.toLowerCase().split('\n');
     const stats: Partial<PlayerStats> = {};
-
-    for (const line of lines) {
-      // Look for goals
-      const goalMatch = line.match(/goals?\s*:?\s*(\d+)/i) || line.match(/(\d+)\s*goals?/i);
-      if (goalMatch) {
-        stats.goals = parseInt(goalMatch[1]);
-      }
-
-      // Look for assists
-      const assistMatch = line.match(/assists?\s*:?\s*(\d+)/i) || line.match(/(\d+)\s*assists?/i);
-      if (assistMatch) {
-        stats.assists = parseInt(assistMatch[1]);
-      }
-
-      // Look for yellow cards
-      const yellowMatch = line.match(/yellow\s*cards?\s*:?\s*(\d+)/i) || line.match(/(\d+)\s*yellow/i);
-      if (yellowMatch) {
-        stats.yellowCards = parseInt(yellowMatch[1]);
-      }
-
-      // Look for red cards
-      const redMatch = line.match(/red\s*cards?\s*:?\s*(\d+)/i) || line.match(/(\d+)\s*red/i);
-      if (redMatch) {
-        stats.redCards = parseInt(redMatch[1]);
-      }
-
-      // Look for minutes
-      const minutesMatch = line.match(/minutes?\s*:?\s*(\d+)/i) || line.match(/(\d+)\s*minutes?/i);
-      if (minutesMatch) {
-        stats.minutes = parseInt(minutesMatch[1]);
-      }
-    }
+    const normalizedText = text.toLowerCase();
+    
+    // For each custom stat field, try to find matching patterns
+    customStatFields.forEach(field => {
+      field.patterns.forEach(pattern => {
+        // Create regex to find pattern followed by number or percentage
+        const regex = new RegExp(`${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[\\s:]*([\\d.]+)\\s*%?`, 'i');
+        const match = normalizedText.match(regex);
+        
+        if (match) {
+          let value = parseFloat(match[1]);
+          
+          // Handle special cases
+          if (field.key === 'avgRating') {
+            // Rating stored as integer (multiply by 10)
+            value = Math.round(value * 10);
+          } else if (field.display.includes('%')) {
+            // Percentage fields - ensure it's a whole number
+            value = Math.round(value);
+          } else {
+            // Regular integer fields
+            value = Math.round(value);
+          }
+          
+          stats[field.key as keyof PlayerStats] = value;
+        }
+      });
+    });
 
     return stats;
   };
@@ -206,30 +229,20 @@ export default function AdminPlayer() {
             </CardHeader>
             <CardContent>
               {stats && (
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Games Played</Label>
-                    <div className="text-2xl font-bold">{stats.gamesPlayed}</div>
-                  </div>
-                  <div>
-                    <Label>Minutes</Label>
-                    <div className="text-2xl font-bold">{stats.minutes}</div>
-                  </div>
-                  <div>
-                    <Label>Goals</Label>
-                    <div className="text-2xl font-bold text-green-500">{stats.goals}</div>
-                  </div>
-                  <div>
-                    <Label>Assists</Label>
-                    <div className="text-2xl font-bold text-blue-500">{stats.assists}</div>
-                  </div>
-                  <div>
-                    <Label>Yellow Cards</Label>
-                    <div className="text-2xl font-bold text-yellow-500">{stats.yellowCards}</div>
-                  </div>
-                  <div>
-                    <Label>Red Cards</Label>
-                    <div className="text-2xl font-bold text-red-500">{stats.redCards}</div>
+                <div className="max-h-64 overflow-y-auto">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {customStatFields.map(field => {
+                      const value = stats[field.key as keyof PlayerStats] || 0;
+                      return (
+                        <div key={field.key}>
+                          <Label className="text-xs">{field.display}</Label>
+                          <div className="text-lg font-bold">
+                            {field.key === 'avgRating' && value ? (value / 10).toFixed(1) : value}
+                            {field.display.includes('%') && value ? '%' : ''}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -310,69 +323,32 @@ export default function AdminPlayer() {
               <DialogTitle>Confirm Extracted Statistics</DialogTitle>
             </DialogHeader>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="goals">Goals</Label>
-                  <Input
-                    id="goals"
-                    type="number"
-                    min="0"
-                    value={extractedStats.goals || 0}
-                    onChange={(e) => handleStatChange('goals', e.target.value)}
-                    data-testid="goals-input"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="assists">Assists</Label>
-                  <Input
-                    id="assists"
-                    type="number"
-                    min="0"
-                    value={extractedStats.assists || 0}
-                    onChange={(e) => handleStatChange('assists', e.target.value)}
-                    data-testid="assists-input"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="minutes">Minutes Played</Label>
-                  <Input
-                    id="minutes"
-                    type="number"
-                    min="0"
-                    value={extractedStats.minutes || 0}
-                    onChange={(e) => handleStatChange('minutes', e.target.value)}
-                    data-testid="minutes-input"
-                  />
-                </div>
-              </div>
-              
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="yellowCards">Yellow Cards</Label>
-                  <Input
-                    id="yellowCards"
-                    type="number"
-                    min="0"
-                    value={extractedStats.yellowCards || 0}
-                    onChange={(e) => handleStatChange('yellowCards', e.target.value)}
-                    data-testid="yellow-cards-input"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="redCards">Red Cards</Label>
-                  <Input
-                    id="redCards"
-                    type="number"
-                    min="0"
-                    value={extractedStats.redCards || 0}
-                    onChange={(e) => handleStatChange('redCards', e.target.value)}
-                    data-testid="red-cards-input"
-                  />
-                </div>
+            <div className="max-h-96 overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {customStatFields.map(field => {
+                  const value = extractedStats[field.key as keyof PlayerStats] || 0;
+                  return (
+                    <div key={field.key}>
+                      <Label htmlFor={field.key}>{field.display}</Label>
+                      <Input
+                        id={field.key}
+                        type="number"
+                        min="0"
+                        step={field.key === 'avgRating' ? '0.1' : '1'}
+                        value={field.key === 'avgRating' && value ? (value / 10).toFixed(1) : value}
+                        onChange={(e) => {
+                          let newValue = e.target.value;
+                          if (field.key === 'avgRating') {
+                            handleStatChange(field.key as keyof PlayerStats, (parseFloat(newValue) * 10).toString());
+                          } else {
+                            handleStatChange(field.key as keyof PlayerStats, newValue);
+                          }
+                        }}
+                        data-testid={`${field.key}-input`}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
