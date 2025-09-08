@@ -112,10 +112,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           if (info.status === 'recognizing text') {
             console.log(`OCR Progress: ${Math.round(info.progress * 100)}%`);
           }
-        },
-        tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz()%:. ',
-        tessedit_pageseg_mode: Tesseract.PSM.AUTO,
-        tessedit_ocr_engine_mode: Tesseract.OEM.LSTM_ONLY
+        }
       });
 
       console.log("Raw OCR Text:", text);

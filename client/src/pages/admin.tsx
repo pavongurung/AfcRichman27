@@ -827,14 +827,14 @@ export default function AdminPanel() {
                   <CardTitle>Edit Statistics</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {/* AI Stats Extraction Section */}
-                  <div className="mb-6 p-4 border border-dashed border-primary/30 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 dark:border-primary/50">
-                    <h3 className="text-lg font-semibold mb-3 flex items-center text-primary">
+                  {/* Free OCR Stats Extraction Section */}
+                  <div className="mb-6 p-4 border border-dashed border-green-300 dark:border-green-600 rounded-lg bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30">
+                    <h3 className="text-lg font-semibold mb-3 flex items-center text-green-700 dark:text-green-400">
                       <ImageIcon className="w-5 h-5 mr-2" />
-                      AI Stats Extraction
+                      Free OCR Stats Extraction
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                      Upload a post-match statistics screenshot and let AI automatically extract all numbers with high accuracy
+                      Upload a post-match statistics screenshot and let our free OCR technology extract the numbers automatically
                     </p>
                     <div className="flex items-center space-x-4">
                       <input
@@ -855,7 +855,7 @@ export default function AdminPanel() {
                         }`}
                       >
                         <Upload className="w-4 h-4 mr-2" />
-                        {isOcrProcessing ? "Analyzing..." : "Upload Stats Image"}
+{isOcrProcessing ? "Extracting..." : "Upload Stats Image"}
                       </label>
                       {isOcrProcessing && (
                         <div className="flex items-center space-x-2">
