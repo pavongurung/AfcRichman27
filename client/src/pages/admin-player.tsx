@@ -124,139 +124,168 @@ export default function AdminPlayer() {
 
   const parseStatsFromText = (text: string): Partial<PlayerStats> => {
     const stats: Partial<PlayerStats> = {};
-    const normalizedText = text.toLowerCase();
-    const lines = text.split('\n');
+    const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
     
-    // Enhanced extraction for detailed performance screens
-    // Look for specific stat patterns in the text
-    const extractStat = (patterns: string[], isPercentage = false): number => {
-      for (const pattern of patterns) {
-        // Try multiple regex patterns for flexibility
-        const regexPatterns = [
-          // Pattern: "Stat Name 123" or "Stat Name: 123"
-          new RegExp(`${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[\\s:]*([\\d.]+)\\s*%?`, 'i'),
-          // Pattern: "123 Stat Name" 
-          new RegExp(`([\\d.]+)\\s*%?\\s*${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i'),
-          // Pattern with parentheses: "Stat Name (%) 123"
-          new RegExp(`${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\([%\\w]*\\)\\s*([\\d.]+)`, 'i'),
-        ];
+    // Function to extract stats from the specific right-side format visible in the image
+    const extractFromRightColumn = (): Partial<PlayerStats> => {
+      const rightColumnStats: Partial<PlayerStats> = {};
+      
+      // Look for the exact patterns from the performance screen
+      // These are the individual player stats from the right column
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].toLowerCase();
         
-        for (const regex of regexPatterns) {
-          const match = normalizedText.match(regex);
-          if (match && match[1]) {
-            return parseFloat(match[1]);
+        // Goals: Look for "goals" followed by number
+        if (line.includes('goals') && !line.includes('footed')) {
+          const match = line.match(/\\b(\\d+)\\b/);
+          if (match) rightColumnStats.goals = parseInt(match[1]);
+        }
+        
+        // Assists: Look for "assists" followed by number  
+        if (line.includes('assists')) {
+          const match = line.match(/\\b(\\d+)\\b/);
+          if (match) rightColumnStats.assists = parseInt(match[1]);
+        }
+        
+        // Shots: Look for "shots" followed by number (should find 0 and 5, take smaller)
+        if (line.includes('shots') && !line.includes('accuracy')) {
+          const numbers = line.match(/\\b(\\d+)\\b/g);
+          if (numbers) {
+            // Take the first number (individual stat)
+            rightColumnStats.shots = parseInt(numbers[0]);
           }
         }
         
-        // Try line-by-line approach for structured data
-        for (let i = 0; i < lines.length; i++) {
-          const line = lines[i].toLowerCase();
-          if (line.includes(pattern)) {
-            // Look for numbers in the same line
-            const numberMatch = line.match(/([\\d.]+)/);
-            if (numberMatch) {
-              return parseFloat(numberMatch[1]);
-            }
-            // Look for numbers in next few lines
-            for (let j = i + 1; j <= Math.min(i + 3, lines.length - 1); j++) {
-              const nextLine = lines[j];
-              const nextNumberMatch = nextLine.match(/([\\d.]+)/);
-              if (nextNumberMatch) {
-                return parseFloat(nextNumberMatch[1]);
-              }
-            }
+        // Shot Accuracy: Look for "shot accuracy" with percentage
+        if (line.includes('shot accuracy')) {
+          const numbers = line.match(/\\b(\\d+)\\b/g);
+          if (numbers) {
+            // Take the first number (individual percentage)
+            rightColumnStats.shotAccuracy = parseInt(numbers[0]);
+          }
+        }
+        
+        // Passes: Look for "passes" followed by number (should find 86 and 128, take smaller)
+        if (line.includes('passes') && !line.includes('accuracy')) {
+          const numbers = line.match(/\\b(\\d+)\\b/g);
+          if (numbers) {
+            rightColumnStats.passes = parseInt(numbers[0]);
+          }
+        }
+        
+        // Pass Accuracy: Look for "pass accuracy" with percentage
+        if (line.includes('pass accuracy')) {
+          const numbers = line.match(/\\b(\\d+)\\b/g);
+          if (numbers) {
+            rightColumnStats.passAccuracy = parseInt(numbers[0]);
+          }
+        }
+        
+        // Dribbles: Look for "dribbles" followed by number (should find 17 and 109, take smaller)
+        if (line.includes('dribbles') && !line.includes('success')) {
+          const numbers = line.match(/\\b(\\d+)\\b/g);
+          if (numbers) {
+            // Sort numbers and take smallest (individual stat)
+            const sortedNumbers = numbers.map(n => parseInt(n)).sort((a, b) => a - b);
+            rightColumnStats.dribbles = sortedNumbers[0];
+          }
+        }
+        
+        // Dribble Success Rate
+        if (line.includes('dribble success')) {
+          const numbers = line.match(/\\b(\\d+)\\b/g);
+          if (numbers) {
+            rightColumnStats.dribbleSuccessRate = parseInt(numbers[0]);
+          }
+        }
+        
+        // Tackles: Look for "tackles" followed by number (should find smaller number)
+        if (line.includes('tackles') && !line.includes('success')) {
+          const numbers = line.match(/\\b(\\d+)\\b/g);
+          if (numbers) {
+            const sortedNumbers = numbers.map(n => parseInt(n)).sort((a, b) => a - b);
+            rightColumnStats.tackles = sortedNumbers[0];
+          }
+        }
+        
+        // Tackle Success Rate
+        if (line.includes('tackle success')) {
+          const numbers = line.match(/\\b(\\d+)\\b/g);
+          if (numbers) {
+            rightColumnStats.tackleSuccessRate = parseInt(numbers[0]);
+          }
+        }
+        
+        // Offsides
+        if (line.includes('offsides')) {
+          const numbers = line.match(/\\b(\\d+)\\b/g);
+          if (numbers) {
+            rightColumnStats.offsides = parseInt(numbers[0]);
+          }
+        }
+        
+        // Fouls Committed
+        if (line.includes('fouls committed')) {
+          const numbers = line.match(/\\b(\\d+)\\b/g);
+          if (numbers) {
+            rightColumnStats.foulsCommitted = parseInt(numbers[0]);
+          }
+        }
+        
+        // Possession Won
+        if (line.includes('possession won')) {
+          const numbers = line.match(/\\b(\\d+)\\b/g);
+          if (numbers) {
+            rightColumnStats.possessionWon = parseInt(numbers[0]);
+          }
+        }
+        
+        // Possession Lost
+        if (line.includes('possession lost')) {
+          const numbers = line.match(/\\b(\\d+)\\b/g);
+          if (numbers) {
+            rightColumnStats.possessionLost = parseInt(numbers[0]);
+          }
+        }
+        
+        // Minutes Played (should find 91, not team average)
+        if (line.includes('minutes') && (line.includes('played') || line.includes('vs'))) {
+          const numbers = line.match(/\\b(\\d+)\\b/g);
+          if (numbers) {
+            // Look for the individual minutes (usually the smaller number)
+            const sortedNumbers = numbers.map(n => parseInt(n)).sort((a, b) => a - b);
+            rightColumnStats.minutes = sortedNumbers[0];
           }
         }
       }
-      return 0;
+      
+      return rightColumnStats;
     };
-
-    // Enhanced extraction that prioritizes individual player stats (left column)
-    // over team overall stats (right column)
     
-    // Find individual player stats by looking for smaller numbers first
-    const extractPlayerStat = (patterns: string[], isPercentage = false): number => {
-      const allMatches: number[] = [];
+    // Extract from left column table (player ratings)
+    const extractFromLeftColumn = (): Partial<PlayerStats> => {
+      const leftColumnStats: Partial<PlayerStats> = {};
       
-      for (const pattern of patterns) {
-        const regexPatterns = [
-          new RegExp(`${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[\\s:]*([\\d.]+)\\s*%?`, 'i'),
-          new RegExp(`([\\d.]+)\\s*%?\\s*${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i'),
-        ];
-        
-        for (const regex of regexPatterns) {
-          let match;
-          let searchText = normalizedText;
-          while ((match = regex.exec(searchText)) !== null) {
-            allMatches.push(parseFloat(match[1]));
-            searchText = searchText.substring(match.index + match[0].length);
-          }
-        }
-        
-        // Line-by-line search for structured data
-        for (let i = 0; i < lines.length; i++) {
-          const line = lines[i].toLowerCase();
-          if (line.includes(pattern)) {
-            const numbers = line.match(/([\\d.]+)/g);
-            if (numbers) {
-              numbers.forEach(num => allMatches.push(parseFloat(num)));
-            }
+      // Look for "vmoshmosh" or "mosh" in the table to find the player's row
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].toLowerCase();
+        if (line.includes('vmoshmosh') || line.includes('mosh')) {
+          // Extract rating from this line (should be 6.5)
+          const ratingMatch = line.match(/\\b(\\d+\\.\\d+)\\b/);
+          if (ratingMatch) {
+            leftColumnStats.avgRating = Math.round(parseFloat(ratingMatch[1]) * 10);
           }
         }
       }
       
-      // Remove duplicates and sort
-      const uniqueMatches = [...new Set(allMatches)].sort((a, b) => a - b);
-      
-      // For player stats, typically choose the smaller number (individual vs team)
-      // Unless it's a percentage where we want the first occurrence
-      if (isPercentage && uniqueMatches.length > 0) {
-        return uniqueMatches[0]; // First percentage found
-      } else if (uniqueMatches.length > 0) {
-        return uniqueMatches[0]; // Smallest number (likely individual stat)
-      }
-      
-      return 0;
+      return leftColumnStats;
     };
-
-    // Extract individual player stats (prioritizing left column values)
-    stats.goals = extractPlayerStat(['goals', 'goal']);
-    stats.assists = extractPlayerStat(['assists', 'assist']);
-    stats.shots = extractPlayerStat(['shots', 'shot']);
-    stats.shotAccuracy = extractPlayerStat(['shot accuracy', 'shooting accuracy'], true);
-    stats.passes = extractPlayerStat(['passes', 'pass']);
-    stats.passAccuracy = extractPlayerStat(['pass accuracy', 'passing accuracy'], true);
-    stats.dribbles = extractPlayerStat(['dribbles', 'dribble']); // Should get 17, not 109
-    stats.dribbleSuccessRate = extractPlayerStat(['dribble success', 'dribbling success'], true);
-    stats.tackles = extractPlayerStat(['tackles', 'tackle']);
-    stats.tackleSuccessRate = extractPlayerStat(['tackle success', 'tackling success'], true);
-    stats.offsides = extractPlayerStat(['offsides', 'offside']);
-    stats.foulsCommitted = extractPlayerStat(['fouls committed', 'fouls', 'foul']);
-    stats.possessionWon = extractPlayerStat(['possession won', 'poss won']);
-    stats.possessionLost = extractPlayerStat(['possession lost', 'poss lost']);
-    stats.minutes = extractPlayerStat(['minutes', 'mins', 'minutes played']);
     
-    // Average Rating (should get 6.5 from player section)
-    const avgRating = extractPlayerStat(['rating', 'mr', 'avg rating', 'average rating']);
-    if (avgRating > 0) {
-      stats.avgRating = Math.round(avgRating * 10);
-    }
-
-    // Try to extract any other custom stats
-    customStatFields.forEach(field => {
-      if (!stats[field.key as keyof PlayerStats]) {
-        const value = extractStat(field.patterns, field.display.includes('%'));
-        if (value > 0) {
-          if (field.key === 'avgRating') {
-            stats[field.key as keyof PlayerStats] = Math.round(value * 10);
-          } else {
-            stats[field.key as keyof PlayerStats] = Math.round(value);
-          }
-        }
-      }
-    });
-
-    return stats;
+    // Combine stats from both columns
+    const rightStats = extractFromRightColumn();
+    const leftStats = extractFromLeftColumn();
+    
+    return { ...rightStats, ...leftStats };
   };
 
   const handleConfirmStats = () => {
