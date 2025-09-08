@@ -164,15 +164,38 @@ export default function AdminPanel() {
 
   const convertFileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result as string;
-        // Remove the data URL prefix to get just the base64 string
-        const base64 = result.split(',')[1];
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        // Resize image to max 1024px while maintaining aspect ratio
+        const maxSize = 1024;
+        let { width, height } = img;
+        
+        if (width > maxSize || height > maxSize) {
+          if (width > height) {
+            height = (height * maxSize) / width;
+            width = maxSize;
+          } else {
+            width = (width * maxSize) / height;
+            height = maxSize;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        // Convert to base64 with compression
+        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        const base64 = compressedDataUrl.split(',')[1];
         resolve(base64);
       };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
+      
+      img.onerror = reject;
+      img.src = URL.createObjectURL(file);
     });
   };
 
