@@ -61,7 +61,7 @@ export default function Footer() {
               <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-fixtures">Fixtures</a></li>
               <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-results">Results</a></li>
               <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-season">Season</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-livestream">Live Stream</a></li>
+              <li><a href="https://www.twitch.tv/sevlakev" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors" data-testid="footer-livestream">Live Stream</a></li>
             </ul>
           </div>
 

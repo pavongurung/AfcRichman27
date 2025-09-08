@@ -74,6 +74,7 @@ export const matches = pgTable("matches", {
   matchDate: timestamp("match_date").notNull(),
   venue: text("venue"),
   status: text("status").notNull(), // "FT", "Upcoming", "Live"
+  replayUrl: text("replay_url"), // URL for match replay/highlights
   createdAt: timestamp("created_at").defaultNow(),
 });
 

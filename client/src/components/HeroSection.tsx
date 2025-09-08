@@ -32,6 +32,7 @@ export default function HeroSection() {
               variant="outline" 
               className="border-border text-foreground hover:bg-muted px-8 py-3 font-semibold" 
               data-testid="hero-watch-button"
+              onClick={() => window.open('https://www.twitch.tv/sevlakev', '_blank')}
             >
               Watch Live
             </Button>

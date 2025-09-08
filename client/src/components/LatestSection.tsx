@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRef } from "react";
 import type { Match } from "@shared/schema";
@@ -170,10 +170,32 @@ export default function LatestSection() {
               </div>
               
               <div className="mt-4 pt-4 border-t border-border">
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-muted-foreground mb-3">
                   <Calendar className="inline w-4 h-4 mr-2" />
                   {formatDate(match.matchDate.toString())}
                 </div>
+                {match.status === "FT" && match.replayUrl && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => window.open(match.replayUrl, '_blank')}
+                  >
+                    <Play className="w-4 h-4 mr-2" />
+                    Watch Replay
+                  </Button>
+                )}
+                {match.status === "Live" && (
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="w-full bg-red-600 hover:bg-red-700"
+                    onClick={() => window.open('https://www.twitch.tv/sevlakev', '_blank')}
+                  >
+                    <Play className="w-4 h-4 mr-2" />
+                    Watch Live
+                  </Button>
+                )}
               </div>
             </div>
           ))}

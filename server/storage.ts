@@ -94,7 +94,8 @@ export class MemStorage implements IStorage {
         competition: "Premier League",
         matchDate: new Date("2024-12-15T15:30:00"),
         venue: "Richman Stadium",
-        status: "FT"
+        status: "FT",
+        replayUrl: "https://www.twitch.tv/sevlakev/video/example1"
       },
       {
         homeTeam: "Liverpool FC",
@@ -106,7 +107,8 @@ export class MemStorage implements IStorage {
         competition: "Champions League",
         matchDate: new Date("2024-12-22T20:00:00"),
         venue: "Anfield",
-        status: "Upcoming"
+        status: "Upcoming",
+        replayUrl: null
       },
       {
         homeTeam: "AFC Richman",
@@ -118,7 +120,8 @@ export class MemStorage implements IStorage {
         competition: "FA Cup",
         matchDate: new Date("2024-12-10T14:00:00"),
         venue: "Richman Stadium",
-        status: "FT"
+        status: "FT",
+        replayUrl: "https://www.twitch.tv/sevlakev/video/example2"
       }
     ];
 
