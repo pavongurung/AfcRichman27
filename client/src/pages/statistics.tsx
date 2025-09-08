@@ -117,12 +117,12 @@ export default function Statistics() {
           </div>
         </div>
         
-        <div className="overflow-x-auto bg-gray-800 rounded-lg border border-gray-700">
+        <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-gray-700 border-gray-600">
+              <TableRow className="border-b border-gray-700">
                 <TableHead 
-                  className="text-gray-200 text-xs font-semibold cursor-pointer hover:bg-gray-600 transition-colors"
+                  className="text-gray-300 text-xs font-bold cursor-pointer hover:bg-gray-800 transition-colors py-4 px-3"
                   onClick={() => handleSort("firstName")}
                 >
                   <div className="flex items-center">
@@ -343,82 +343,82 @@ export default function Statistics() {
               {sortedPlayers.map((player, index) => (
                 <TableRow 
                   key={player.id} 
-                  className={`${index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-750'} hover:bg-gray-600 border-gray-600`}
+                  className={`${index % 2 === 0 ? 'bg-transparent' : 'bg-gray-900/30'} hover:bg-gray-700/50 border-0`}
                   data-testid={`player-row-${player.id}`}
                 >
-                  <TableCell className="text-white font-medium text-sm py-2">
+                  <TableCell className="text-white font-medium text-sm py-3 px-3">
                     <div className="flex items-center space-x-3">
                       <span className="text-gray-300 font-bold w-6 text-center">{player.jerseyNumber}</span>
                       <span>{player.firstName}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`appearance-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`appearance-${player.id}`}>
                     {player.stats?.appearance || 0}
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`motm-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`motm-${player.id}`}>
                     {player.stats?.motm || 0}
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2 font-semibold" data-testid={`goals-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3 font-semibold" data-testid={`goals-${player.id}`}>
                     {player.stats?.goals || 0}
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2 font-semibold" data-testid={`assists-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3 font-semibold" data-testid={`assists-${player.id}`}>
                     {player.stats?.assists || 0}
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`possession-won-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`possession-won-${player.id}`}>
                     {player.stats?.possessionWon || 0}
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`possession-lost-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`possession-lost-${player.id}`}>
                     {player.stats?.possessionLost || 0}
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`possession-diff-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`possession-diff-${player.id}`}>
                     {player.stats?.possessionDifference || 0}
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`clean-sheet-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`clean-sheet-${player.id}`}>
                     {player.stats?.cleanSheet || 0}
                   </TableCell>
-                  <TableCell className="text-center text-sm py-2" data-testid={`yellow-cards-${player.id}`}>
+                  <TableCell className="text-center text-sm py-3 px-3" data-testid={`yellow-cards-${player.id}`}>
                     <span className="text-yellow-400 font-semibold">{player.stats?.yellowCards || 0}</span>
                   </TableCell>
-                  <TableCell className="text-center text-sm py-2" data-testid={`red-cards-${player.id}`}>
+                  <TableCell className="text-center text-sm py-3 px-3" data-testid={`red-cards-${player.id}`}>
                     <span className="text-red-400 font-semibold">{player.stats?.redCards || 0}</span>
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`saves-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`saves-${player.id}`}>
                     {player.stats?.saves || 0}
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`pk-save-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`pk-save-${player.id}`}>
                     {player.stats?.pkSave || 0}
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`avg-rating-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`avg-rating-${player.id}`}>
                     {player.stats?.avgRating ? (player.stats.avgRating / 10).toFixed(1) : "0.0"}
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`shots-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`shots-${player.id}`}>
                     {player.stats?.shots || 0}
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`shot-accuracy-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`shot-accuracy-${player.id}`}>
                     {player.stats?.shotAccuracy || 0}%
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`passes-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`passes-${player.id}`}>
                     {player.stats?.passes || 0}
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`pass-accuracy-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`pass-accuracy-${player.id}`}>
                     {player.stats?.passAccuracy || 0}%
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`dribbles-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`dribbles-${player.id}`}>
                     {player.stats?.dribbles || 0}
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`dribble-success-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`dribble-success-${player.id}`}>
                     {player.stats?.dribbleSuccessRate || 0}%
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`tackles-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`tackles-${player.id}`}>
                     {player.stats?.tackles || 0}
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`tackle-success-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`tackle-success-${player.id}`}>
                     {player.stats?.tackleSuccessRate || 0}%
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`offsides-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`offsides-${player.id}`}>
                     {player.stats?.offsides || 0}
                   </TableCell>
-                  <TableCell className="text-white text-center text-sm py-2" data-testid={`fouls-committed-${player.id}`}>
+                  <TableCell className="text-white text-center text-sm py-3 px-3" data-testid={`fouls-committed-${player.id}`}>
                     {player.stats?.foulsCommitted || 0}
                   </TableCell>
                 </TableRow>
