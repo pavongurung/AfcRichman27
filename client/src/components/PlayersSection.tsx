@@ -37,7 +37,7 @@ export default function PlayersSection() {
             <h2 className="text-3xl font-bold">
               <span className="text-white italic mr-2">PLAYERS</span>
               <span className="text-muted-foreground italic mr-2">/</span>
-              <span className="text-muted-foreground underline decoration-red-500 decoration-2">Squad</span>
+              <span className="text-muted-foreground">Squad</span>
               <span className="text-red-500 ml-2">→</span>
             </h2>
           </div>
@@ -64,7 +64,7 @@ export default function PlayersSection() {
           <h2 className="text-3xl font-bold" data-testid="players-title">
             <span className="text-white italic mr-2">PLAYERS</span>
             <span className="text-muted-foreground italic mr-2">/</span>
-            <span className="text-muted-foreground underline decoration-red-500 decoration-2">Squad</span>
+            <span className="text-muted-foreground">Squad</span>
             <span className="text-red-500 ml-2">→</span>
           </h2>
           <div className="flex items-center space-x-2">
