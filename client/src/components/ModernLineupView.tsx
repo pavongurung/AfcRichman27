@@ -41,11 +41,11 @@ export default function ModernLineupView({
         <div className="text-gray-400 text-sm mt-2">Formation: {formation}</div>
       </div>
 
-      {/* Full Football Pitch */}
+      {/* AFC Richman Half Pitch */}
       <div 
         className="relative bg-green-800 rounded-lg mx-auto overflow-hidden"
         style={{ 
-          width: '1000px', 
+          width: '600px', 
           height: '650px',
           backgroundImage: `
             repeating-linear-gradient(
@@ -59,35 +59,31 @@ export default function ModernLineupView({
         }}
       >
 
-        {/* Football Pitch Markings */}
+        {/* AFC Richman Half Pitch Markings */}
         <div className="absolute inset-6">
-          {/* Outer Border */}
-          <div className="absolute inset-0 border-2 border-white rounded-lg"></div>
+          {/* Outer Border (3 sides) */}
+          <div className="absolute inset-0 border-l-2 border-t-2 border-b-2 border-white rounded-l-lg"></div>
           
-          {/* Center Line */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-white transform -translate-x-1/2"></div>
+          {/* Center Line (right edge) */}
+          <div className="absolute right-0 top-0 bottom-0 w-0.5 bg-white"></div>
           
-          {/* Center Circle */}
-          <div className="absolute left-1/2 top-1/2 w-32 h-32 border-2 border-white rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute left-1/2 top-1/2 w-2 h-2 bg-white rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+          {/* Half Center Circle */}
+          <div 
+            className="absolute right-0 top-1/2 w-32 h-32 border-2 border-white rounded-l-full transform -translate-y-1/2"
+            style={{ borderRight: 'none' }}
+          ></div>
+          <div className="absolute right-0 top-1/2 w-2 h-2 bg-white rounded-full transform -translate-y-1/2"></div>
           
-          {/* Left Goal Area */}
+          {/* Goal Area (AFC Richman's goal) */}
           <div className="absolute left-0 top-1/2 w-20 h-24 border-2 border-white border-l-0 transform -translate-y-1/2"></div>
           <div className="absolute left-0 top-1/2 w-12 h-16 border-2 border-white border-l-0 transform -translate-y-1/2"></div>
           
-          {/* Right Goal Area */}
-          <div className="absolute right-0 top-1/2 w-20 h-24 border-2 border-white border-r-0 transform -translate-y-1/2"></div>
-          <div className="absolute right-0 top-1/2 w-12 h-16 border-2 border-white border-r-0 transform -translate-y-1/2"></div>
-          
-          {/* Goals */}
+          {/* Goal */}
           <div className="absolute left-0 top-1/2 w-1 h-12 bg-white transform -translate-y-1/2"></div>
-          <div className="absolute right-0 top-1/2 w-1 h-12 bg-white transform -translate-y-1/2"></div>
           
-          {/* Corner Arcs */}
+          {/* Corner Arcs (left side only) */}
           <div className="absolute left-0 top-0 w-6 h-6 border-b-2 border-r-2 border-white rounded-br-full"></div>
-          <div className="absolute right-0 top-0 w-6 h-6 border-b-2 border-l-2 border-white rounded-bl-full"></div>
           <div className="absolute left-0 bottom-0 w-6 h-6 border-t-2 border-r-2 border-white rounded-tr-full"></div>
-          <div className="absolute right-0 bottom-0 w-6 h-6 border-t-2 border-l-2 border-white rounded-tl-full"></div>
         </div>
 
         {/* Player Positions */}
@@ -101,7 +97,7 @@ export default function ModernLineupView({
               key={position.id}
               className="absolute transform -translate-x-1/2 -translate-y-1/2"
               style={{
-                left: `${(position.y / 140) * 35 + 32.5}%`,
+                left: `${(position.y / 140) * 70 + 15}%`,
                 top: `${(position.x / 100) * 75 + 12.5}%`,
               }}
             >
