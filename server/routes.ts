@@ -368,6 +368,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         matchDate: req.body.matchDate ? new Date(req.body.matchDate) : undefined,
       };
       
+      // Automatically add Twitch URL for AFC Richman matches
+      if (!processedData.replayUrl && 
+          (processedData.homeTeam?.toLowerCase().includes('richman') || 
+           processedData.awayTeam?.toLowerCase().includes('richman'))) {
+        processedData.replayUrl = 'https://www.twitch.tv/sevlakev/videos';
+      }
+      
       console.log("Processed match data:", processedData);
       
       const matchData = insertMatchSchema.parse(processedData);
@@ -390,6 +397,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...req.body,
         ...(req.body.matchDate && { matchDate: new Date(req.body.matchDate) }),
       };
+      
+      // Automatically add Twitch URL for AFC Richman matches if not already set
+      if (!processedData.replayUrl && 
+          (processedData.homeTeam?.toLowerCase().includes('richman') || 
+           processedData.awayTeam?.toLowerCase().includes('richman'))) {
+        processedData.replayUrl = 'https://www.twitch.tv/sevlakev/videos';
+      }
       
       const updates = insertMatchSchema.partial().parse(processedData);
       const match = await storage.updateMatch(req.params.id, updates);
