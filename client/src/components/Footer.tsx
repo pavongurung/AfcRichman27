@@ -43,16 +43,13 @@ export default function Footer() {
             <ul className="space-y-2 text-muted-foreground">
               <li><Link href="/squad" className="hover:text-primary transition-colors" data-testid="footer-squad">Squad</Link></li>
               <li><Link href="/statistics" className="hover:text-primary transition-colors" data-testid="footer-statistics">Statistics</Link></li>
-              <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-coaching">Coaching Staff</a></li>
             </ul>
           </div>
 
           <div>
             <h3 className="font-semibold mb-4">Matches</h3>
             <ul className="space-y-2 text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-fixtures">Fixtures</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-results">Results</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-season">Season</a></li>
+              <li><Link href="/matches" className="hover:text-primary transition-colors" data-testid="footer-matches">All Matches</Link></li>
               <li><a href="https://www.twitch.tv/sevlakev" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors" data-testid="footer-livestream">Live Stream</a></li>
             </ul>
           </div>
@@ -60,22 +57,15 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold mb-4">Club</h3>
             <ul className="space-y-2 text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-about">About</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-history">History</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors" data-testid="footer-contact">Contact</a></li>
+              <li><a href="https://discord.gg/QtbXESp3FY" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors" data-testid="footer-contact">Contact</a></li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-border pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-muted-foreground text-sm mb-4 md:mb-0">
+          <div className="text-center">
+            <div className="text-muted-foreground text-sm">
               © 2024 AFC Richman. All rights reserved.
-            </div>
-            <div className="flex space-x-6 text-sm text-muted-foreground">
-              <a href="#" className="hover:text-primary transition-colors" data-testid="footer-privacy">Privacy Policy</a>
-              <a href="#" className="hover:text-primary transition-colors" data-testid="footer-terms">Terms of Service</a>
-              <a href="#" className="hover:text-primary transition-colors" data-testid="footer-cookies">Cookie Policy</a>
             </div>
           </div>
         </div>
