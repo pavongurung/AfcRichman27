@@ -77,17 +77,33 @@ export default function ModernLineupView({
             {formationData.positions.map((position) => {
               const playerId = lineup[position.id];
               const player = playerId ? getPlayerById(playerId) : null;
-              const cssClass = getPositionCSSClass(position.id);
+              
+              // Convert formation coordinates to CSS positioning
+              // Formation uses x: 0-100, y: 0-140 (goal to goal)
+              // We need to flip y coordinate since CSS top: 0 is at top, but formation y: 0 is at bottom goal
+              const leftPercent = position.x;
+              const topPercent = 100 - (position.y / 1.4); // Convert 0-140 to 0-100 and flip
               
               return (
                 <div
                   key={position.id}
-                  className={cssClass}
                   title={player ? `${player.firstName} ${player.lastName} (#${player.jerseyNumber})` : position.label}
                   style={{
+                    position: 'absolute',
+                    top: `${topPercent}%`,
+                    left: `${leftPercent}%`,
+                    display: 'block',
+                    width: '3%',
+                    height: '5%',
                     backgroundColor: player ? '#4F7EDC' : '#4F7EDC',
-                    borderColor: player ? '#324978' : '#324978',
+                    border: `1px solid ${player ? '#324978' : '#324978'}`,
+                    borderRadius: '50%',
+                    zIndex: 2,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    transform: 'translate(-50%, -50%)', // Center the dot on the coordinates
                   }}
+                  className="hover:scale-125"
                 />
               );
             })}
