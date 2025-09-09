@@ -99,33 +99,43 @@ export default function ModernLineupView({
             >
               {player ? (
                 <div className="flex flex-col items-center">
-                  {/* Jersey with Name */}
-                  <div className={`relative w-20 h-24 ${colorClass} rounded-lg shadow-lg border-2 border-white flex flex-col items-center justify-center transform hover:scale-110 transition-transform`}>
+                  {/* Jersey with Number */}
+                  <div className={`relative w-16 h-20 ${colorClass} rounded-lg shadow-lg border-2 border-white flex items-center justify-center transform hover:scale-110 transition-transform mb-2`}>
                     {/* Jersey Shape Details */}
                     <div className="absolute top-1.5 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-white/60 rounded"></div>
                     <div className="absolute top-0.5 left-1/2 transform -translate-x-1/2 w-3 h-2 border-2 border-white/40 rounded-t"></div>
                     
-                    {/* Player Name Inside Jersey */}
-                    <div className="text-center px-1">
-                      <div className="text-white font-semibold text-xs leading-tight">
-                        {player.firstName}
-                      </div>
-                      <div className="text-white font-semibold text-xs leading-tight">
-                        {player.lastName}
-                      </div>
+                    {/* Jersey Number */}
+                    <div className="text-white font-bold text-lg">
+                      {player.jerseyNumber}
+                    </div>
+                  </div>
+                  
+                  {/* Player Name Below Jersey */}
+                  <div className="text-center min-w-[80px]">
+                    <div className="text-white font-semibold text-sm leading-tight">
+                      {player.firstName}
+                    </div>
+                    <div className="text-white font-semibold text-sm leading-tight">
+                      {player.lastName}
                     </div>
                   </div>
                 </div>
               ) : (
                 <div className="flex flex-col items-center">
                   {/* Empty Jersey */}
-                  <div className="relative w-20 h-24 bg-gray-700 rounded-lg shadow-lg border-2 border-white/30 flex flex-col items-center justify-center opacity-50">
+                  <div className="relative w-16 h-20 bg-gray-700 rounded-lg shadow-lg border-2 border-white/30 flex items-center justify-center opacity-50 mb-2">
                     <div className="absolute top-1.5 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-white/30 rounded"></div>
                     <div className="absolute top-0.5 left-1/2 transform -translate-x-1/2 w-3 h-2 border-2 border-white/20 rounded-t"></div>
                     
-                    <div className="text-white/60 font-bold text-xs text-center px-1">
-                      {position.label}
+                    <div className="text-white/60 font-bold text-xs">
+                      ?
                     </div>
+                  </div>
+                  
+                  {/* Position Label Below */}
+                  <div className="text-gray-500 text-xs text-center min-w-[80px]">
+                    {position.label}
                   </div>
                 </div>
               )}
