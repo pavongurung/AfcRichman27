@@ -131,10 +131,18 @@ export default function LatestSection() {
               
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-                    <span className="text-primary-foreground font-bold text-sm">
-                      {match.homeTeamLogo}
-                    </span>
+                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">
+                    {match.homeTeamLogo ? (
+                      <img 
+                        src={match.homeTeamLogo} 
+                        alt={match.homeTeam} 
+                        className="w-10 h-10 object-contain"
+                      />
+                    ) : (
+                      <span className="text-primary font-bold text-xs">
+                        {match.homeTeam.substring(0, 3)}
+                      </span>
+                    )}
                   </div>
                   <div>
                     <div className="font-semibold">{match.homeTeam}</div>
@@ -153,10 +161,18 @@ export default function LatestSection() {
               
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">
-                      {match.awayTeamLogo}
-                    </span>
+                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">
+                    {match.awayTeamLogo ? (
+                      <img 
+                        src={match.awayTeamLogo} 
+                        alt={match.awayTeam} 
+                        className="w-10 h-10 object-contain"
+                      />
+                    ) : (
+                      <span className="text-primary font-bold text-xs">
+                        {match.awayTeam.substring(0, 3)}
+                      </span>
+                    )}
                   </div>
                   <div>
                     <div className="font-semibold">{match.awayTeam}</div>
