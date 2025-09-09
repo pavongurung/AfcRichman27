@@ -205,9 +205,10 @@ export class DatabaseStorage implements IStorage {
     
     // Sort by status priority: FT first, Live second, Upcoming third
     return allMatches.sort((a, b) => {
-      const statusPriority = { "FT": 1, "Live": 2, "Upcoming": 3 };
-      const priorityA = statusPriority[a.status as keyof typeof statusPriority] || 4;
-      const priorityB = statusPriority[b.status as keyof typeof statusPriority] || 4;
+      const statusPriority: Record<string, number> = { "FT": 1, "Live": 2, "Upcoming": 3 };
+      const priorityA = statusPriority[a.status] || 4;
+      const priorityB = statusPriority[b.status] || 4;
+      
       
       if (priorityA !== priorityB) {
         return priorityA - priorityB;
