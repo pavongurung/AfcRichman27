@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Calendar, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRef } from "react";
+import { Link } from "wouter";
 import type { Match } from "@shared/schema";
 
 export default function LatestSection() {
@@ -84,7 +85,7 @@ export default function LatestSection() {
           <h2 className="text-3xl font-bold" data-testid="latest-title">
             <span className="text-white italic mr-2">LATEST</span>
             <span className="text-muted-foreground italic mr-2">/</span>
-            <span className="text-muted-foreground">All news</span>
+            <Link href="/matches" className="text-muted-foreground hover:text-gray-300 transition-colors cursor-pointer">All news</Link>
             <span className="text-red-500 ml-2">→</span>
           </h2>
           <div className="flex items-center space-x-2">
@@ -130,18 +131,18 @@ export default function LatestSection() {
                 <span className="text-[10px] font-medium text-gray-500 uppercase tracking-widest">{match.competition}</span>
               </div>
               
-              {/* Teams - Minimal Layout */}
+              {/* Teams - Centered Layout */}
               <div className="text-center space-y-3 mb-5">
                 {/* Home Team */}
-                <div className="flex items-center justify-between">
+                <div className="text-center">
                   <div className="font-medium text-white text-sm">{match.homeTeam}</div>
                   {match.status === "FT" && (
-                    <div className="text-lg font-bold text-white">{match.homeScore}</div>
+                    <div className="text-2xl font-bold text-white mt-1">{match.homeScore}</div>
                   )}
                 </div>
 
                 {/* Minimal Divider */}
-                <div className="flex items-center justify-center py-1">
+                <div className="flex items-center justify-center py-2">
                   {match.status === "FT" ? (
                     <div className="text-xs font-medium text-gray-600">—</div>
                   ) : (
@@ -150,10 +151,10 @@ export default function LatestSection() {
                 </div>
 
                 {/* Away Team */}
-                <div className="flex items-center justify-between">
+                <div className="text-center">
                   <div className="font-medium text-white text-sm">{match.awayTeam}</div>
                   {match.status === "FT" && (
-                    <div className="text-lg font-bold text-white">{match.awayScore}</div>
+                    <div className="text-2xl font-bold text-white mt-1">{match.awayScore}</div>
                   )}
                 </div>
               </div>
