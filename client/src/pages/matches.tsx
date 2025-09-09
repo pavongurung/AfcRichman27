@@ -3,9 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, MapPin, Play, Trophy } from "lucide-react";
-import type { Match } from "@shared/schema";
+import { Calendar, Clock, MapPin, Play, Trophy, Users, ChevronDown, ChevronUp } from "lucide-react";
+import type { Match, Player } from "@shared/schema";
 import { format } from "date-fns";
+import LineupView from "@/components/LineupView";
 
 type FilterType = "all" | "upcoming" | "finished";
 
@@ -115,10 +116,20 @@ export default function MatchesPage() {
 }
 
 function MatchCard({ match }: { match: Match }) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const matchDate = new Date(match.matchDate);
   const isUpcoming = match.status === "Upcoming";
   const isLive = match.status === "Live";
   const isFinished = match.status === "FT";
+  
+  // Get players data for lineup display
+  const { data: players = [] } = useQuery<Player[]>({
+    queryKey: ["/api/players"],
+  });
+  
+  // Check if this match involves AFC Richman and has lineup data
+  const isRichmanMatch = match.homeTeam === "AFC Richman" || match.awayTeam === "AFC Richman";
+  const hasLineup = match.formation && match.lineup && typeof match.lineup === 'object' && Object.keys(match.lineup).length > 0;
   
   return (
     <Card className="hover:shadow-lg transition-shadow" data-testid={`match-card-${match.id}`}>
@@ -215,9 +226,9 @@ function MatchCard({ match }: { match: Match }) {
             </div>
           </div>
 
-          {/* Action Button */}
-          {match.replayUrl && (
-            <div className="ml-6">
+          {/* Action Buttons */}
+          <div className="ml-6 flex items-center gap-2">
+            {match.replayUrl && (
               <Button
                 variant="outline"
                 size="sm"
@@ -230,14 +241,44 @@ function MatchCard({ match }: { match: Match }) {
                   {isFinished ? "Watch Highlights" : "Watch Live"}
                 </a>
               </Button>
-            </div>
-          )}
+            )}
+            
+            {/* View Lineup Button - Show for finished AFC Richman matches with lineup */}
+            {isFinished && isRichmanMatch && hasLineup && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="flex items-center gap-2"
+                data-testid={`lineup-button-${match.id}`}
+              >
+                <Users className="w-4 h-4" />
+                View Lineup
+                {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Countdown for upcoming matches */}
         {isUpcoming && (
           <div className="mt-4 pt-4 border-t">
             <MatchCountdown matchDate={matchDate} />
+          </div>
+        )}
+
+        {/* Expanded Lineup Section */}
+        {isExpanded && isFinished && isRichmanMatch && hasLineup && (
+          <div className="mt-4 pt-4 border-t">
+            <div className="flex justify-center">
+              <LineupView
+                formation={match.formation || undefined}
+                lineup={match.lineup as Record<string, string> | undefined}
+                players={players}
+                size="small"
+                className="max-w-md"
+              />
+            </div>
           </div>
         )}
       </CardContent>
