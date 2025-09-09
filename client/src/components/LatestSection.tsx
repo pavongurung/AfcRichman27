@@ -85,7 +85,10 @@ export default function LatestSection() {
           <h2 className="text-3xl font-bold" data-testid="latest-title">
             <span className="text-white italic mr-2">LATEST</span>
             <span className="text-muted-foreground italic mr-2">/</span>
-            <Link href="/matches" className="text-muted-foreground hover:text-gray-300 transition-colors cursor-pointer">All news</Link>
+            <Link href="/matches" className="group relative text-muted-foreground hover:text-gray-300 transition-all duration-300 transform hover:scale-105 cursor-pointer">
+              All news
+              <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-500 transition-all duration-300 group-hover:w-full"></div>
+            </Link>
             <span className="text-red-500 ml-2">→</span>
           </h2>
           <div className="flex items-center space-x-2">

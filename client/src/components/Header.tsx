@@ -23,17 +23,21 @@ export default function Header() {
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-foreground hover:text-primary transition-colors" data-testid="nav-latest">
+            <Link href="/" className="group relative text-foreground hover:text-primary transition-all duration-300 transform hover:scale-105" data-testid="nav-latest">
               Latest
+              <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-500 transition-all duration-300 group-hover:w-full"></div>
             </Link>
-            <Link href="/squad" className="text-foreground hover:text-primary transition-colors" data-testid="nav-team">
+            <Link href="/squad" className="group relative text-foreground hover:text-primary transition-all duration-300 transform hover:scale-105" data-testid="nav-team">
               Team
+              <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-500 transition-all duration-300 group-hover:w-full"></div>
             </Link>
-            <Link href="/statistics" className="text-foreground hover:text-primary transition-colors" data-testid="nav-statistics">
+            <Link href="/statistics" className="group relative text-foreground hover:text-primary transition-all duration-300 transform hover:scale-105" data-testid="nav-statistics">
               Statistics
+              <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-500 transition-all duration-300 group-hover:w-full"></div>
             </Link>
-            <Link href="/matches" className="text-foreground hover:text-primary transition-colors" data-testid="nav-matches">
-              Matches
+            <Link href="/matches" className="group relative text-foreground hover:text-primary transition-all duration-300 transform hover:scale-105" data-testid="nav-matches">
+              Match Center
+              <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-500 transition-all duration-300 group-hover:w-full"></div>
             </Link>
           </nav>
 
