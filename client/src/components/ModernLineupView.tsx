@@ -104,23 +104,6 @@ export default function ModernLineupView({
             }}
           />
           
-          {/* Center circle */}
-          <div
-            style={{
-              content: '""',
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              width: '17%',
-              height: 0,
-              margin: '-8% 0 0 -8%',
-              marginTop: 'calc(-8% - 4px)',
-              marginLeft: 'calc(-8% - .5px)',
-              paddingBottom: '17%',
-              borderRadius: '50%',
-              border: '1px solid #323642',
-            }}
-          />
 
           {/* Left penalty area */}
           <div
