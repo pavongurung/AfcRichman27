@@ -134,24 +134,9 @@ export default function LatestSection() {
               <div className="space-y-4 mb-6">
                 {/* Home Team */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4 flex-1">
-                    <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center overflow-hidden border border-gray-700/50">
-                      {match.homeTeamLogo ? (
-                        <img 
-                          src={match.homeTeamLogo} 
-                          alt={match.homeTeam} 
-                          className="w-10 h-10 object-contain"
-                        />
-                      ) : (
-                        <span className="text-white font-bold text-sm">
-                          {match.homeTeam.substring(0, 3)}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-white text-sm">{match.homeTeam}</div>
-                      <div className="text-xs text-gray-500">Home</div>
-                    </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-white">{match.homeTeam}</div>
+                    <div className="text-xs text-gray-500">Home</div>
                   </div>
                   {match.status === "FT" && (
                     <div className="text-xl font-bold text-white">{match.homeScore}</div>
@@ -161,7 +146,7 @@ export default function LatestSection() {
                 {/* VS or Score Divider */}
                 <div className="flex items-center justify-center">
                   {match.status === "FT" ? (
-                    <div className="w-6 h-px bg-gray-700"></div>
+                    <div className="w-8 h-px bg-gray-700"></div>
                   ) : (
                     <div className="text-xs font-bold text-gray-500 bg-gray-800 px-3 py-1 rounded-full">VS</div>
                   )}
@@ -169,24 +154,9 @@ export default function LatestSection() {
 
                 {/* Away Team */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4 flex-1">
-                    <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center overflow-hidden border border-gray-700/50">
-                      {match.awayTeamLogo ? (
-                        <img 
-                          src={match.awayTeamLogo} 
-                          alt={match.awayTeam} 
-                          className="w-10 h-10 object-contain"
-                        />
-                      ) : (
-                        <span className="text-white font-bold text-sm">
-                          {match.awayTeam.substring(0, 3)}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-white text-sm">{match.awayTeam}</div>
-                      <div className="text-xs text-gray-500">Away</div>
-                    </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-white">{match.awayTeam}</div>
+                    <div className="text-xs text-gray-500">Away</div>
                   </div>
                   {match.status === "FT" && (
                     <div className="text-xl font-bold text-white">{match.awayScore}</div>
