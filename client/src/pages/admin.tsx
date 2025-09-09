@@ -537,7 +537,7 @@ export default function AdminPanel() {
 
   const deleteMatchMutation = useMutation({
     mutationFn: async (id: string) => {
-      return await apiRequest(`/api/admin/matches/${id}`, "DELETE");
+      return await apiRequest("DELETE", `/api/admin/matches/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/matches"] });

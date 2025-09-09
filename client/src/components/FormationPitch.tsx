@@ -51,6 +51,7 @@ function PlayerSelectDialog({ position, players, selectedPlayerId, onSelect, isO
         </DialogHeader>
         <div className="space-y-3">
           <Button
+            type="button"
             variant="outline"
             className="w-full justify-start"
             onClick={() => {
@@ -65,6 +66,7 @@ function PlayerSelectDialog({ position, players, selectedPlayerId, onSelect, isO
             {positionPlayers.map((player) => (
               <Button
                 key={player.id}
+                type="button"
                 variant={selectedPlayerId === player.id ? "default" : "ghost"}
                 className="w-full justify-start"
                 onClick={() => {
@@ -192,6 +194,7 @@ export default function FormationPitch({
           return (
             <button
               key={position.id}
+              type="button"
               className={`absolute transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 flex flex-col items-center justify-center text-white text-xs font-bold transition-all ${colorClasses} ${
                 isEditing ? 'hover:scale-110 cursor-pointer' : ''
               } ${player ? 'ring-2 ring-white' : ''}`}
