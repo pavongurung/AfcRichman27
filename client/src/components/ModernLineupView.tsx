@@ -93,8 +93,8 @@ export default function ModernLineupView({
               key={position.id}
               className="absolute transform -translate-x-1/2 -translate-y-1/2"
               style={{
-                left: `${(position.y / 140) * 80 + 10}%`,
-                top: `${(position.x / 100) * 75 + 12.5}%`,
+                left: `${(position.y / 140) * 85 + 7.5}%`,
+                top: `${(position.x / 100) * 85 + 7.5}%`,
               }}
             >
               {player ? (
