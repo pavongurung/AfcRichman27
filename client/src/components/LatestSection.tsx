@@ -118,74 +118,96 @@ export default function LatestSection() {
           {matches?.map((match) => (
             <div 
               key={match.id} 
-              className="flex-none w-80 bg-card rounded-lg p-6 fixture-card cursor-pointer" 
+              className="flex-none w-80 bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 fixture-card cursor-pointer border border-gray-800/50 hover:border-gray-700/50 transition-all duration-300" 
               data-testid={`fixture-card-${match.id}`}
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-3">
-                  <div className={`w-3 h-3 rounded-full ${getStatusColor(match.status)}`}></div>
-                  <span className="text-sm text-muted-foreground">{match.status}</span>
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-2">
+                  <div className={`w-2 h-2 rounded-full ${getStatusColor(match.status)}`}></div>
+                  <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">{match.status}</span>
                 </div>
-                <span className="text-sm text-muted-foreground">{match.competition}</span>
+                <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">{match.competition}</span>
               </div>
               
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center overflow-hidden border border-gray-700">
-                    {match.homeTeamLogo ? (
-                      <img 
-                        src={match.homeTeamLogo} 
-                        alt={match.homeTeam} 
-                        className="w-full h-full object-cover rounded-full"
-                      />
-                    ) : (
-                      <span className="text-white font-bold text-xs">
-                        {match.homeTeam.substring(0, 3)}
-                      </span>
-                    )}
+              {/* Teams */}
+              <div className="space-y-4 mb-6">
+                {/* Home Team */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4 flex-1">
+                    <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center overflow-hidden border border-gray-700/50">
+                      {match.homeTeamLogo ? (
+                        <img 
+                          src={match.homeTeamLogo} 
+                          alt={match.homeTeam} 
+                          className="w-10 h-10 object-contain"
+                        />
+                      ) : (
+                        <span className="text-white font-bold text-sm">
+                          {match.homeTeam.substring(0, 3)}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-white text-sm">{match.homeTeam}</div>
+                      <div className="text-xs text-gray-500">Home</div>
+                    </div>
                   </div>
-                  <span className="font-semibold">{match.homeTeam}</span>
-                </div>
-                
-                <div className="text-center px-4">
-                  {match.status === "FT" ? (
-                    <div className="text-lg font-bold">{match.homeScore} - {match.awayScore}</div>
-                  ) : (
-                    <div className="text-lg font-bold">VS</div>
+                  {match.status === "FT" && (
+                    <div className="text-xl font-bold text-white">{match.homeScore}</div>
                   )}
                 </div>
-                
-                <div className="flex items-center space-x-3">
-                  <span className="font-semibold">{match.awayTeam}</span>
-                  <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center overflow-hidden border border-gray-700">
-                    {match.awayTeamLogo ? (
-                      <img 
-                        src={match.awayTeamLogo} 
-                        alt={match.awayTeam} 
-                        className="w-full h-full object-cover rounded-full"
-                      />
-                    ) : (
-                      <span className="text-white font-bold text-xs">
-                        {match.awayTeam.substring(0, 3)}
-                      </span>
-                    )}
+
+                {/* VS or Score Divider */}
+                <div className="flex items-center justify-center">
+                  {match.status === "FT" ? (
+                    <div className="w-6 h-px bg-gray-700"></div>
+                  ) : (
+                    <div className="text-xs font-bold text-gray-500 bg-gray-800 px-3 py-1 rounded-full">VS</div>
+                  )}
+                </div>
+
+                {/* Away Team */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4 flex-1">
+                    <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center overflow-hidden border border-gray-700/50">
+                      {match.awayTeamLogo ? (
+                        <img 
+                          src={match.awayTeamLogo} 
+                          alt={match.awayTeam} 
+                          className="w-10 h-10 object-contain"
+                        />
+                      ) : (
+                        <span className="text-white font-bold text-sm">
+                          {match.awayTeam.substring(0, 3)}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-white text-sm">{match.awayTeam}</div>
+                      <div className="text-xs text-gray-500">Away</div>
+                    </div>
                   </div>
+                  {match.status === "FT" && (
+                    <div className="text-xl font-bold text-white">{match.awayScore}</div>
+                  )}
                 </div>
               </div>
               
-              <div className="mt-4 pt-4 border-t border-border">
-                <div className="text-sm text-muted-foreground mb-3">
-                  <Calendar className="inline w-4 h-4 mr-2" />
+              {/* Footer */}
+              <div className="pt-4 border-t border-gray-800/50">
+                <div className="text-xs text-gray-500 mb-3 flex items-center">
+                  <Calendar className="w-3 h-3 mr-1" />
                   {formatDate(match.matchDate.toString())}
                 </div>
                 {match.status === "FT" && match.replayUrl && (
                   <Button
                     variant="outline"
                     size="sm"
-                    className="w-full border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white"
+                    className="w-full bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white hover:border-gray-600 transition-all duration-200"
                     onClick={() => match.replayUrl && window.open(match.replayUrl, '_blank')}
                   >
-                    <Play className="w-4 h-4 mr-2" />
+                    <Play className="w-3 h-3 mr-2" />
                     Watch Replay
                   </Button>
                 )}
@@ -193,10 +215,10 @@ export default function LatestSection() {
                   <Button
                     variant="default"
                     size="sm"
-                    className="w-full bg-red-600 hover:bg-red-700 text-white border-0"
+                    className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white border-0 transition-all duration-200"
                     onClick={() => window.open('https://www.twitch.tv/sevlakev', '_blank')}
                   >
-                    <Play className="w-4 h-4 mr-2" />
+                    <Play className="w-3 h-3 mr-2" />
                     Watch Live
                   </Button>
                 )}
