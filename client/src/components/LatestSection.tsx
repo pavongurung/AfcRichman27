@@ -129,14 +129,14 @@ export default function LatestSection() {
                 <span className="text-sm text-muted-foreground">{match.competition}</span>
               </div>
               
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center overflow-hidden">
                     {match.homeTeamLogo ? (
                       <img 
                         src={match.homeTeamLogo} 
                         alt={match.homeTeam} 
-                        className="w-10 h-10 object-contain"
+                        className="w-8 h-8 object-contain"
                       />
                     ) : (
                       <span className="text-primary font-bold text-xs">
@@ -144,45 +144,31 @@ export default function LatestSection() {
                       </span>
                     )}
                   </div>
-                  <div>
-                    <div className="font-semibold">{match.homeTeam}</div>
-                    <div className="text-sm text-muted-foreground">Home</div>
-                  </div>
+                  <span className="font-semibold">{match.homeTeam}</span>
                 </div>
                 
-                <div className="text-center">
-                  <div className="text-2xl font-bold">
-                    {match.status === "Upcoming" ? "VS" : match.homeScore}
-                  </div>
+                <div className="text-center px-4">
+                  {match.status === "FT" ? (
+                    <div className="text-lg font-bold">{match.homeScore} - {match.awayScore}</div>
+                  ) : (
+                    <div className="text-lg font-bold">VS</div>
+                  )}
                 </div>
-              </div>
-              
-              <div className="text-center text-muted-foreground my-2">-</div>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">
+                
+                <div className="flex items-center space-x-3">
+                  <span className="font-semibold">{match.awayTeam}</span>
+                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center overflow-hidden">
                     {match.awayTeamLogo ? (
                       <img 
                         src={match.awayTeamLogo} 
                         alt={match.awayTeam} 
-                        className="w-10 h-10 object-contain"
+                        className="w-8 h-8 object-contain"
                       />
                     ) : (
                       <span className="text-primary font-bold text-xs">
                         {match.awayTeam.substring(0, 3)}
                       </span>
                     )}
-                  </div>
-                  <div>
-                    <div className="font-semibold">{match.awayTeam}</div>
-                    <div className="text-sm text-muted-foreground">Away</div>
-                  </div>
-                </div>
-                
-                <div className="text-center">
-                  <div className="text-2xl font-bold">
-                    {match.status === "Upcoming" ? "VS" : match.awayScore}
                   </div>
                 </div>
               </div>
