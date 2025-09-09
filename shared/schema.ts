@@ -110,7 +110,6 @@ export const matches = pgTable("matches", {
   awayScore: integer("away_score"),
   competition: text("competition").notNull(),
   matchDate: timestamp("match_date").notNull(),
-  venue: text("venue"),
   status: text("status").notNull(), // "FT", "Upcoming", "Live"
   replayUrl: text("replay_url"), // URL for match replay/highlights
   createdAt: timestamp("created_at").defaultNow(),

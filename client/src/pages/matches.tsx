@@ -145,13 +145,6 @@ function MatchCard({ match }: { match: Match }) {
                   <Clock className="w-4 h-4" />
                   <span>{format(matchDate, "h:mm a")}</span>
                 </div>
-                
-                {match.venue && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <MapPin className="w-4 h-4" />
-                    <span>{match.venue}</span>
-                  </div>
-                )}
               </div>
               
               <Badge variant={

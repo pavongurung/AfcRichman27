@@ -79,7 +79,6 @@ const matchFormSchema = z.object({
   awayScore: z.number().min(0).optional(),
   competition: z.string().min(1, "Competition is required"),
   matchDate: z.string().min(1, "Match date is required"),
-  venue: z.string().optional(),
   status: z.enum(["FT", "Upcoming", "Live"]),
   replayUrl: z.string().optional(),
 });
@@ -316,7 +315,6 @@ export default function AdminPanel() {
       awayTeamLogo: "",
       competition: "",
       matchDate: "",
-      venue: "",
       status: "Upcoming",
       replayUrl: "",
     },
@@ -643,7 +641,6 @@ export default function AdminPanel() {
       awayScore: match.awayScore || 0,
       competition: match.competition,
       matchDate: new Date(match.matchDate).toISOString().slice(0, 16), // Format for datetime-local input
-      venue: match.venue || "",
       status: match.status as "FT" | "Upcoming" | "Live",
       replayUrl: match.replayUrl || "",
     });
@@ -658,7 +655,6 @@ export default function AdminPanel() {
       // Convert empty strings to null for optional fields
       homeTeamLogo: data.homeTeamLogo || null,
       awayTeamLogo: data.awayTeamLogo || null,
-      venue: data.venue || null,
       replayUrl: data.replayUrl || null,
     };
 
@@ -1527,19 +1523,6 @@ export default function AdminPanel() {
                             />
                           </div>
 
-                          <FormField
-                            control={matchForm.control}
-                            name="venue"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Venue (Optional)</FormLabel>
-                                <FormControl>
-                                  <Input {...field} placeholder="e.g., Allianz Arena" data-testid="input-venue" />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
 
                           {matchForm.watch("status") === "FT" && (
                             <div className="grid grid-cols-2 gap-4">
@@ -1653,7 +1636,6 @@ export default function AdminPanel() {
                             <div>{match.competition}</div>
                             <div>{new Date(match.matchDate).toLocaleDateString()}</div>
                             <div>{new Date(match.matchDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                            {match.venue && <div>{match.venue}</div>}
                           </div>
                         </div>
                         <div className="flex space-x-2">

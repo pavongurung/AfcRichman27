@@ -52,12 +52,6 @@ export default function MatchCenterPage() {
                       <Clock className="w-4 h-4" />
                       <span>{format(new Date(nextMatch.matchDate), "h:mm a")}</span>
                     </div>
-                    {nextMatch.venue && (
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4" />
-                        <span>{nextMatch.venue}</span>
-                      </div>
-                    )}
                   </div>
                 </CardHeader>
                 <CardContent>

@@ -347,17 +347,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/admin/matches", async (req, res) => {
     try {
+      console.log("Received match data:", req.body);
+      
       // Convert date string to Date object before validation
       const processedData = {
         ...req.body,
-        matchDate: new Date(req.body.matchDate),
+        matchDate: req.body.matchDate ? new Date(req.body.matchDate) : undefined,
       };
+      
+      console.log("Processed match data:", processedData);
       
       const matchData = insertMatchSchema.parse(processedData);
       const match = await storage.createMatch(matchData);
       res.status(201).json(match);
     } catch (error) {
       if (error instanceof z.ZodError) {
+        console.error("Validation error:", error.errors);
         return res.status(400).json({ message: "Invalid match data", errors: error.errors });
       }
       console.error("Error creating match:", error);
