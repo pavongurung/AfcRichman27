@@ -26,6 +26,36 @@ export default function ModernLineupView({
   const getPlayerById = (playerId: string) =>
     players.find(p => p.id === playerId);
 
+  // Map formation position IDs to CSS class names
+  const getPositionCSSClass = (positionId: string) => {
+    const positionMap: Record<string, string> = {
+      'GK': 'gk',
+      'LB': 'lb',
+      'CB1': 'cb',
+      'CB2': 'cb', // Use same class for both center backs
+      'RB': 'rb',
+      'LWB': 'lwb',
+      'DM': 'dm',
+      'RWB': 'rwb',
+      'LM': 'lm',
+      'CM': 'cm',
+      'CM1': 'cm',
+      'CM2': 'cm', 
+      'CM3': 'cm',
+      'RM': 'rm',
+      'AMR': 'amr',
+      'AM': 'am',
+      'AML': 'aml',
+      'LW': 'wl',
+      'CF': 'cf',
+      'ST': 'st',
+      'ST1': 'st',
+      'ST2': 'cf', // Use cf for second striker
+      'RW': 'wr'
+    };
+    return positionMap[positionId] || 'cm'; // Default to cm if not found
+  };
+
   return (
     <div className="relative w-full max-w-4xl mx-auto">
       {/* Team Name */}
@@ -47,11 +77,12 @@ export default function ModernLineupView({
             {formationData.positions.map((position) => {
               const playerId = lineup[position.id];
               const player = playerId ? getPlayerById(playerId) : null;
+              const cssClass = getPositionCSSClass(position.id);
               
               return (
                 <div
                   key={position.id}
-                  className={position.id.toLowerCase()}
+                  className={cssClass}
                   title={player ? `${player.firstName} ${player.lastName} (#${player.jerseyNumber})` : position.label}
                   style={{
                     backgroundColor: player ? '#4F7EDC' : '#4F7EDC',
