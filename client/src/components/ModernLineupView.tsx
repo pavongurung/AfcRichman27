@@ -64,36 +64,6 @@ export default function ModernLineupView({
         </div>
       </div>
 
-      {/* Player list below pitch */}
-      <div className="mt-8">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-w-4xl mx-auto">
-          {formationData.positions.map((position) => {
-            const playerId = lineup[position.id];
-            const player = playerId ? getPlayerById(playerId) : null;
-            
-            return (
-              <div key={position.id} className="flex items-center space-x-3 p-2 bg-gray-800 rounded-lg">
-                <div
-                  className="w-4 h-4 flex-shrink-0"
-                  style={{
-                    backgroundColor: player ? '#4F7EDC' : '#666',
-                    border: `1px solid ${player ? '#324978' : '#444'}`,
-                  }}
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs text-gray-400">{position.label}</div>
-                  <div className="text-sm text-white truncate">
-                    {player ? `${player.firstName} ${player.lastName}` : 'No player'}
-                  </div>
-                  {player && (
-                    <div className="text-xs text-gray-400">#{player.jerseyNumber}</div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
 
       <div className="mt-8 text-center">
         <div className="text-gray-400 text-sm">{formation} Formation</div>
