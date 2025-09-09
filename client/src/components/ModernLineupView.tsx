@@ -109,10 +109,6 @@ export default function ModernLineupView({
                       whiteSpace: 'nowrap',
                       textShadow: '2px 2px 4px rgba(0,0,0,0.9)',
                       fontFamily: 'system-ui, -apple-system, sans-serif',
-                      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                      padding: '6px 10px',
-                      borderRadius: '6px',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
                     }}
                   >
                     {player ? player.lastName.toUpperCase() : 'AI'}
