@@ -131,15 +131,15 @@ export default function LatestSection() {
               
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center overflow-hidden">
+                  <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center overflow-hidden border border-gray-700">
                     {match.homeTeamLogo ? (
                       <img 
                         src={match.homeTeamLogo} 
                         alt={match.homeTeam} 
-                        className="w-8 h-8 object-contain"
+                        className="w-full h-full object-cover rounded-full"
                       />
                     ) : (
-                      <span className="text-primary font-bold text-xs">
+                      <span className="text-white font-bold text-xs">
                         {match.homeTeam.substring(0, 3)}
                       </span>
                     )}
@@ -157,15 +157,15 @@ export default function LatestSection() {
                 
                 <div className="flex items-center space-x-3">
                   <span className="font-semibold">{match.awayTeam}</span>
-                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center overflow-hidden">
+                  <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center overflow-hidden border border-gray-700">
                     {match.awayTeamLogo ? (
                       <img 
                         src={match.awayTeamLogo} 
                         alt={match.awayTeam} 
-                        className="w-8 h-8 object-contain"
+                        className="w-full h-full object-cover rounded-full"
                       />
                     ) : (
-                      <span className="text-primary font-bold text-xs">
+                      <span className="text-white font-bold text-xs">
                         {match.awayTeam.substring(0, 3)}
                       </span>
                     )}
@@ -182,7 +182,7 @@ export default function LatestSection() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="w-full"
+                    className="w-full border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white"
                     onClick={() => match.replayUrl && window.open(match.replayUrl, '_blank')}
                   >
                     <Play className="w-4 h-4 mr-2" />
@@ -193,7 +193,7 @@ export default function LatestSection() {
                   <Button
                     variant="default"
                     size="sm"
-                    className="w-full bg-red-600 hover:bg-red-700"
+                    className="w-full bg-red-600 hover:bg-red-700 text-white border-0"
                     onClick={() => window.open('https://www.twitch.tv/sevlakev', '_blank')}
                   >
                     <Play className="w-4 h-4 mr-2" />
