@@ -166,19 +166,33 @@ function MatchCard({ match }: { match: Match }) {
         </div>
 
         
-        {/* Action - Only show for AFC Richman matches with important info */}
-        {(isRichmanMatch && match.replayUrl) && (
-          <div className="mt-3 pt-3 border-t border-gray-800">
-            <a 
-              href={match.replayUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-sm text-gray-400 hover:text-white transition-colors inline-flex items-center gap-1"
-              data-testid={`watch-button-${match.id}`}
-            >
-              <Play className="w-3 h-3" />
-              {isFinished ? "Watch Highlights" : "Watch Live"}
-            </a>
+        {/* Actions - Only show for AFC Richman matches */}
+        {isRichmanMatch && (
+          <div className="mt-3 pt-3 border-t border-gray-800 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <a 
+                href="https://www.twitch.tv/sevlakev/videos" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-sm text-gray-400 hover:text-white transition-colors inline-flex items-center gap-1"
+                data-testid={`watch-button-${match.id}`}
+              >
+                <Play className="w-3 h-3" />
+                {isFinished ? "Watch Highlights" : "Watch Live"}
+              </a>
+              
+              {/* View Lineup link for matches with lineup data */}
+              {hasLineup && (
+                <a 
+                  href={`/matches/${match.id}`}
+                  className="text-sm text-gray-400 hover:text-white transition-colors inline-flex items-center gap-1"
+                  data-testid={`lineup-link-${match.id}`}
+                >
+                  <Users className="w-3 h-3" />
+                  View Lineup
+                </a>
+              )}
+            </div>
           </div>
         )}
 
