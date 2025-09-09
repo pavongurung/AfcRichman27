@@ -182,7 +182,7 @@ export default function MatchDetailsPage() {
             
             <ModernLineupView
               formation={match.formation || undefined}
-              lineup={match.lineup as Record<string, string> | undefined}
+              lineup={match.lineup ? (match.lineup as Record<string, string>) : undefined}
               players={players}
               teamName={match.homeTeam}
             />
