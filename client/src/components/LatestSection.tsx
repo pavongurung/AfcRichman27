@@ -140,10 +140,11 @@ export default function LatestSection() {
             
             return (
               <div key={match.id} className="flex-none flex flex-col space-y-3">
-                <div 
-                  className={`w-72 ${isExpanded ? 'h-auto' : 'h-72'} bg-gray-900/30 backdrop-blur-sm rounded-2xl p-5 fixture-card border border-gray-800/30 hover:border-gray-700/30 hover:bg-gray-900/40 transition-all duration-500 flex flex-col group ${isExpanded ? '' : 'transform hover:scale-105'}`} 
-                  data-testid={`fixture-card-${match.id}`}
-                >
+                <Link href={`/match/${match.id}`}>
+                  <div 
+                    className="w-72 h-72 bg-gray-900/30 backdrop-blur-sm rounded-2xl p-5 fixture-card cursor-pointer border border-gray-800/30 hover:border-gray-700/30 hover:bg-gray-900/40 transition-all duration-500 flex flex-col group transform hover:scale-105" 
+                    data-testid={`fixture-card-${match.id}`}
+                  >
                   {/* Header */}
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center space-x-2">
@@ -196,41 +197,8 @@ export default function LatestSection() {
                     </div>
                   </div>
                   
-                  {/* View Lineup Button - Inside the card footer if available */}
-                  {showLineup && (
-                    <div className="pt-3 border-t border-gray-800/20 mt-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setExpandedMatch(isExpanded ? null : match.id);
-                        }}
-                        className="w-full text-gray-400 hover:text-gray-200 text-xs"
-                        data-testid={`lineup-button-${match.id}`}
-                      >
-                        <Users className="w-4 h-4 mr-2" />
-                        View Lineup
-                        {isExpanded ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {/* Lineup Display */}
-                  {isExpanded && showLineup && (
-                    <div className="mt-4 pt-4 border-t border-gray-800/20">
-                      <div className="flex justify-center">
-                        <LineupView
-                          formation={match.formation || undefined}
-                          lineup={match.lineup as Record<string, string> | undefined}
-                          players={players}
-                          size="small"
-                          className="max-w-xs scale-75"
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
+                  </div>
+                </Link>
                 
                 {/* Watch Replay Button - Outside the card */}
                 {match.status === "FT" && match.replayUrl && (
