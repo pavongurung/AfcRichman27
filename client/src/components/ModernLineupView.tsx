@@ -78,12 +78,12 @@ export default function ModernLineupView({
               const playerId = lineup[position.id];
               const player = playerId ? getPlayerById(playerId) : null;
               
-              // Convert formation coordinates to CSS positioning
-              // Formation: x: 0-100 (left to right), y: 0-140 (bottom goal to top goal)
-              // CSS: left: 0-100% (left to right), top: 0-100% (top to bottom)
-              // Map formation y=10 (GK) to CSS top=85%, y=75 (forwards) to CSS top=15%
-              const leftPercent = position.x;
-              const topPercent = 90 - (position.y * 0.7); // Map y:10->85%, y:75->15%
+              // Convert formation coordinates to match the horizontal pitch layout
+              // The pitch is displayed horizontally, so we need to rotate the coordinates
+              // Formation y becomes CSS left (goal line to goal line = left to right)
+              // Formation x becomes CSS top (sideline to sideline = top to bottom)
+              const leftPercent = (position.y / 140) * 100; // y: 10->7%, y: 75->54%
+              const topPercent = position.x; // x: 0-100 stays the same
               
               return (
                 <div
