@@ -87,7 +87,7 @@ export default function LatestSection() {
             <span className="text-muted-foreground italic mr-2">/</span>
             <Link href="/matches" className="group relative text-muted-foreground hover:text-gray-300 transition-all duration-300 transform hover:scale-105 cursor-pointer">
               All news
-              <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-500 transition-all duration-300 group-hover:w-full"></div>
+              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500 transform scale-x-0 origin-center transition-transform duration-300 group-hover:scale-x-100"></div>
             </Link>
             <span className="text-red-500 ml-2">→</span>
           </h2>
