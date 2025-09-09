@@ -94,11 +94,6 @@ export default function ModernLineupView({
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    width: '4%',
-                    height: '6%',
-                    backgroundColor: '#4F7EDC',
-                    border: '1px solid #324978',
-                    borderRadius: '50%',
                     zIndex: 2,
                     transform: 'translate(-50%, -50%)',
                   }}
@@ -106,18 +101,18 @@ export default function ModernLineupView({
                 >
                   <div
                     style={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      fontSize: '12px',
+                      fontSize: '16px',
                       fontWeight: 'bold',
                       color: 'white',
                       textAlign: 'center',
                       lineHeight: '1',
                       whiteSpace: 'nowrap',
                       textShadow: '2px 2px 4px rgba(0,0,0,0.9)',
-                      fontFamily: 'monospace',
+                      fontFamily: 'system-ui, -apple-system, sans-serif',
+                      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                      padding: '6px 10px',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
                     }}
                   >
                     {player ? player.lastName.toUpperCase() : 'AI'}
