@@ -1409,7 +1409,7 @@ export default function AdminPanel() {
                         Add Match
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-2xl">
+                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                       <DialogHeader>
                         <DialogTitle>
                           {editingMatch ? "Edit Match" : "Add New Match"}
@@ -1584,7 +1584,24 @@ export default function AdminPanel() {
 
                           {/* Formation and Lineup Section */}
                           <div className="space-y-4 border-t pt-4">
-                            <h3 className="text-lg font-semibold">Team Formation & Lineup</h3>
+                            <div className="flex items-center justify-between">
+                              <h3 className="text-lg font-semibold">Team Formation & Lineup</h3>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  const currentFormation = matchForm.watch("formation") || "4-3-3";
+                                  const currentLineup = matchForm.watch("lineup") || {};
+                                  const autoLineup = autoAssignPlayers(currentFormation, currentLineup, players || []);
+                                  matchForm.setValue("lineup", autoLineup);
+                                }}
+                                data-testid="button-auto-assign"
+                              >
+                                <Shuffle className="w-4 h-4 mr-2" />
+                                Auto Assign
+                              </Button>
+                            </div>
                             <FormationPitch
                               selectedFormation={matchForm.watch("formation") || "4-3-3"}
                               lineup={matchForm.watch("lineup") || {}}
