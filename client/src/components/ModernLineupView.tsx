@@ -1,5 +1,6 @@
 import type { Player } from "@shared/schema";
 import { getFormationById } from "@/lib/formations";
+import { useState, useRef } from "react";
 
 interface ModernLineupViewProps {
   formation?: string;
@@ -25,6 +26,48 @@ export default function ModernLineupView({
 
   const getPlayerById = (playerId: string) =>
     players.find(p => p.id === playerId);
+
+  // State for draggable positions
+  const [draggedPositions, setDraggedPositions] = useState<Record<string, {x: number, y: number}>>({});
+  const [isDragging, setIsDragging] = useState<string | null>(null);
+  const pitchRef = useRef<HTMLDivElement>(null);
+
+  // Get position (either dragged or original)
+  const getPosition = (position: any) => {
+    const draggedPos = draggedPositions[position.id];
+    if (draggedPos) {
+      return draggedPos;
+    }
+    return { x: position.x, y: position.y };
+  };
+
+  // Handle drag start
+  const handleDragStart = (positionId: string) => {
+    setIsDragging(positionId);
+  };
+
+  // Handle drag move
+  const handleDragMove = (e: React.MouseEvent, positionId: string, pitchRef: HTMLDivElement) => {
+    if (isDragging !== positionId) return;
+
+    const rect = pitchRef.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 140;
+
+    // Constrain to pitch boundaries
+    const constrainedX = Math.max(5, Math.min(95, x));
+    const constrainedY = Math.max(10, Math.min(130, y));
+
+    setDraggedPositions(prev => ({
+      ...prev,
+      [positionId]: { x: constrainedX, y: constrainedY }
+    }));
+  };
+
+  // Handle drag end
+  const handleDragEnd = () => {
+    setIsDragging(null);
+  };
 
   // Map formation position IDs to CSS class names
   const getPositionCSSClass = (positionId: string) => {
@@ -67,7 +110,17 @@ export default function ModernLineupView({
       {/* New CSS-based pitch layout */}
       <div className="flex justify-center">
         <div className="campo-wrapper">
-          <div className="campo">
+          <div 
+            ref={pitchRef}
+            className="campo"
+            onMouseMove={(e) => {
+              if (isDragging && pitchRef.current) {
+                handleDragMove(e, isDragging, pitchRef.current);
+              }
+            }}
+            onMouseUp={handleDragEnd}
+            onMouseLeave={handleDragEnd}
+          >
             <div className="semi1"></div>
             <div className="semi2"></div>
             <div className="divisoria"></div>
@@ -77,13 +130,14 @@ export default function ModernLineupView({
             {formationData.positions.map((position) => {
               const playerId = lineup[position.id];
               const player = playerId ? getPlayerById(playerId) : null;
+              const currentPos = getPosition(position);
               
               // Convert formation coordinates to match the horizontal pitch layout
               // The pitch is displayed horizontally, so we need to rotate the coordinates
               // Formation y becomes CSS left (goal line to goal line = left to right)
               // Formation x becomes CSS top (sideline to sideline = top to bottom)
-              const leftPercent = (position.y / 140) * 100; // y: 10->7%, y: 75->54%
-              const topPercent = position.x; // x: 0-100 stays the same
+              const leftPercent = (currentPos.y / 140) * 100; // y: 10->7%, y: 75->54%
+              const topPercent = currentPos.x; // x: 0-100 stays the same
               
               return (
                 <div
@@ -99,12 +153,17 @@ export default function ModernLineupView({
                     backgroundColor: player ? '#4F7EDC' : '#4F7EDC',
                     border: `1px solid ${player ? '#324978' : '#324978'}`,
                     borderRadius: '50%',
-                    zIndex: 2,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    transform: 'translate(-50%, -50%)', // Center the dot on the coordinates
+                    zIndex: isDragging === position.id ? 10 : 2,
+                    cursor: isDragging === position.id ? 'grabbing' : 'grab',
+                    transition: isDragging === position.id ? 'none' : 'all 0.2s ease',
+                    transform: 'translate(-50%, -50%)',
+                    opacity: isDragging === position.id ? 0.8 : 1,
                   }}
-                  className="hover:scale-125"
+                  className="hover:scale-125 select-none"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    handleDragStart(position.id);
+                  }}
                 />
               );
             })}
