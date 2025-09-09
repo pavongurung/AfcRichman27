@@ -7,7 +7,7 @@ import type { Match, Player } from "@shared/schema";
 import { format } from "date-fns";
 import ModernLineupView from "@/components/ModernLineupView";
 
-export default function MatchDetailsPage(): JSX.Element {
+export default function MatchDetailsPage() {
   const params = useParams();
   const matchId = params.id;
 
