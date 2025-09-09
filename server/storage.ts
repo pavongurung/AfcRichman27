@@ -201,11 +201,26 @@ export class DatabaseStorage implements IStorage {
 
   // Match operations
   async getAllMatches(): Promise<Match[]> {
-    return await db.select().from(matches).orderBy(desc(matches.matchDate));
+    const allMatches = await db.select().from(matches);
+    
+    // Sort by status priority: FT first, Live second, Upcoming third
+    return allMatches.sort((a, b) => {
+      const statusPriority = { "FT": 1, "Live": 2, "Upcoming": 3 };
+      const priorityA = statusPriority[a.status as keyof typeof statusPriority] || 4;
+      const priorityB = statusPriority[b.status as keyof typeof statusPriority] || 4;
+      
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+      
+      // If same status, sort by date (newest first)
+      return new Date(b.matchDate).getTime() - new Date(a.matchDate).getTime();
+    });
   }
 
   async getRecentMatches(limit: number = 5): Promise<Match[]> {
-    return await db.select().from(matches).orderBy(desc(matches.matchDate)).limit(limit);
+    const allMatches = await this.getAllMatches();
+    return allMatches.slice(0, limit);
   }
 
   async getMatch(id: string): Promise<Match | undefined> {
