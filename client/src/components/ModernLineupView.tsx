@@ -90,7 +90,10 @@ export default function ModernLineupView({
                     position: 'absolute',
                     top: `${topPercent}%`,
                     left: `${leftPercent}%`,
-                    display: 'block',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     width: '3%',
                     height: '5%',
                     backgroundColor: '#4F7EDC',
@@ -100,7 +103,25 @@ export default function ModernLineupView({
                     transform: 'translate(-50%, -50%)',
                   }}
                   className="hover:scale-110 select-none transition-transform duration-200"
-                />
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      fontSize: '8px',
+                      fontWeight: 'bold',
+                      color: 'white',
+                      textAlign: 'center',
+                      lineHeight: '1',
+                      whiteSpace: 'nowrap',
+                      textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
+                    }}
+                  >
+                    {player ? player.lastName : 'AI'}
+                  </div>
+                </div>
               );
             })}
           </div>
