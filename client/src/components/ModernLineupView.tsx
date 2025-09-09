@@ -37,8 +37,8 @@ export default function ModernLineupView({
     max === min ? 0.5 : (v - min) / (max - min);
 
   // padding around the drawing area (in % of the box)
-  const PAD_X = 12; // left/right padding
-  const PAD_Y = 10; // top/bottom padding
+  const PAD_X = 18; // left/right padding (increased to prevent touching edges)
+  const PAD_Y = 15; // top/bottom padding (increased to prevent touching edges)
   const SPAN_X = 100 - PAD_X * 2; // usable width inside padding
   const SPAN_Y = 100 - PAD_Y * 2; // usable height inside padding
   // ==========================================================================
@@ -92,8 +92,14 @@ export default function ModernLineupView({
             const colorClass = getPositionColor(position.role);
 
             // ==== NEW: correct axis + normalized spread (horizontal orientation) ====
-            const leftPct = PAD_X + norm(position.y, minY, maxY) * SPAN_X; // Y controls left (depth becomes width)
-            const topPct  = PAD_Y + norm(position.x, minX, maxX) * SPAN_Y;  // X controls top (width becomes height)
+            let leftPct = PAD_X + norm(position.y, minY, maxY) * SPAN_X; // Y controls left (depth becomes width)
+            let topPct  = PAD_Y + norm(position.x, minX, maxX) * SPAN_Y;  // X controls top (width becomes height)
+            
+            // Special adjustment for center backs to bring them closer together
+            if (position.id === 'CB1' || position.id === 'CB2') {
+              const centerY = PAD_Y + 0.5 * SPAN_Y; // center line
+              topPct = centerY + (topPct - centerY) * 0.6; // bring 40% closer to center
+            }
             // =================================================
 
             return (
