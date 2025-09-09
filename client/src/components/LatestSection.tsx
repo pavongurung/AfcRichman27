@@ -135,19 +135,17 @@ export default function LatestSection() {
               </div>
               
               {/* Teams - Centered Layout */}
-              <div className="text-center space-y-3 flex-1 flex flex-col justify-center">
+              <div className="text-center space-y-4 flex-1 flex flex-col justify-center">
                 {/* Home Team */}
-                <div className="text-center">
+                <div className="text-center space-y-1">
                   <div className="font-medium text-white text-sm">{match.homeTeam}</div>
-                  <div className="h-8 flex items-center justify-center">
-                    {match.status === "FT" && (
-                      <div className="text-2xl font-bold text-white">{match.homeScore}</div>
-                    )}
-                  </div>
+                  {match.status === "FT" && (
+                    <div className="text-2xl font-bold text-white">{match.homeScore}</div>
+                  )}
                 </div>
 
                 {/* Minimal Divider */}
-                <div className="flex items-center justify-center py-2">
+                <div className="flex items-center justify-center py-1">
                   {match.status === "FT" ? (
                     <div className="text-xs font-medium text-gray-600">—</div>
                   ) : (
@@ -156,13 +154,11 @@ export default function LatestSection() {
                 </div>
 
                 {/* Away Team */}
-                <div className="text-center">
+                <div className="text-center space-y-1">
                   <div className="font-medium text-white text-sm">{match.awayTeam}</div>
-                  <div className="h-8 flex items-center justify-center">
-                    {match.status === "FT" && (
-                      <div className="text-2xl font-bold text-white">{match.awayScore}</div>
-                    )}
-                  </div>
+                  {match.status === "FT" && (
+                    <div className="text-2xl font-bold text-white">{match.awayScore}</div>
+                  )}
                 </div>
               </div>
               
