@@ -121,31 +121,30 @@ export default function ModernLineupView({
               >
                 {player ? (
                   <div className="flex flex-col items-center">
-                    {/* Jersey SVG */}
-                    <div className="relative hover:scale-110 transition-transform mb-1 md:mb-2">
+                    {/* Clean Minimalistic Jersey */}
+                    <div className="relative hover:scale-105 transition-transform mb-1 md:mb-2">
                       <svg 
-                        width="48" 
-                        height="56" 
-                        viewBox="0 0 48 56" 
-                        className="md:w-16 md:h-20"
+                        width="40" 
+                        height="48" 
+                        viewBox="0 0 40 48" 
+                        className="md:w-12 md:h-16"
                       >
-                        {/* Jersey Shape */}
+                        {/* Simple Jersey Shape */}
                         <path
-                          d="M8 12 L8 8 C8 6 10 4 12 4 L16 4 C18 2 20 2 24 2 C28 2 30 2 32 4 L36 4 C38 4 40 6 40 8 L40 12 L44 16 L44 52 C44 54 42 56 40 56 L8 56 C6 56 4 54 4 52 L4 16 L8 12 Z"
+                          d="M10 8 L10 4 C10 2 12 0 14 0 L26 0 C28 0 30 2 30 4 L30 8 L36 12 L36 46 C36 47 35 48 34 48 L6 48 C5 48 4 47 4 46 L4 12 L10 8 Z"
                           fill="white"
                           stroke="white"
-                          strokeWidth="1.5"
+                          strokeWidth="1"
                         />
                         {/* Jersey Number */}
                         <text
-                          x="24"
-                          y="35"
+                          x="20"
+                          y="28"
                           textAnchor="middle"
                           dominantBaseline="middle"
                           fill="black"
-                          fontSize="16"
-                          fontWeight="bold"
-                          className="md:text-xl"
+                          fontSize="14"
+                          fontWeight="600"
                         >
                           {player.jerseyNumber}
                         </text>
@@ -162,32 +161,32 @@ export default function ModernLineupView({
                   </div>
                 ) : (
                   <div className="flex flex-col items-center">
-                    {/* Empty Position Jersey SVG */}
-                    <div className="relative mb-1 md:mb-2 opacity-50">
+                    {/* Empty Position Jersey */}
+                    <div className="relative mb-1 md:mb-2 opacity-40">
                       <svg 
-                        width="48" 
-                        height="56" 
-                        viewBox="0 0 48 56" 
-                        className="md:w-16 md:h-20"
+                        width="40" 
+                        height="48" 
+                        viewBox="0 0 40 48" 
+                        className="md:w-12 md:h-16"
                       >
-                        {/* Jersey Shape */}
+                        {/* Simple Jersey Outline */}
                         <path
-                          d="M8 12 L8 8 C8 6 10 4 12 4 L16 4 C18 2 20 2 24 2 C28 2 30 2 32 4 L36 4 C38 4 40 6 40 8 L40 12 L44 16 L44 52 C44 54 42 56 40 56 L8 56 C6 56 4 54 4 52 L4 16 L8 12 Z"
+                          d="M10 8 L10 4 C10 2 12 0 14 0 L26 0 C28 0 30 2 30 4 L30 8 L36 12 L36 46 C36 47 35 48 34 48 L6 48 C5 48 4 47 4 46 L4 12 L10 8 Z"
                           fill="none"
                           stroke="white"
-                          strokeWidth="1.5"
-                          opacity="0.3"
+                          strokeWidth="1"
+                          opacity="0.5"
                         />
                         {/* Question Mark */}
                         <text
-                          x="24"
-                          y="35"
+                          x="20"
+                          y="28"
                           textAnchor="middle"
                           dominantBaseline="middle"
                           fill="white"
-                          fontSize="20"
-                          fontWeight="bold"
-                          opacity="0.6"
+                          fontSize="16"
+                          fontWeight="600"
+                          opacity="0.7"
                         >
                           ?
                         </text>
