@@ -1,13 +1,3 @@
-import type { Player } from "@shared/schema";
-import { getFormationById } from "@/lib/formations";
-
-interface ModernLineupViewProps {
-  formation?: string;
-  lineup?: Record<string, string>;
-  players: Player[];
-  teamName: string;
-}
-
 export default function ModernLineupView({
   formation = '4-3-3',
   lineup = {},
