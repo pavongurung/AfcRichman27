@@ -1,5 +1,5 @@
 import type { Player } from "@shared/schema";
-import { getFormationById, getPositionColor } from "@/lib/formations";
+import { getFormationById } from "@/lib/formations";
 
 interface ModernLineupViewProps {
   formation?: string;
@@ -8,12 +8,12 @@ interface ModernLineupViewProps {
   teamName: string;
 }
 
-const ModernLineupView = ({
+export default function ModernLineupView({
   formation = '4-3-3',
   lineup = {},
   players,
   teamName
-}: ModernLineupViewProps) => {
+}: ModernLineupViewProps) {
   const formationData = getFormationById(formation);
   if (!formationData) {
     return (
@@ -26,126 +26,110 @@ const ModernLineupView = ({
   const getPlayerById = (playerId: string) =>
     players.find(p => p.id === playerId);
 
-  const getPlayerColor = (role: string) => {
-    switch (role) {
-      case 'GK':
-        return 'bg-yellow-500 border-yellow-400';
-      case 'DEF':
-        return 'bg-blue-500 border-blue-400';
-      case 'MID':
-        return 'bg-green-500 border-green-400';
-      case 'FWD':
-        return 'bg-red-500 border-red-400';
-      default:
-        return 'bg-gray-500 border-gray-400';
-    }
+
+  // Map formation position IDs to CSS class names
+  const getPositionCSSClass = (positionId: string) => {
+    const positionMap: Record<string, string> = {
+      'GK': 'gk',
+      'LB': 'lb',
+      'CB1': 'cb',
+      'CB2': 'cb', // Use same class for both center backs
+      'RB': 'rb',
+      'LWB': 'lwb',
+      'DM': 'dm',
+      'RWB': 'rwb',
+      'LM': 'lm',
+      'CM': 'cm',
+      'CM1': 'cm',
+      'CM2': 'cm', 
+      'CM3': 'cm',
+      'RM': 'rm',
+      'AMR': 'amr',
+      'AM': 'am',
+      'AML': 'aml',
+      'LW': 'wl',
+      'CF': 'cf',
+      'ST': 'st',
+      'ST1': 'st',
+      'ST2': 'cf', // Use cf for second striker
+      'RW': 'wr'
+    };
+    return positionMap[positionId] || 'cm'; // Default to cm if not found
   };
 
-  // Create lineup for display below pitch
-  const positionedPlayers = formationData.positions.map(position => {
-    const playerId = lineup[position.id];
-    const player = playerId ? getPlayerById(playerId) : null;
-    return {
-      position,
-      player,
-      colorClass: getPlayerColor(position.role)
-    };
-  });
-
   return (
-    <div className="relative w-full max-w-6xl mx-auto">
-      {/* Formation Header */}
-      <div className="text-center mb-8">
-        <h3 className="text-2xl font-bold text-white mb-2">{formation} Formation</h3>
-        <p className="text-gray-400">11/11 players selected</p>
-      </div>
+    <div className="relative w-full max-w-4xl mx-auto">
 
-      {/* Football Pitch */}
-      <div className="relative bg-gradient-to-br from-green-500 to-green-600 rounded-2xl mx-auto border-4 border-white" 
-           style={{ width: '800px', height: '500px' }}>
-        
-        {/* Pitch markings */}
-        <div className="absolute inset-4 border-4 border-white rounded-lg">
-          {/* Center circle */}
-          <div className="absolute left-1/2 top-1/2 w-24 h-24 border-4 border-white rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute left-1/2 top-1/2 w-2 h-2 bg-white rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
-          
-          {/* Center line */}
-          <div className="absolute left-0 right-0 top-1/2 h-1 bg-white transform -translate-y-1/2"></div>
-          
-          {/* Goal areas - top */}
-          <div className="absolute left-1/4 right-1/4 top-0 h-16 border-4 border-white border-t-0 rounded-b-lg"></div>
-          <div className="absolute left-1/3 right-1/3 top-0 h-10 border-4 border-white border-t-0 rounded-b"></div>
-          
-          {/* Goal areas - bottom */}
-          <div className="absolute left-1/4 right-1/4 bottom-0 h-16 border-4 border-white border-b-0 rounded-t-lg"></div>
-          <div className="absolute left-1/3 right-1/3 bottom-0 h-10 border-4 border-white border-b-0 rounded-t"></div>
-          
-          {/* Corner arcs */}
-          <div className="absolute top-0 left-0 w-6 h-6 border-r-4 border-b-4 border-white rounded-br-full"></div>
-          <div className="absolute top-0 right-0 w-6 h-6 border-l-4 border-b-4 border-white rounded-bl-full"></div>
-          <div className="absolute bottom-0 left-0 w-6 h-6 border-r-4 border-t-4 border-white rounded-tr-full"></div>
-          <div className="absolute bottom-0 right-0 w-6 h-6 border-l-4 border-t-4 border-white rounded-tl-full"></div>
-        </div>
-
-        {/* Player Positions */}
-        {formationData.positions.map((position) => {
-          const playerId = lineup[position.id];
-          const player = playerId ? getPlayerById(playerId) : null;
-          const colorClass = getPlayerColor(position.role);
-          
-          return (
-            <div
-              key={position.id}
-              className={`absolute transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border-4 flex flex-col items-center justify-center text-white font-bold transition-transform hover:scale-110 cursor-pointer ${colorClass} shadow-lg`}
-              style={{
-                left: `${(position.x / 100) * 100}%`,
-                top: `${(position.y / 140) * 100}%`,
-                textShadow: '1px 1px 2px rgba(0,0,0,0.8)'
-              }}
-              title={player ? `${player.firstName} ${player.lastName} (#${player.jerseyNumber})` : position.label}
-              data-testid={`lineup-position-${position.id}`}
-            >
-              {player ? (
-                <>
-                  <div className="text-xs leading-none">
-                    {player.lastName.slice(0, 3).toUpperCase()}
+      {/* New CSS-based pitch layout */}
+      <div className="flex justify-center">
+        <div className="campo-wrapper">
+          <div className="campo">
+            <div className="semi1"></div>
+            <div className="semi2"></div>
+            <div className="divisoria"></div>
+            <div className="interior"></div>
+            <div className="penalty"></div>           
+            {/* Only show positions that exist in the current formation */}
+            {formationData.positions.map((position) => {
+              const playerId = lineup[position.id];
+              const player = playerId ? getPlayerById(playerId) : null;
+              
+              // Convert formation coordinates to match the horizontal pitch layout
+              // The pitch is displayed horizontally, so we need to rotate the coordinates
+              // Formation y becomes CSS left (goal line to goal line = left to right)
+              // Formation x becomes CSS top (sideline to sideline = top to bottom)
+              // Map formation y (10-75) to left half of pitch (7% to 47%)
+              const leftPercent = 7 + ((position.y - 10) / 65) * 40; // Maps y: 10->7%, y: 75->47%
+              const topPercent = position.x; // x: 0-100 stays the same
+              
+              return (
+                <div
+                  key={position.id}
+                  title={player ? `${player.firstName} ${player.lastName} (#${player.jerseyNumber})` : position.label}
+                  style={{
+                    position: 'absolute',
+                    top: `${topPercent}%`,
+                    left: `${leftPercent}%`,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '4%',
+                    height: '6%',
+                    backgroundColor: '#4F7EDC',
+                    border: '1px solid #324978',
+                    borderRadius: '50%',
+                    zIndex: 2,
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                  className="hover:scale-110 select-none transition-transform duration-200"
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      fontSize: '12px',
+                      fontWeight: 'bold',
+                      color: 'white',
+                      textAlign: 'center',
+                      lineHeight: '1',
+                      whiteSpace: 'nowrap',
+                      textShadow: '2px 2px 4px rgba(0,0,0,0.9)',
+                      fontFamily: 'monospace',
+                    }}
+                  >
+                    {player ? player.lastName.toUpperCase() : 'AI'}
                   </div>
-                  <div className="text-xs leading-none mt-1">
-                    #{player.jerseyNumber}
-                  </div>
-                </>
-              ) : (
-                <div className="text-xs">{position.label}</div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Starting XI List */}
-      <div className="mt-12">
-        <h4 className="text-xl font-bold text-white mb-6 text-center">Starting XI</h4>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {positionedPlayers.map(({ position, player, colorClass }) => (
-            <div key={position.id} className="flex items-center gap-3 bg-gray-800 rounded-lg p-3">
-              <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-white text-xs font-bold ${colorClass}`}>
-                {position.role}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-white font-medium text-sm truncate">
-                  {player ? `${player.firstName} ${player.lastName}` : 'Unnamed Player'}
                 </div>
-                <div className="text-gray-400 text-xs">
-                  {position.label} #{player?.jerseyNumber || '??'}
-                </div>
-              </div>
-            </div>
-          ))}
+              );
+            })}
+          </div>
         </div>
       </div>
+
+
     </div>
   );
-};
-
-export default ModernLineupView;
+}
