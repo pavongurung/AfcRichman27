@@ -146,12 +146,11 @@
   position: relative;
   display: inline-block;
   vertical-align: middle;
-  width: 50%;
+  width: 100%;
   height: 0;
   margin: 10px auto;
   padding: 0 0 60% 0;
   background-color: #17191F;
-  overflow: hidden;
 }
 
 .interior, .divisoria,
@@ -168,18 +167,26 @@
   border: 1px solid #323642;
 }
 
-.divisoria:after {
+.divisoria:after, .divisoria:before {
   content: "";
   position: absolute;
-  left: 100%;
+  left: 50%;
   display: block;
   width: 0;
   height: 100%;
-  margin-left: -0.5px;
+  margin-left: .5px;
   border: 0.5px solid #323642;
 }
 .divisoria:before {
-  display: none;
+  top: 50%;
+  width: 17%;
+  height: 0;
+  margin: -8% 0 0 -8%;
+  margin-top: calc(-8% - 4px);
+  margin-left: calc(-8% - .5px);
+  padding-bottom: 17%;
+  border-radius: 50%;
+  border: 1px solid #323642;
 }
 
 .campo:before, .campo:after {
@@ -196,7 +203,8 @@
 }
 
 .campo:after {
-  display: none;
+  left: auto;
+  right: -2px;
 }
 
 .interior:before, .interior:after {
@@ -213,7 +221,9 @@
 }
 
 .interior:after {
-  display: none;
+  left: auto;
+  right: 0;
+  margin: -16% -1px 0 0;
 }
 
 .semi2:before {
@@ -234,7 +244,8 @@
   border-radius: 50%;
 }
 .semi2:after {
-  display: none;
+  left: auto;
+  right: 5%;
 }
 
 .gk{
