@@ -74,10 +74,10 @@ export default function ModernLineupView({
             {/* Outer Border (3 sides for half pitch) */}
             <div className="absolute inset-0 border-l-2 border-t-2 border-b-2 border-white rounded-l-lg"></div>
             
-            {/* Center Line (right edge) - White */}
+            {/* Center Line (right edge) */}
             <div className="absolute right-0 top-0 bottom-0 w-0.5 bg-white"></div>
             
-            {/* Half Center Circle - White */}
+            {/* Half Center Circle (positioned correctly for horizontal layout) */}
             <div
               className="absolute right-0 top-1/2 w-24 h-24 border-2 border-white rounded-l-full transform -translate-y-1/2"
               style={{ borderRight: 'none' }}
@@ -94,24 +94,6 @@ export default function ModernLineupView({
             {/* Corner Arcs (left side only) */}
             <div className="absolute left-0 top-0 w-6 h-6 border-b-2 border-r-2 border-white rounded-br-full" />
             <div className="absolute left-0 bottom-0 w-6 h-6 border-t-2 border-r-2 border-white rounded-tr-full" />
-            
-            {/* BLACK LINES - Matching reference image */}
-            {/* Vertical center line (black) */}
-            <div className="absolute right-0 top-0 bottom-0 w-1 bg-black"></div>
-            
-            {/* Horizontal division lines (black) */}
-            <div className="absolute left-0 right-0 top-1/4 h-1 bg-black"></div>
-            <div className="absolute left-0 right-0 bottom-1/4 h-1 bg-black"></div>
-            
-            {/* Black center circle */}
-            <div
-              className="absolute right-0 top-1/2 w-24 h-24 border-2 border-black rounded-l-full transform -translate-y-1/2"
-              style={{ borderRight: 'none' }}
-            />
-            
-            {/* Black goal area lines */}
-            <div className="absolute left-0 top-1/2 w-16 h-20 border-2 border-black border-l-0 transform -translate-y-1/2" />
-            <div className="absolute left-0 top-1/2 w-8 h-12 border-2 border-black border-l-0 transform -translate-y-1/2" />
           </div>
 
           {/* Players */}
