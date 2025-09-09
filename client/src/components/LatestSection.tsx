@@ -118,66 +118,59 @@ export default function LatestSection() {
           {matches?.map((match) => (
             <div 
               key={match.id} 
-              className="flex-none w-80 bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 fixture-card cursor-pointer border border-gray-800/50 hover:border-gray-700/50 transition-all duration-300" 
+              className="flex-none w-72 bg-gray-900/30 backdrop-blur-sm rounded-2xl p-5 fixture-card cursor-pointer border border-gray-800/30 hover:border-gray-700/30 hover:bg-gray-900/40 transition-all duration-500" 
               data-testid={`fixture-card-${match.id}`}
             >
               {/* Header */}
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center space-x-2">
-                  <div className={`w-2 h-2 rounded-full ${getStatusColor(match.status)}`}></div>
-                  <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">{match.status}</span>
+                  <div className={`w-1.5 h-1.5 rounded-full ${getStatusColor(match.status)}`}></div>
+                  <span className="text-[10px] font-medium text-gray-500 uppercase tracking-widest">{match.status}</span>
                 </div>
-                <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">{match.competition}</span>
+                <span className="text-[10px] font-medium text-gray-500 uppercase tracking-widest">{match.competition}</span>
               </div>
               
-              {/* Teams */}
-              <div className="space-y-4 mb-6">
+              {/* Teams - Minimal Layout */}
+              <div className="text-center space-y-3 mb-5">
                 {/* Home Team */}
                 <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="font-semibold text-white">{match.homeTeam}</div>
-                    <div className="text-xs text-gray-500">Home</div>
-                  </div>
+                  <div className="font-medium text-white text-sm">{match.homeTeam}</div>
                   {match.status === "FT" && (
-                    <div className="text-xl font-bold text-white">{match.homeScore}</div>
+                    <div className="text-lg font-bold text-white">{match.homeScore}</div>
                   )}
                 </div>
 
-                {/* VS or Score Divider */}
-                <div className="flex items-center justify-center">
+                {/* Minimal Divider */}
+                <div className="flex items-center justify-center py-1">
                   {match.status === "FT" ? (
-                    <div className="w-8 h-px bg-gray-700"></div>
+                    <div className="text-xs font-medium text-gray-600">—</div>
                   ) : (
-                    <div className="text-xs font-bold text-gray-500 bg-gray-800 px-3 py-1 rounded-full">VS</div>
+                    <div className="text-[10px] font-medium text-gray-600 tracking-wider">VS</div>
                   )}
                 </div>
 
                 {/* Away Team */}
                 <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="font-semibold text-white">{match.awayTeam}</div>
-                    <div className="text-xs text-gray-500">Away</div>
-                  </div>
+                  <div className="font-medium text-white text-sm">{match.awayTeam}</div>
                   {match.status === "FT" && (
-                    <div className="text-xl font-bold text-white">{match.awayScore}</div>
+                    <div className="text-lg font-bold text-white">{match.awayScore}</div>
                   )}
                 </div>
               </div>
               
               {/* Footer */}
-              <div className="pt-4 border-t border-gray-800/50">
-                <div className="text-xs text-gray-500 mb-3 flex items-center">
-                  <Calendar className="w-3 h-3 mr-1" />
+              <div className="pt-3 border-t border-gray-800/20">
+                <div className="text-[10px] text-gray-600 mb-3 text-center font-medium tracking-wider">
                   {formatDate(match.matchDate.toString())}
                 </div>
                 {match.status === "FT" && match.replayUrl && (
                   <Button
                     variant="outline"
                     size="sm"
-                    className="w-full bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white hover:border-gray-600 transition-all duration-200"
+                    className="w-full h-8 bg-transparent border-gray-800/40 text-gray-400 hover:bg-gray-800/50 hover:text-gray-200 hover:border-gray-700/40 text-xs font-medium transition-all duration-300 rounded-lg"
                     onClick={() => match.replayUrl && window.open(match.replayUrl, '_blank')}
                   >
-                    <Play className="w-3 h-3 mr-2" />
+                    <Play className="w-3 h-3 mr-1" />
                     Watch Replay
                   </Button>
                 )}
@@ -185,10 +178,10 @@ export default function LatestSection() {
                   <Button
                     variant="default"
                     size="sm"
-                    className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white border-0 transition-all duration-200"
+                    className="w-full h-8 bg-red-600/90 hover:bg-red-600 text-white border-0 text-xs font-medium transition-all duration-300 rounded-lg"
                     onClick={() => window.open('https://www.twitch.tv/sevlakev', '_blank')}
                   >
-                    <Play className="w-3 h-3 mr-2" />
+                    <Play className="w-3 h-3 mr-1" />
                     Watch Live
                   </Button>
                 )}
