@@ -167,28 +167,30 @@ export default function LatestSection() {
                 <div className="text-[10px] text-gray-600 mb-3 text-center font-medium tracking-wider">
                   {formatDate(match.matchDate.toString())}
                 </div>
-                {match.status === "FT" && match.replayUrl && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full h-8 bg-transparent border-gray-800/40 text-gray-400 hover:bg-gray-800/50 hover:text-gray-200 hover:border-gray-700/40 text-xs font-medium transition-all duration-300 rounded-lg"
-                    onClick={() => match.replayUrl && window.open(match.replayUrl, '_blank')}
-                  >
-                    <Play className="w-3 h-3 mr-1" />
-                    Watch Replay
-                  </Button>
-                )}
-                {match.status === "Live" && (
-                  <Button
-                    variant="default"
-                    size="sm"
-                    className="w-full h-8 bg-red-600/90 hover:bg-red-600 text-white border-0 text-xs font-medium transition-all duration-300 rounded-lg"
-                    onClick={() => window.open('https://www.twitch.tv/sevlakev', '_blank')}
-                  >
-                    <Play className="w-3 h-3 mr-1" />
-                    Watch Live
-                  </Button>
-                )}
+                <div className="h-8 flex items-center justify-center">
+                  {match.status === "FT" && match.replayUrl && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full h-full bg-transparent border-gray-800/40 text-gray-400 hover:bg-gray-800/50 hover:text-gray-200 hover:border-gray-700/40 text-xs font-medium transition-all duration-300 rounded-lg"
+                      onClick={() => match.replayUrl && window.open(match.replayUrl, '_blank')}
+                    >
+                      <Play className="w-3 h-3 mr-1" />
+                      Watch Replay
+                    </Button>
+                  )}
+                  {match.status === "Live" && (
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="w-full h-full bg-red-600/90 hover:bg-red-600 text-white border-0 text-xs font-medium transition-all duration-300 rounded-lg"
+                      onClick={() => window.open('https://www.twitch.tv/sevlakev', '_blank')}
+                    >
+                      <Play className="w-3 h-3 mr-1" />
+                      Watch Live
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           ))}
