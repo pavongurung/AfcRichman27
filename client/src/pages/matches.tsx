@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Clock, MapPin, Play, Trophy, Users, ChevronDown, ChevronUp } from "lucide-react";
 import type { Match, Player } from "@shared/schema";
 import { format } from "date-fns";
-import LineupView from "@/components/LineupView";
+import FormationPitch from "@/components/FormationPitch";
 
 type FilterType = "all" | "upcoming" | "finished";
 
@@ -271,12 +271,12 @@ function MatchCard({ match }: { match: Match }) {
         {isExpanded && isFinished && isRichmanMatch && hasLineup && (
           <div className="mt-4 pt-4 border-t">
             <div className="flex justify-center">
-              <LineupView
-                formation={match.formation || undefined}
-                lineup={match.lineup as Record<string, string> | undefined}
+              <FormationPitch
+                selectedFormation={match.formation || "4-3-3"}
+                lineup={match.lineup ? match.lineup as Record<string, string> : {}}
                 players={players}
-                size="small"
-                className="max-w-md"
+                isEditing={false}
+                className="max-w-md mx-auto"
               />
             </div>
           </div>
