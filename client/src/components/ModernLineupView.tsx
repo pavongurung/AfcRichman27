@@ -79,10 +79,11 @@ export default function ModernLineupView({
               const player = playerId ? getPlayerById(playerId) : null;
               
               // Convert formation coordinates to CSS positioning
-              // Formation uses x: 0-100, y: 0-140 (goal to goal)
-              // We need to flip y coordinate since CSS top: 0 is at top, but formation y: 0 is at bottom goal
+              // Formation: x: 0-100 (left to right), y: 0-140 (bottom goal to top goal)
+              // CSS: left: 0-100% (left to right), top: 0-100% (top to bottom)
+              // Map formation y=10 (GK) to CSS top=85%, y=75 (forwards) to CSS top=15%
               const leftPercent = position.x;
-              const topPercent = 100 - (position.y / 1.4); // Convert 0-140 to 0-100 and flip
+              const topPercent = 90 - (position.y * 0.7); // Map y:10->85%, y:75->15%
               
               return (
                 <div
