@@ -244,7 +244,7 @@ function MatchCard({ match }: { match: Match }) {
             )}
             
             {/* View Lineup Button - Show for finished AFC Richman matches with lineup */}
-            {isFinished && isRichmanMatch && hasLineup && (
+            {(isFinished && isRichmanMatch && hasLineup) ? (
               <Button
                 variant="ghost"
                 size="sm"
@@ -256,19 +256,19 @@ function MatchCard({ match }: { match: Match }) {
                 View Lineup
                 {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </Button>
-            )}
+            ) : null}
           </div>
         </div>
 
         {/* Countdown for upcoming matches */}
-        {isUpcoming && (
+        {isUpcoming ? (
           <div className="mt-4 pt-4 border-t">
             <MatchCountdown matchDate={matchDate} />
           </div>
-        )}
+        ) : null}
 
         {/* Expanded Lineup Section */}
-        {isExpanded && isFinished && isRichmanMatch && hasLineup && (
+        {(isExpanded && isFinished && isRichmanMatch && hasLineup) ? (
           <div className="mt-4 pt-4 border-t">
             <div className="flex justify-center">
               <LineupView
@@ -280,7 +280,7 @@ function MatchCard({ match }: { match: Match }) {
               />
             </div>
           </div>
-        )}
+        ) : null}
       </CardContent>
     </Card>
   );
