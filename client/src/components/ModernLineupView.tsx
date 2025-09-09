@@ -219,7 +219,6 @@ export default function ModernLineupView({
                   height: '5%',
                   backgroundColor: player ? '#4F7EDC' : '#666',
                   border: `1px solid ${player ? '#324978' : '#444'}`,
-                  borderRadius: '50%',
                   zIndex: 2,
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
@@ -242,7 +241,7 @@ export default function ModernLineupView({
             return (
               <div key={position.id} className="flex items-center space-x-3 p-2 bg-gray-800 rounded-lg">
                 <div
-                  className="w-4 h-4 rounded-full flex-shrink-0"
+                  className="w-4 h-4 flex-shrink-0"
                   style={{
                     backgroundColor: player ? '#4F7EDC' : '#666',
                     border: `1px solid ${player ? '#324978' : '#444'}`,
