@@ -20,7 +20,7 @@ export default function HeroSection() {
             <span className="text-primary">AFC Richman</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8" data-testid="hero-description">
-            Experience the passion, power, and pride of our football club. Follow our journey to greatness.
+            We're home to skilled, committed players who give 100% every match — combining serious competition with good vibes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Button 
