@@ -120,86 +120,87 @@ export default function LatestSection() {
           data-testid="fixtures-scroll"
         >
           {matches?.map((match) => (
-            <div 
-              key={match.id} 
-              className="flex-none w-72 h-72 bg-gray-900/30 backdrop-blur-sm rounded-2xl p-5 fixture-card cursor-pointer border border-gray-800/30 hover:border-gray-700/30 hover:bg-gray-900/40 transition-all duration-500 flex flex-col group transform hover:scale-110" 
-              data-testid={`fixture-card-${match.id}`}
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center space-x-2">
-                  <div className={`w-1.5 h-1.5 rounded-full ${getStatusColor(match.status)}`}></div>
-                  <span className="text-[10px] font-medium text-gray-500 uppercase tracking-widest">{match.status}</span>
+            <div key={match.id} className="flex-none flex flex-col space-y-3">
+              <div 
+                className="w-72 h-72 bg-gray-900/30 backdrop-blur-sm rounded-2xl p-5 fixture-card cursor-pointer border border-gray-800/30 hover:border-gray-700/30 hover:bg-gray-900/40 transition-all duration-500 flex flex-col group transform hover:scale-105" 
+                data-testid={`fixture-card-${match.id}`}
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center space-x-2">
+                    <div className={`w-1.5 h-1.5 rounded-full ${getStatusColor(match.status)}`}></div>
+                    <span className="text-[10px] font-medium text-gray-500 uppercase tracking-widest">{match.status}</span>
+                  </div>
+                  <span className="text-[10px] font-medium text-gray-500 uppercase tracking-widest">{match.competition}</span>
                 </div>
-                <span className="text-[10px] font-medium text-gray-500 uppercase tracking-widest">{match.competition}</span>
-              </div>
-              
-              {/* Teams - Centered Layout */}
-              <div className="text-center space-y-4 flex-1 flex flex-col justify-center">
-                {/* Home Team */}
-                <div className="text-center space-y-1">
-                  <div className="font-medium text-white text-sm">{match.homeTeam}</div>
-                  <div className="h-8 flex items-center justify-center">
+                
+                {/* Teams - Centered Layout */}
+                <div className="text-center space-y-4 flex-1 flex flex-col justify-center">
+                  {/* Home Team */}
+                  <div className="text-center space-y-1">
+                    <div className="font-medium text-white text-sm">{match.homeTeam}</div>
+                    <div className="h-8 flex items-center justify-center">
+                      {match.status === "FT" ? (
+                        <div className="text-2xl font-bold text-white">{match.homeScore}</div>
+                      ) : (
+                        <div className="h-8"></div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Minimal Divider */}
+                  <div className="flex items-center justify-center py-1">
                     {match.status === "FT" ? (
-                      <div className="text-2xl font-bold text-white">{match.homeScore}</div>
+                      <div className="text-xs font-medium text-gray-600">—</div>
                     ) : (
-                      <div className="h-8"></div>
+                      <div className="text-[10px] font-medium text-gray-600 tracking-wider">VS</div>
                     )}
                   </div>
-                </div>
 
-                {/* Minimal Divider */}
-                <div className="flex items-center justify-center py-1">
-                  {match.status === "FT" ? (
-                    <div className="text-xs font-medium text-gray-600">—</div>
-                  ) : (
-                    <div className="text-[10px] font-medium text-gray-600 tracking-wider">VS</div>
-                  )}
+                  {/* Away Team */}
+                  <div className="text-center space-y-1">
+                    <div className="font-medium text-white text-sm">{match.awayTeam}</div>
+                    <div className="h-8 flex items-center justify-center">
+                      {match.status === "FT" ? (
+                        <div className="text-2xl font-bold text-white">{match.awayScore}</div>
+                      ) : (
+                        <div className="h-8"></div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-
-                {/* Away Team */}
-                <div className="text-center space-y-1">
-                  <div className="font-medium text-white text-sm">{match.awayTeam}</div>
-                  <div className="h-8 flex items-center justify-center">
-                    {match.status === "FT" ? (
-                      <div className="text-2xl font-bold text-white">{match.awayScore}</div>
-                    ) : (
-                      <div className="h-8"></div>
-                    )}
+                
+                {/* Footer */}
+                <div className="pt-3 border-t border-gray-800/20 mt-auto">
+                  <div className="text-[10px] text-gray-600 text-center font-medium tracking-wider">
+                    {formatDate(match.matchDate.toString())}
                   </div>
                 </div>
               </div>
               
-              {/* Footer */}
-              <div className="pt-3 border-t border-gray-800/20 mt-auto">
-                <div className="text-[10px] text-gray-600 mb-3 text-center font-medium tracking-wider">
-                  {formatDate(match.matchDate.toString())}
-                </div>
-                <div className="h-8 flex items-center justify-center">
-                  {match.status === "FT" && match.replayUrl && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full h-8 bg-transparent border-gray-800/40 text-gray-400 hover:bg-gray-800/50 hover:text-gray-200 hover:border-gray-700/40 text-xs font-medium transition-all duration-300 rounded-lg px-3"
-                      onClick={() => match.replayUrl && window.open(match.replayUrl, '_blank')}
-                    >
-                      <Play className="w-3 h-3 mr-2 flex-shrink-0" />
-                      <span className="truncate">Watch Replay</span>
-                    </Button>
-                  )}
-                  {match.status === "Live" && (
-                    <Button
-                      variant="default"
-                      size="sm"
-                      className="w-full h-8 bg-red-600/90 hover:bg-red-600 text-white border-0 text-xs font-medium transition-all duration-300 rounded-lg px-3"
-                      onClick={() => window.open('https://www.twitch.tv/sevlakev', '_blank')}
-                    >
-                      <Play className="w-3 h-3 mr-2 flex-shrink-0" />
-                      <span className="truncate">Watch Live</span>
-                    </Button>
-                  )}
-                </div>
-              </div>
+              {/* Watch Replay Button - Outside the card */}
+              {match.status === "FT" && match.replayUrl && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-72 h-10 bg-transparent border-gray-800/40 text-gray-400 hover:bg-gray-800/50 hover:text-gray-200 hover:border-gray-700/40 text-sm font-medium transition-all duration-300 rounded-lg"
+                  onClick={() => match.replayUrl && window.open(match.replayUrl, '_blank')}
+                >
+                  <Play className="w-4 h-4 mr-2 flex-shrink-0" />
+                  <span className="truncate">Watch Replay</span>
+                </Button>
+              )}
+              {match.status === "Live" && (
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="w-72 h-10 bg-red-600/90 hover:bg-red-600 text-white border-0 text-sm font-medium transition-all duration-300 rounded-lg"
+                  onClick={() => window.open('https://www.twitch.tv/sevlakev', '_blank')}
+                >
+                  <Play className="w-4 h-4 mr-2 flex-shrink-0" />
+                  <span className="truncate">Watch Live</span>
+                </Button>
+              )}
             </div>
           ))}
         </div>
