@@ -1,18 +1,29 @@
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, Calendar, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar, Play, Users, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Link } from "wouter";
-import type { Match } from "@shared/schema";
+import type { Match, Player } from "@shared/schema";
+import LineupView from "@/components/LineupView";
 
 export default function LatestSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [expandedMatch, setExpandedMatch] = useState<string | null>(null);
 
   const { data: matches, isLoading } = useQuery<Match[]>({
     queryKey: ["/api/matches"],
     queryFn: async () => {
       const response = await fetch("/api/matches?limit=5");
       if (!response.ok) throw new Error("Failed to fetch matches");
+      return response.json();
+    },
+  });
+
+  const { data: players = [] } = useQuery<Player[]>({
+    queryKey: ["/api/players"],
+    queryFn: async () => {
+      const response = await fetch("/api/players");
+      if (!response.ok) throw new Error("Failed to fetch players");
       return response.json();
     },
   });
@@ -119,90 +130,134 @@ export default function LatestSection() {
           className="flex overflow-x-auto scrollbar-hide space-x-4 pb-4"
           data-testid="fixtures-scroll"
         >
-          {matches?.map((match) => (
-            <div key={match.id} className="flex-none flex flex-col space-y-3">
-              <div 
-                className="w-72 h-72 bg-gray-900/30 backdrop-blur-sm rounded-2xl p-5 fixture-card cursor-pointer border border-gray-800/30 hover:border-gray-700/30 hover:bg-gray-900/40 transition-all duration-500 flex flex-col group transform hover:scale-105" 
-                data-testid={`fixture-card-${match.id}`}
-              >
-                {/* Header */}
-                <div className="flex items-center justify-between mb-5">
-                  <div className="flex items-center space-x-2">
-                    <div className={`w-1.5 h-1.5 rounded-full ${getStatusColor(match.status)}`}></div>
-                    <span className="text-[10px] font-medium text-gray-500 uppercase tracking-widest">{match.status}</span>
+          {matches?.map((match) => {
+            const isExpanded = expandedMatch === match.id;
+            const isFinished = match.status === "FT";
+            const isLive = match.status === "Live";
+            const isRichmanMatch = match.homeTeam.toLowerCase().includes("richman") || match.awayTeam.toLowerCase().includes("richman");
+            const hasLineup = match.formation && match.lineup && Object.keys(match.lineup).length > 0;
+            const showLineup = (isFinished || isLive) && isRichmanMatch && hasLineup;
+            
+            return (
+              <div key={match.id} className="flex-none flex flex-col space-y-3">
+                <div 
+                  className={`w-72 ${isExpanded ? 'h-auto' : 'h-72'} bg-gray-900/30 backdrop-blur-sm rounded-2xl p-5 fixture-card border border-gray-800/30 hover:border-gray-700/30 hover:bg-gray-900/40 transition-all duration-500 flex flex-col group ${isExpanded ? '' : 'transform hover:scale-105'}`} 
+                  data-testid={`fixture-card-${match.id}`}
+                >
+                  {/* Header */}
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="flex items-center space-x-2">
+                      <div className={`w-1.5 h-1.5 rounded-full ${getStatusColor(match.status)}`}></div>
+                      <span className="text-[10px] font-medium text-gray-500 uppercase tracking-widest">{match.status}</span>
+                    </div>
+                    <span className="text-[10px] font-medium text-gray-500 uppercase tracking-widest">{match.competition}</span>
                   </div>
-                  <span className="text-[10px] font-medium text-gray-500 uppercase tracking-widest">{match.competition}</span>
-                </div>
-                
-                {/* Teams - Centered Layout */}
-                <div className="text-center space-y-4 flex-1 flex flex-col justify-center">
-                  {/* Home Team */}
-                  <div className="text-center space-y-1">
-                    <div className="font-medium text-white text-sm">{match.homeTeam}</div>
-                    <div className="h-8 flex items-center justify-center">
+                  
+                  {/* Teams - Centered Layout */}
+                  <div className="text-center space-y-4 flex-1 flex flex-col justify-center">
+                    {/* Home Team */}
+                    <div className="text-center space-y-1">
+                      <div className="font-medium text-white text-sm">{match.homeTeam}</div>
+                      <div className="h-8 flex items-center justify-center">
+                        {match.status === "FT" ? (
+                          <div className="text-2xl font-bold text-white">{match.homeScore}</div>
+                        ) : (
+                          <div className="h-8"></div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Minimal Divider */}
+                    <div className="flex items-center justify-center py-1">
                       {match.status === "FT" ? (
-                        <div className="text-2xl font-bold text-white">{match.homeScore}</div>
+                        <div className="text-xs font-medium text-gray-600">—</div>
                       ) : (
-                        <div className="h-8"></div>
+                        <div className="text-[10px] font-medium text-gray-600 tracking-wider">VS</div>
                       )}
                     </div>
-                  </div>
 
-                  {/* Minimal Divider */}
-                  <div className="flex items-center justify-center py-1">
-                    {match.status === "FT" ? (
-                      <div className="text-xs font-medium text-gray-600">—</div>
-                    ) : (
-                      <div className="text-[10px] font-medium text-gray-600 tracking-wider">VS</div>
-                    )}
-                  </div>
-
-                  {/* Away Team */}
-                  <div className="text-center space-y-1">
-                    <div className="font-medium text-white text-sm">{match.awayTeam}</div>
-                    <div className="h-8 flex items-center justify-center">
-                      {match.status === "FT" ? (
-                        <div className="text-2xl font-bold text-white">{match.awayScore}</div>
-                      ) : (
-                        <div className="h-8"></div>
-                      )}
+                    {/* Away Team */}
+                    <div className="text-center space-y-1">
+                      <div className="font-medium text-white text-sm">{match.awayTeam}</div>
+                      <div className="h-8 flex items-center justify-center">
+                        {match.status === "FT" ? (
+                          <div className="text-2xl font-bold text-white">{match.awayScore}</div>
+                        ) : (
+                          <div className="h-8"></div>
+                        )}
+                      </div>
                     </div>
                   </div>
+                  
+                  {/* Footer */}
+                  <div className="pt-3 border-t border-gray-800/20 mt-auto">
+                    <div className="text-[10px] text-gray-600 text-center font-medium tracking-wider">
+                      {formatDate(match.matchDate.toString())}
+                    </div>
+                  </div>
+                  
+                  {/* View Lineup Button - Inside the card footer if available */}
+                  {showLineup && (
+                    <div className="pt-3 border-t border-gray-800/20 mt-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setExpandedMatch(isExpanded ? null : match.id);
+                        }}
+                        className="w-full text-gray-400 hover:text-gray-200 text-xs"
+                        data-testid={`lineup-button-${match.id}`}
+                      >
+                        <Users className="w-4 h-4 mr-2" />
+                        View Lineup
+                        {isExpanded ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {/* Lineup Display */}
+                  {isExpanded && showLineup && (
+                    <div className="mt-4 pt-4 border-t border-gray-800/20">
+                      <div className="flex justify-center">
+                        <LineupView
+                          formation={match.formation || undefined}
+                          lineup={match.lineup as Record<string, string> | undefined}
+                          players={players}
+                          size="small"
+                          className="max-w-xs scale-75"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
-                {/* Footer */}
-                <div className="pt-3 border-t border-gray-800/20 mt-auto">
-                  <div className="text-[10px] text-gray-600 text-center font-medium tracking-wider">
-                    {formatDate(match.matchDate.toString())}
-                  </div>
-                </div>
+                {/* Watch Replay Button - Outside the card */}
+                {match.status === "FT" && match.replayUrl && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-72 h-10 bg-transparent border-gray-800/40 text-gray-400 hover:bg-gray-800/50 hover:text-gray-200 hover:border-gray-700/40 text-sm font-medium transition-all duration-300 rounded-lg"
+                    onClick={() => match.replayUrl && window.open(match.replayUrl, '_blank')}
+                  >
+                    <Play className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span className="truncate">Watch Replay</span>
+                  </Button>
+                )}
+                {match.status === "Live" && (
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="w-72 h-10 bg-red-600/90 hover:bg-red-600 text-white border-0 text-sm font-medium transition-all duration-300 rounded-lg"
+                    onClick={() => window.open('https://www.twitch.tv/sevlakev', '_blank')}
+                  >
+                    <Play className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span className="truncate">Watch Live</span>
+                  </Button>
+                )}
               </div>
-              
-              {/* Watch Replay Button - Outside the card */}
-              {match.status === "FT" && match.replayUrl && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-72 h-10 bg-transparent border-gray-800/40 text-gray-400 hover:bg-gray-800/50 hover:text-gray-200 hover:border-gray-700/40 text-sm font-medium transition-all duration-300 rounded-lg"
-                  onClick={() => match.replayUrl && window.open(match.replayUrl, '_blank')}
-                >
-                  <Play className="w-4 h-4 mr-2 flex-shrink-0" />
-                  <span className="truncate">Watch Replay</span>
-                </Button>
-              )}
-              {match.status === "Live" && (
-                <Button
-                  variant="default"
-                  size="sm"
-                  className="w-72 h-10 bg-red-600/90 hover:bg-red-600 text-white border-0 text-sm font-medium transition-all duration-300 rounded-lg"
-                  onClick={() => window.open('https://www.twitch.tv/sevlakev', '_blank')}
-                >
-                  <Play className="w-4 h-4 mr-2 flex-shrink-0" />
-                  <span className="truncate">Watch Live</span>
-                </Button>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
