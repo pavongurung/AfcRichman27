@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Match, Player } from "@shared/schema";
 import { format } from "date-fns";
-import LineupView from "@/components/LineupView";
+import ModernLineupView from "@/components/ModernLineupView";
 
 export default function MatchDetailsPage() {
   const params = useParams();
@@ -169,7 +169,7 @@ export default function MatchDetailsPage() {
       </div>
 
       {/* Lineup Section */}
-      {(isRichmanMatch && hasLineup) ? (
+      {isRichmanMatch && hasLineup && (
         <div className="py-16">
           <div className="max-w-6xl mx-auto px-4">
             <div className="text-center mb-12">
@@ -180,19 +180,18 @@ export default function MatchDetailsPage() {
               </div>
             </div>
             
-            <LineupView
-              formation={match.formation || "4-3-3"}
-              lineup={match.lineup ? match.lineup as Record<string, string> : {}}
+            <ModernLineupView
+              formation={match.formation || undefined}
+              lineup={match.lineup ? match.lineup as Record<string, string> : undefined}
               players={players}
-              className="max-w-lg mx-auto"
-              size="large"
+              teamName={match.homeTeam}
             />
           </div>
         </div>
-      ) : null}
+      )}
 
       {/* No Lineup Message */}
-      {(!isRichmanMatch || !hasLineup) ? (
+      {(!isRichmanMatch || !hasLineup) && (
         <div className="py-16">
           <div className="max-w-6xl mx-auto px-4 text-center">
             <div className="text-gray-500">
@@ -203,7 +202,7 @@ export default function MatchDetailsPage() {
             </div>
           </div>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

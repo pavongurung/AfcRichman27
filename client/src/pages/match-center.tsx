@@ -5,22 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, MapPin, Play, Users, Tv, ExternalLink } from "lucide-react";
-import type { Match, Player } from "@shared/schema";
+import type { Match } from "@shared/schema";
 import { format } from "date-fns";
-import FormationPitch from "@/components/FormationPitch";
 
 export default function MatchCenterPage() {
   const { data: matches = [] } = useQuery<Match[]>({
     queryKey: ["/api/matches"],
-  });
-
-  const { data: players = [] } = useQuery<Player[]>({
-    queryKey: ["/api/players"],
-    queryFn: async () => {
-      const response = await fetch("/api/players");
-      if (!response.ok) throw new Error("Failed to fetch players");
-      return response.json();
-    },
   });
 
   // Get the next upcoming match
@@ -195,7 +185,7 @@ export default function MatchCenterPage() {
             </Card>
 
             {/* Match Statistics */}
-            {nextMatch ? (
+            {nextMatch && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -256,35 +246,7 @@ export default function MatchCenterPage() {
                   </div>
                 </CardContent>
               </Card>
-            ) : null}
-
-            {/* Lineup Section */}
-            {(nextMatch && 
-             nextMatch.homeTeam.toLowerCase().includes("richman") && 
-             nextMatch.formation && 
-             nextMatch.lineup && 
-             Object.keys(nextMatch.lineup).length > 0) ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-red-500" />
-                    Starting Lineup
-                  </CardTitle>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span>Formation: {nextMatch.formation}</span>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <FormationPitch
-                    selectedFormation={nextMatch.formation}
-                    lineup={nextMatch.lineup as Record<string, string>}
-                    players={players}
-                    isEditing={false}
-                    className="max-w-md mx-auto"
-                  />
-                </CardContent>
-              </Card>
-            ) : null}
+            )}
           </div>
 
           {/* Sidebar */}

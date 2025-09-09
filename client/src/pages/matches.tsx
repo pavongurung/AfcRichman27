@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Clock, MapPin, Play, Trophy, Users, ChevronDown, ChevronUp } from "lucide-react";
 import type { Match, Player } from "@shared/schema";
 import { format } from "date-fns";
-import FormationPitch from "@/components/FormationPitch";
+import LineupView from "@/components/LineupView";
 
 type FilterType = "all" | "upcoming" | "finished";
 
@@ -244,7 +244,7 @@ function MatchCard({ match }: { match: Match }) {
             )}
             
             {/* View Lineup Button - Show for finished AFC Richman matches with lineup */}
-            {(isFinished && isRichmanMatch && hasLineup) ? (
+            {isFinished && isRichmanMatch && hasLineup && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -256,31 +256,31 @@ function MatchCard({ match }: { match: Match }) {
                 View Lineup
                 {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </Button>
-            ) : null}
+            )}
           </div>
         </div>
 
         {/* Countdown for upcoming matches */}
-        {isUpcoming ? (
+        {isUpcoming && (
           <div className="mt-4 pt-4 border-t">
             <MatchCountdown matchDate={matchDate} />
           </div>
-        ) : null}
+        )}
 
         {/* Expanded Lineup Section */}
-        {(isExpanded && isFinished && isRichmanMatch && hasLineup) ? (
+        {isExpanded && isFinished && isRichmanMatch && hasLineup && (
           <div className="mt-4 pt-4 border-t">
             <div className="flex justify-center">
-              <FormationPitch
-                selectedFormation={match.formation || "4-3-3"}
-                lineup={match.lineup ? match.lineup as Record<string, string> : {}}
+              <LineupView
+                formation={match.formation || undefined}
+                lineup={match.lineup as Record<string, string> | undefined}
                 players={players}
-                isEditing={false}
-                className="max-w-md mx-auto"
+                size="small"
+                className="max-w-md"
               />
             </div>
           </div>
-        ) : null}
+        )}
       </CardContent>
     </Card>
   );
