@@ -119,7 +119,7 @@ export default function LatestSection() {
           {matches?.map((match) => (
             <div 
               key={match.id} 
-              className="flex-none w-72 bg-gray-900/30 backdrop-blur-sm rounded-2xl p-5 fixture-card cursor-pointer border border-gray-800/30 hover:border-gray-700/30 hover:bg-gray-900/40 transition-all duration-500" 
+              className="flex-none w-72 h-72 bg-gray-900/30 backdrop-blur-sm rounded-2xl p-5 fixture-card cursor-pointer border border-gray-800/30 hover:border-gray-700/30 hover:bg-gray-900/40 transition-all duration-500 flex flex-col" 
               data-testid={`fixture-card-${match.id}`}
             >
               {/* Header */}
@@ -132,13 +132,15 @@ export default function LatestSection() {
               </div>
               
               {/* Teams - Centered Layout */}
-              <div className="text-center space-y-3 mb-5">
+              <div className="text-center space-y-3 flex-1 flex flex-col justify-center">
                 {/* Home Team */}
                 <div className="text-center">
                   <div className="font-medium text-white text-sm">{match.homeTeam}</div>
-                  {match.status === "FT" && (
-                    <div className="text-2xl font-bold text-white mt-1">{match.homeScore}</div>
-                  )}
+                  <div className="h-8 flex items-center justify-center">
+                    {match.status === "FT" && (
+                      <div className="text-2xl font-bold text-white">{match.homeScore}</div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Minimal Divider */}
@@ -153,14 +155,16 @@ export default function LatestSection() {
                 {/* Away Team */}
                 <div className="text-center">
                   <div className="font-medium text-white text-sm">{match.awayTeam}</div>
-                  {match.status === "FT" && (
-                    <div className="text-2xl font-bold text-white mt-1">{match.awayScore}</div>
-                  )}
+                  <div className="h-8 flex items-center justify-center">
+                    {match.status === "FT" && (
+                      <div className="text-2xl font-bold text-white">{match.awayScore}</div>
+                    )}
+                  </div>
                 </div>
               </div>
               
               {/* Footer */}
-              <div className="pt-3 border-t border-gray-800/20">
+              <div className="pt-3 border-t border-gray-800/20 mt-auto">
                 <div className="text-[10px] text-gray-600 mb-3 text-center font-medium tracking-wider">
                   {formatDate(match.matchDate.toString())}
                 </div>
