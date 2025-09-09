@@ -54,9 +54,9 @@ export default function ModernLineupView({
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 140;
 
-    // Constrain to pitch boundaries
-    const constrainedX = Math.max(5, Math.min(95, x));
-    const constrainedY = Math.max(10, Math.min(130, y));
+    // Constrain to pitch boundaries - allow full pitch movement
+    const constrainedX = Math.max(2, Math.min(98, x));
+    const constrainedY = Math.max(5, Math.min(135, y));
 
     setDraggedPositions(prev => ({
       ...prev,
