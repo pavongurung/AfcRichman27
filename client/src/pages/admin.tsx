@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Pencil, Trash2, Plus, Save, Upload, ImageIcon } from "lucide-react";
+import { Pencil, Trash2, Plus, Save, Upload, ImageIcon, Shuffle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
@@ -20,6 +20,7 @@ import type { Player, PlayerStats, InsertPlayer, InsertPlayerStats, Match, Inser
 import { apiRequest } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import FormationPitch from "@/components/FormationPitch";
+import { getFormationById } from "@/lib/formations";
 
 const playerFormSchema = z.object({
   jerseyNumber: z.number().min(1).max(99),
@@ -89,6 +90,57 @@ const matchFormSchema = z.object({
 type PlayerFormData = z.infer<typeof playerFormSchema>;
 type StatsFormData = z.infer<typeof statsFormSchema>;
 type MatchFormData = z.infer<typeof matchFormSchema>;
+
+// Auto-assign players to empty positions
+function autoAssignPlayers(formationId: string, currentLineup: Record<string, string>, availablePlayers: Player[]): Record<string, string> {
+  const formation = getFormationById(formationId);
+  if (!formation) return currentLineup;
+
+  const newLineup = { ...currentLineup };
+  const usedPlayerIds = new Set(Object.values(currentLineup));
+  const unusedPlayers = availablePlayers.filter(player => !usedPlayerIds.has(player.id));
+
+  // Group players by role preference
+  const playersByRole: Record<string, Player[]> = {
+    GK: unusedPlayers.filter(p => p.position === "Goalkeeper"),
+    DEF: unusedPlayers.filter(p => p.position === "Defender"), 
+    MID: unusedPlayers.filter(p => p.position === "Midfielder"),
+    FWD: unusedPlayers.filter(p => p.position === "Forward"),
+  };
+
+  // Auto-assign missing positions
+  formation.positions.forEach(position => {
+    if (!newLineup[position.id]) {
+      const preferredPlayers = playersByRole[position.role] || [];
+      
+      if (preferredPlayers.length > 0) {
+        // Use first available player of correct role
+        const player = preferredPlayers.shift();
+        if (player) {
+          newLineup[position.id] = player.id;
+          // Remove from other role arrays to avoid duplicates
+          Object.values(playersByRole).forEach(roleList => {
+            const index = roleList.findIndex(p => p.id === player.id);
+            if (index !== -1) roleList.splice(index, 1);
+          });
+        }
+      } else {
+        // Fallback: use any available player
+        const anyPlayer = Object.values(playersByRole).flat()[0];
+        if (anyPlayer) {
+          newLineup[position.id] = anyPlayer.id;
+          // Remove from all role arrays
+          Object.values(playersByRole).forEach(roleList => {
+            const index = roleList.findIndex(p => p.id === anyPlayer.id);
+            if (index !== -1) roleList.splice(index, 1);
+          });
+        }
+      }
+    }
+  });
+
+  return newLineup;
+}
 
 export default function AdminPanel() {
   const { toast } = useToast();
