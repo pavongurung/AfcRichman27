@@ -1,10 +1,12 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Menu, Settings } from "lucide-react";
+import { Menu, Settings, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useState } from "react";
 
 export default function Header() {
   const { isAuthenticated } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
@@ -51,11 +53,75 @@ export default function Header() {
                 </Button>
               </Link>
             )}
-            <Button variant="ghost" size="icon" className="md:hidden" data-testid="mobile-menu-button">
-              <Menu className="h-5 w-5" />
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="md:hidden" 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              data-testid="mobile-menu-button"
+            >
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
         </div>
+        
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-border bg-background/95 backdrop-blur">
+            <nav className="container mx-auto px-4 py-4 space-y-4">
+              <Link 
+                href="/" 
+                className="block group relative text-foreground hover:text-primary transition-all duration-300 transform hover:scale-105 py-2" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                data-testid="mobile-nav-latest"
+              >
+                Latest
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500 transform scale-x-0 origin-center transition-transform duration-300 group-hover:scale-x-100"></div>
+              </Link>
+              <Link 
+                href="/squad" 
+                className="block group relative text-foreground hover:text-primary transition-all duration-300 transform hover:scale-105 py-2" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                data-testid="mobile-nav-team"
+              >
+                Team
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500 transform scale-x-0 origin-center transition-transform duration-300 group-hover:scale-x-100"></div>
+              </Link>
+              <Link 
+                href="/statistics" 
+                className="block group relative text-foreground hover:text-primary transition-all duration-300 transform hover:scale-105 py-2" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                data-testid="mobile-nav-statistics"
+              >
+                Statistics
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500 transform scale-x-0 origin-center transition-transform duration-300 group-hover:scale-x-100"></div>
+              </Link>
+              <Link 
+                href="/matches" 
+                className="block group relative text-foreground hover:text-primary transition-all duration-300 transform hover:scale-110 py-2" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                data-testid="mobile-nav-matches"
+              >
+                Match Center
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500 transform scale-x-0 origin-center transition-transform duration-300 group-hover:scale-x-100"></div>
+              </Link>
+              {isAuthenticated && (
+                <Link 
+                  href="/admin" 
+                  className="block group relative text-foreground hover:text-primary transition-all duration-300 transform hover:scale-105 py-2" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  data-testid="mobile-nav-admin"
+                >
+                  <div className="flex items-center">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Admin
+                  </div>
+                  <div className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500 transform scale-x-0 origin-center transition-transform duration-300 group-hover:scale-x-100"></div>
+                </Link>
+              )}
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );
