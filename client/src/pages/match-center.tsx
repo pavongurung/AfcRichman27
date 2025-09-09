@@ -195,7 +195,7 @@ export default function MatchCenterPage() {
             </Card>
 
             {/* Match Statistics */}
-            {nextMatch && (
+            {nextMatch ? (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -256,14 +256,14 @@ export default function MatchCenterPage() {
                   </div>
                 </CardContent>
               </Card>
-            )}
+            ) : null}
 
             {/* Lineup Section */}
-            {nextMatch && 
+            {(nextMatch && 
              nextMatch.homeTeam.toLowerCase().includes("richman") && 
              nextMatch.formation && 
              nextMatch.lineup && 
-             Object.keys(nextMatch.lineup).length > 0 && (
+             Object.keys(nextMatch.lineup).length > 0) ? (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -284,7 +284,7 @@ export default function MatchCenterPage() {
                   />
                 </CardContent>
               </Card>
-            )}
+            ) : null}
           </div>
 
           {/* Sidebar */}

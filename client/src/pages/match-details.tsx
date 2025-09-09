@@ -169,7 +169,7 @@ export default function MatchDetailsPage() {
       </div>
 
       {/* Lineup Section */}
-      {isRichmanMatch && hasLineup && (
+      {(isRichmanMatch && hasLineup) ? (
         <div className="py-16">
           <div className="max-w-6xl mx-auto px-4">
             <div className="text-center mb-12">
@@ -189,10 +189,10 @@ export default function MatchDetailsPage() {
             />
           </div>
         </div>
-      )}
+      ) : null}
 
       {/* No Lineup Message */}
-      {(!isRichmanMatch || !hasLineup) && (
+      {(!isRichmanMatch || !hasLineup) ? (
         <div className="py-16">
           <div className="max-w-6xl mx-auto px-4 text-center">
             <div className="text-gray-500">
@@ -203,7 +203,7 @@ export default function MatchDetailsPage() {
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
