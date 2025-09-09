@@ -112,6 +112,8 @@ export const matches = pgTable("matches", {
   matchDate: timestamp("match_date").notNull(),
   status: text("status").notNull(), // "FT", "Upcoming", "Live"
   replayUrl: text("replay_url"), // URL for match replay/highlights
+  formation: text("formation"), // Formation type (e.g., "4-3-3", "3-5-2", "4-4-2")
+  lineup: jsonb("lineup"), // Player lineup with positions: { "GK": playerId, "CB1": playerId, etc. }
   createdAt: timestamp("created_at").defaultNow(),
 });
 
