@@ -28,6 +28,7 @@ function Router() {
           <Route path="/statistics" component={Statistics} />
           <Route path="/matches" component={MatchesPage} />
           <Route path="/match/:id" component={MatchDetailsPage} />
+          <Route path="/matches/:id" component={MatchDetailsPage} />
           <Route path="/match-center" component={MatchCenterPage} />
           <Route path="/admin/player/:id" component={AdminPlayer} />
           <Route path="/admin" component={AdminPanel} />
