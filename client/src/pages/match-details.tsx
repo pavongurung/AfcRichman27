@@ -38,8 +38,8 @@ export default function MatchDetailsPage() {
     );
   }
 
-  const isRichmanMatch = match.homeTeam.toLowerCase().includes("richman");
-  const hasLineup = match.formation && match.lineup && Object.keys(match.lineup).length > 0;
+  const isRichmanMatch = match.homeTeam === "AFC Richman" || match.awayTeam === "AFC Richman";
+  const hasLineup = match.formation && match.lineup && typeof match.lineup === 'object' && Object.keys(match.lineup).length > 0;
 
   const getStatusColor = (status: string) => {
     switch (status) {
