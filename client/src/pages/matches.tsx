@@ -42,40 +42,38 @@ export default function MatchesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-red-900 via-red-800 to-red-700 py-16">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold text-white mb-4">Match Calendar</h1>
-          <p className="text-xl text-red-100 mb-8">
-            Complete fixture list and results for AFC Richman
-          </p>
+      {/* Header */}
+      <div className="border-b border-gray-800 py-8">
+        <div className="max-w-4xl mx-auto px-4">
+          <h1 className="text-3xl font-semibold text-white mb-6">Matches</h1>
           
           {/* Filter Buttons */}
-          <div className="flex justify-center gap-4">
+          <div className="flex gap-1 bg-gray-900 p-1 rounded-lg w-fit">
             {[
-              { key: "all", label: "All Matches", count: matches.length },
-              { key: "upcoming", label: "Upcoming", count: matches.filter(m => m.status === "Upcoming" || m.status === "Live").length },
-              { key: "finished", label: "Results", count: matches.filter(m => m.status === "FT").length }
-            ].map(({ key, label, count }) => (
+              { key: "all", label: "All" },
+              { key: "upcoming", label: "Upcoming" },
+              { key: "finished", label: "Results" }
+            ].map(({ key, label }) => (
               <Button
                 key={key}
                 onClick={() => setFilter(key as FilterType)}
-                variant={filter === key ? "default" : "outline"}
+                variant="ghost"
+                size="sm"
                 className={`${
                   filter === key 
-                    ? "bg-white text-red-900 hover:bg-gray-100" 
-                    : "border-white text-white hover:bg-white/10"
-                }`}
+                    ? "bg-white text-black hover:bg-gray-100" 
+                    : "text-gray-400 hover:text-white hover:bg-gray-800"
+                } transition-colors`}
                 data-testid={`filter-${key}`}
               >
-                {label} ({count})
+                {label}
               </Button>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-8">
         {filteredMatches.length === 0 ? (
           <Card className="text-center py-12">
             <CardContent>
@@ -94,8 +92,7 @@ export default function MatchesPage() {
               .sort(([a], [b]) => new Date(a).getTime() - new Date(b).getTime())
               .map(([month, monthMatches]) => (
               <div key={month}>
-                <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
-                  <Trophy className="w-6 h-6 mr-2 text-red-500" />
+                <h2 className="text-lg font-medium text-gray-400 mb-4 border-b border-gray-800 pb-2">
                   {month}
                 </h2>
                 
@@ -132,155 +129,59 @@ function MatchCard({ match }: { match: Match }) {
   const hasLineup = match.formation && match.lineup && typeof match.lineup === 'object' && Object.keys(match.lineup).length > 0;
   
   return (
-    <Card className="hover:shadow-lg transition-shadow" data-testid={`match-card-${match.id}`}>
-      <CardContent className="p-6">
+    <Card className="border-gray-800 bg-gray-900/50 hover:bg-gray-900/70 transition-colors" data-testid={`match-card-${match.id}`}>
+      <CardContent className="p-4">
         <div className="flex items-center justify-between">
-          {/* Match Info */}
-          <div className="flex-1">
-            <div className="flex items-center justify-between mb-4">
-              {/* Competition and Date */}
-              <div className="flex items-center gap-4">
-                <Badge 
-                  variant={isFinished ? "default" : isLive ? "destructive" : "secondary"}
-                  className="text-sm px-3 py-1"
-                >
-                  {match.competition}
-                </Badge>
-                
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Calendar className="w-4 h-4" />
-                  <span>{format(matchDate, "EEEE, MMMM d, yyyy")}</span>
-                </div>
-                
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="w-4 h-4" />
-                  <span>{format(matchDate, "h:mm a")}</span>
-                </div>
-              </div>
-              
-              <Badge variant={
-                isFinished ? "default" : 
-                isLive ? "destructive" : 
-                "secondary"
-              }>
-                {match.status === "FT" ? "Full Time" : match.status}
-              </Badge>
-            </div>
-
-            {/* Teams and Score */}
-            <div className="flex items-center justify-between gap-6">
-              {/* Home Team */}
-              <div className="flex items-center gap-3 flex-1">
-                {match.homeTeamLogo && (
-                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">
-                    <img 
-                      src={match.homeTeamLogo} 
-                      alt={match.homeTeam} 
-                      className="w-10 h-10 object-contain"
-                    />
-                  </div>
-                )}
-                <div className="flex-1">
-                  <div className="font-semibold text-lg">{match.homeTeam}</div>
-                  {match.homeTeam === "AFC Richman" && (
-                    <div className="text-xs text-red-500 font-medium">HOME</div>
-                  )}
-                </div>
-              </div>
-
-              {/* Score or VS */}
-              <div className="text-center px-6">
-                {isFinished && match.homeScore !== undefined && match.awayScore !== undefined ? (
-                  <div className="text-2xl font-bold">
-                    {match.homeScore} - {match.awayScore}
-                  </div>
-                ) : isLive ? (
-                  <div className="text-xl font-bold text-red-500 animate-pulse">
-                    LIVE
-                  </div>
-                ) : (
-                  <div className="text-xl font-bold text-muted-foreground">
-                    VS
-                  </div>
-                )}
-              </div>
-
-              {/* Away Team */}
-              <div className="flex items-center gap-3 flex-1 justify-end">
-                <div className="flex-1 text-right">
-                  <div className="font-semibold text-lg">{match.awayTeam}</div>
-                  {match.awayTeam === "AFC Richman" && (
-                    <div className="text-xs text-red-500 font-medium">AWAY</div>
-                  )}
-                </div>
-                {match.awayTeamLogo && (
-                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">
-                    <img 
-                      src={match.awayTeamLogo} 
-                      alt={match.awayTeam} 
-                      className="w-10 h-10 object-contain"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="ml-6 flex items-center gap-2">
-            {match.replayUrl && (
-              <Button
-                variant="outline"
-                size="sm"
-                asChild
-                className="flex items-center gap-2"
-                data-testid={`watch-button-${match.id}`}
-              >
-                <a href={match.replayUrl} target="_blank" rel="noopener noreferrer">
-                  <Play className="w-4 h-4" />
-                  {isFinished ? "Watch Highlights" : "Watch Live"}
-                </a>
-              </Button>
-            )}
-            
-            {/* View Lineup Button - Show for finished AFC Richman matches with lineup */}
-            {(isFinished && isRichmanMatch && hasLineup) ? (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="flex items-center gap-2"
-                data-testid={`lineup-button-${match.id}`}
-              >
-                <Users className="w-4 h-4" />
-                View Lineup
-                {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </Button>
-            ) : null}
+          {/* Date and Competition */}
+          <div className="text-sm text-gray-400 mb-3">
+            {format(matchDate, "MMM d, h:mm a")} • {match.competition}
+            {isLive && <span className="ml-2 text-red-500 font-medium">LIVE</span>}
           </div>
         </div>
 
-        {/* Countdown for upcoming matches */}
-        {isUpcoming ? (
-          <div className="mt-4 pt-4 border-t">
-            <MatchCountdown matchDate={matchDate} />
+        {/* Teams and Score */}
+        <div className="flex items-center justify-between">
+          {/* Home Team */}
+          <div className="flex items-center gap-3 flex-1">
+            <div className="font-medium text-white">{match.homeTeam}</div>
           </div>
-        ) : null}
 
-        {/* Expanded Lineup Section */}
-        {(isExpanded && isFinished && isRichmanMatch && hasLineup) ? (
-          <div className="mt-4 pt-4 border-t">
-            <div className="flex justify-center">
-              <LineupView
-                formation={match.formation || undefined}
-                lineup={match.lineup as Record<string, string> | undefined}
-                players={players}
-                size="small"
-                className="max-w-md"
-              />
-            </div>
+          {/* Score or VS */}
+          <div className="text-center px-4">
+            {isFinished && match.homeScore !== undefined && match.awayScore !== undefined ? (
+              <div className="text-xl font-semibold text-white">
+                {match.homeScore} - {match.awayScore}
+              </div>
+            ) : (
+              <div className="text-sm font-medium text-gray-400">
+                {format(matchDate, "h:mm a")}
+              </div>
+            )}
           </div>
-        ) : null}
+
+          {/* Away Team */}
+          <div className="flex items-center gap-3 flex-1 justify-end">
+            <div className="font-medium text-white">{match.awayTeam}</div>
+          </div>
+        </div>
+
+        
+        {/* Action - Only show for AFC Richman matches with important info */}
+        {(isRichmanMatch && match.replayUrl) && (
+          <div className="mt-3 pt-3 border-t border-gray-800">
+            <a 
+              href={match.replayUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-sm text-gray-400 hover:text-white transition-colors inline-flex items-center gap-1"
+              data-testid={`watch-button-${match.id}`}
+            >
+              <Play className="w-3 h-3" />
+              {isFinished ? "Watch Highlights" : "Watch Live"}
+            </a>
+          </div>
+        )}
+
       </CardContent>
     </Card>
   );
