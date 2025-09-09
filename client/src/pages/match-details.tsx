@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Match, Player } from "@shared/schema";
 import { format } from "date-fns";
-import FormationPitch from "@/components/FormationPitch";
+import LineupView from "@/components/LineupView";
 
 export default function MatchDetailsPage() {
   const params = useParams();
@@ -180,12 +180,12 @@ export default function MatchDetailsPage() {
               </div>
             </div>
             
-            <FormationPitch
-              selectedFormation={match.formation || "4-3-3"}
+            <LineupView
+              formation={match.formation || "4-3-3"}
               lineup={match.lineup ? match.lineup as Record<string, string> : {}}
               players={players}
-              isEditing={false}
               className="max-w-lg mx-auto"
+              size="large"
             />
           </div>
         </div>
