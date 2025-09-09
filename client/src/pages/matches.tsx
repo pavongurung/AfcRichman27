@@ -157,56 +157,60 @@ function MatchCard({ match }: { match: Match }) {
             </div>
 
             {/* Teams and Score */}
-            <div className="flex items-center justify-center gap-8">
+            <div className="flex items-center justify-between gap-6">
               {/* Home Team */}
-              <div className="flex items-center gap-3 flex-1 justify-end">
-                <div className="text-right">
+              <div className="flex items-center gap-3 flex-1">
+                {match.homeTeamLogo && (
+                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">
+                    <img 
+                      src={match.homeTeamLogo} 
+                      alt={match.homeTeam} 
+                      className="w-10 h-10 object-contain"
+                    />
+                  </div>
+                )}
+                <div className="flex-1">
                   <div className="font-semibold text-lg">{match.homeTeam}</div>
                   {match.homeTeam === "AFC Richman" && (
                     <div className="text-xs text-red-500 font-medium">HOME</div>
                   )}
                 </div>
-                {match.homeTeamLogo && (
-                  <img 
-                    src={match.homeTeamLogo} 
-                    alt={match.homeTeam} 
-                    className="w-12 h-12 object-contain"
-                  />
-                )}
               </div>
 
               {/* Score or VS */}
-              <div className="text-center min-w-[80px]">
+              <div className="text-center px-6">
                 {isFinished && match.homeScore !== undefined && match.awayScore !== undefined ? (
-                  <div className="text-3xl font-bold">
+                  <div className="text-2xl font-bold">
                     {match.homeScore} - {match.awayScore}
                   </div>
                 ) : isLive ? (
-                  <div className="text-2xl font-bold text-red-500 animate-pulse">
+                  <div className="text-xl font-bold text-red-500 animate-pulse">
                     LIVE
                   </div>
                 ) : (
-                  <div className="text-2xl font-bold text-muted-foreground">
+                  <div className="text-xl font-bold text-muted-foreground">
                     VS
                   </div>
                 )}
               </div>
 
               {/* Away Team */}
-              <div className="flex items-center gap-3 flex-1">
-                {match.awayTeamLogo && (
-                  <img 
-                    src={match.awayTeamLogo} 
-                    alt={match.awayTeam} 
-                    className="w-12 h-12 object-contain"
-                  />
-                )}
-                <div className="text-left">
+              <div className="flex items-center gap-3 flex-1 justify-end">
+                <div className="flex-1 text-right">
                   <div className="font-semibold text-lg">{match.awayTeam}</div>
                   {match.awayTeam === "AFC Richman" && (
                     <div className="text-xs text-red-500 font-medium">AWAY</div>
                   )}
                 </div>
+                {match.awayTeamLogo && (
+                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">
+                    <img 
+                      src={match.awayTeamLogo} 
+                      alt={match.awayTeam} 
+                      className="w-10 h-10 object-contain"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
