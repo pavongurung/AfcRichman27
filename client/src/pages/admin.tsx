@@ -19,6 +19,7 @@ import { z } from "zod";
 import type { Player, PlayerStats, InsertPlayer, InsertPlayerStats, Match, InsertMatch } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
+import FormationPitch from "@/components/FormationPitch";
 
 const playerFormSchema = z.object({
   jerseyNumber: z.number().min(1).max(99),
@@ -81,6 +82,8 @@ const matchFormSchema = z.object({
   matchDate: z.string().min(1, "Match date is required"),
   status: z.enum(["FT", "Upcoming", "Live"]),
   replayUrl: z.string().optional(),
+  formation: z.string().optional(),
+  lineup: z.record(z.string()).optional(), // Record<positionId, playerId>
 });
 
 type PlayerFormData = z.infer<typeof playerFormSchema>;
@@ -1578,6 +1581,20 @@ export default function AdminPanel() {
                               </FormItem>
                             )}
                           />
+
+                          {/* Formation and Lineup Section */}
+                          <div className="space-y-4 border-t pt-4">
+                            <h3 className="text-lg font-semibold">Team Formation & Lineup</h3>
+                            <FormationPitch
+                              selectedFormation={matchForm.watch("formation") || "4-3-3"}
+                              lineup={matchForm.watch("lineup") || {}}
+                              players={players || []}
+                              isEditing={true}
+                              onFormationChange={(formation) => matchForm.setValue("formation", formation)}
+                              onLineupChange={(lineup) => matchForm.setValue("lineup", lineup)}
+                              className="flex justify-center"
+                            />
+                          </div>
 
                           <div className="flex space-x-4 pt-4">
                             <Button type="submit" disabled={createMatchMutation.isPending || updateMatchMutation.isPending} data-testid="button-save-match">
