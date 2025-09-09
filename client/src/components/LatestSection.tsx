@@ -122,7 +122,7 @@ export default function LatestSection() {
           {matches?.map((match) => (
             <div 
               key={match.id} 
-              className="flex-none w-72 h-72 bg-gray-900/30 backdrop-blur-sm rounded-2xl p-5 fixture-card cursor-pointer border border-gray-800/30 hover:border-gray-700/30 hover:bg-gray-900/40 transition-all duration-500 flex flex-col" 
+              className="flex-none w-72 h-72 bg-gray-900/30 backdrop-blur-sm rounded-2xl p-5 fixture-card cursor-pointer border border-gray-800/30 hover:border-gray-700/30 hover:bg-gray-900/40 transition-all duration-500 flex flex-col group transform hover:scale-110" 
               data-testid={`fixture-card-${match.id}`}
             >
               {/* Header */}
