@@ -43,23 +43,23 @@ export default function ModernLineupView({
             <div className="divisoria"></div>
             <div className="interior"></div>
             <div className="penalty"></div>           
-            <div className="gk"></div>
-            <div className="cb"></div>
-            <div className="lb"></div>
-            <div className="rb"></div>
-            <div className="lwb"></div>
-            <div className="dm"></div>
-            <div className="rwb"></div>
-            <div className="lm"></div>
-            <div className="cm"></div>
-            <div className="rm"></div>
-            <div className="amr"></div>
-            <div className="am"></div>
-            <div className="aml"></div>
-            <div className="wl"></div>
-            <div className="cf"></div>
-            <div className="wr"></div>
-            <div className="st"></div>
+            {/* Only show positions that exist in the current formation */}
+            {formationData.positions.map((position) => {
+              const playerId = lineup[position.id];
+              const player = playerId ? getPlayerById(playerId) : null;
+              
+              return (
+                <div
+                  key={position.id}
+                  className={position.id.toLowerCase()}
+                  title={player ? `${player.firstName} ${player.lastName} (#${player.jerseyNumber})` : position.label}
+                  style={{
+                    backgroundColor: player ? '#4F7EDC' : '#4F7EDC',
+                    borderColor: player ? '#324978' : '#324978',
+                  }}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
