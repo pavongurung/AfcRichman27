@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -263,24 +264,47 @@ export default function MatchCenterPage() {
                 ) : (
                   <div className="space-y-3">
                     {recentMatches.map((match) => (
-                      <div key={match.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                        <div className="text-sm">
-                          <div className="font-semibold">
-                            {match.homeTeam} vs {match.awayTeam}
+                      <Link key={match.id} href={`/match/${match.id}`}>
+                        <div className="p-4 bg-muted hover:bg-muted/80 rounded-lg cursor-pointer transition-colors border border-transparent hover:border-border">
+                          {/* Competition Badge */}
+                          <div className="flex items-center justify-between mb-3">
+                            <Badge variant="outline" className="text-xs">
+                              {match.competition}
+                            </Badge>
+                            <Badge variant="outline" className="text-xs">
+                              FT
+                            </Badge>
                           </div>
-                          <div className="text-muted-foreground">
-                            {format(new Date(match.matchDate), "MMM d")}
+                          
+                          {/* Teams and Score */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1 text-center">
+                              <div className="font-semibold text-sm mb-1">
+                                {match.homeTeam}
+                              </div>
+                            </div>
+                            
+                            <div className="px-4 text-center">
+                              <div className="font-bold text-lg">
+                                {match.homeScore} - {match.awayScore}
+                              </div>
+                            </div>
+                            
+                            <div className="flex-1 text-center">
+                              <div className="font-semibold text-sm mb-1">
+                                {match.awayTeam}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Date */}
+                          <div className="text-center mt-2">
+                            <div className="text-xs text-muted-foreground">
+                              {format(new Date(match.matchDate), "MMM d, yyyy")}
+                            </div>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <div className="font-bold">
-                            {match.homeScore} - {match.awayScore}
-                          </div>
-                          <Badge variant="outline" className="text-xs">
-                            FT
-                          </Badge>
-                        </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 )}
