@@ -59,11 +59,6 @@ export default function ModernLineupView({
 
   return (
     <div className="relative w-full max-w-4xl mx-auto">
-      {/* Team Name */}
-      <div className="text-center mb-8">
-        <h3 className="text-2xl font-bold text-white">{teamName}</h3>
-        <div className="text-gray-400 text-sm mt-2">Formation: {formation}</div>
-      </div>
 
       {/* New CSS-based pitch layout */}
       <div className="flex justify-center">
@@ -113,9 +108,6 @@ export default function ModernLineupView({
       </div>
 
 
-      <div className="mt-8 text-center">
-        <div className="text-gray-400 text-sm">{formation} Formation</div>
-      </div>
     </div>
   );
 }
