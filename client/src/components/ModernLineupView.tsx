@@ -91,9 +91,9 @@ export default function ModernLineupView({
             const player = playerId ? getPlayerById(playerId) : null;
             const colorClass = getPositionColor(position.role);
 
-            // ==== NEW: correct axis + normalized spread ====
-            const leftPct = PAD_X + norm(position.x, minX, maxX) * SPAN_X; // X controls left
-            const topPct  = PAD_Y + norm(position.y, minY, maxY) * SPAN_Y;  // Y controls top
+            // ==== NEW: correct axis + normalized spread (horizontal orientation) ====
+            const leftPct = PAD_X + norm(position.y, minY, maxY) * SPAN_X; // Y controls left (depth becomes width)
+            const topPct  = PAD_Y + norm(position.x, minX, maxX) * SPAN_Y;  // X controls top (width becomes height)
             // =================================================
 
             return (
