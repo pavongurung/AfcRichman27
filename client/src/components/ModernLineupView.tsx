@@ -83,8 +83,8 @@ export default function ModernLineupView({
               // The pitch is displayed horizontally, so we need to rotate the coordinates
               // Formation y becomes CSS left (goal line to goal line = left to right)
               // Formation x becomes CSS top (sideline to sideline = top to bottom)
-              // Scale to only use left half of the pitch (left of center line)
-              const leftPercent = (position.y / 140) * 50; // y: 10->3.5%, y: 75->27%
+              // Map formation y (10-75) to left half of pitch (7% to 47%)
+              const leftPercent = 7 + ((position.y - 10) / 65) * 40; // Maps y: 10->7%, y: 75->47%
               const topPercent = position.x; // x: 0-100 stays the same
               
               return (
