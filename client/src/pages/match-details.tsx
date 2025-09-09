@@ -16,7 +16,7 @@ export default function MatchDetailsPage() {
     queryFn: async () => {
       const response = await fetch(`/api/matches/${matchId}`);
       if (!response.ok) throw new Error("Failed to fetch match");
-      return response.json();
+      return response.json() as Match;
     },
     enabled: !!matchId,
   });
@@ -26,7 +26,7 @@ export default function MatchDetailsPage() {
     queryFn: async () => {
       const response = await fetch("/api/players");
       if (!response.ok) throw new Error("Failed to fetch players");
-      return response.json();
+      return response.json() as Player[];
     },
   });
 
@@ -182,7 +182,9 @@ export default function MatchDetailsPage() {
             
             <ModernLineupView
               formation={match.formation || undefined}
-              lineup={match.lineup ? match.lineup as Record<string, string> : undefined}
+              lineup={match.lineup && typeof match.lineup === 'object' 
+                ? match.lineup as Record<string, string> 
+                : undefined}
               players={players}
               teamName={match.homeTeam}
             />

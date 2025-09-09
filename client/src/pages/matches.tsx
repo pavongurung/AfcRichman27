@@ -15,6 +15,11 @@ export default function MatchesPage() {
   
   const { data: matches = [], isLoading } = useQuery<Match[]>({
     queryKey: ["/api/matches"],
+    queryFn: async () => {
+      const response = await fetch("/api/matches");
+      if (!response.ok) throw new Error("Failed to fetch matches");
+      return response.json() as Match[];
+    },
   });
 
   const filteredMatches = matches.filter((match) => {
@@ -122,6 +127,11 @@ function MatchCard({ match }: { match: Match }) {
   // Get players data for lineup display
   const { data: players = [] } = useQuery<Player[]>({
     queryKey: ["/api/players"],
+    queryFn: async () => {
+      const response = await fetch("/api/players");
+      if (!response.ok) throw new Error("Failed to fetch players");
+      return response.json() as Player[];
+    },
   });
   
   // Check if this match involves AFC Richman and has lineup data
