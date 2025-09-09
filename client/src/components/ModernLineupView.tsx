@@ -69,18 +69,29 @@ export default function ModernLineupView({
             `
           }}
         >
-          {/* Pitch Markings */}
+          {/* Pitch Markings - Horizontal Layout */}
           <div className="absolute inset-6">
+            {/* Outer Border (3 sides for half pitch) */}
             <div className="absolute inset-0 border-l-2 border-t-2 border-b-2 border-white rounded-l-lg"></div>
+            
+            {/* Center Line (right edge) */}
             <div className="absolute right-0 top-0 bottom-0 w-0.5 bg-white"></div>
+            
+            {/* Half Center Circle (positioned correctly for horizontal layout) */}
             <div
-              className="absolute right-0 top-1/2 w-32 h-32 border-2 border-white rounded-l-full transform -translate-y-1/2"
+              className="absolute right-0 top-1/2 w-24 h-24 border-2 border-white rounded-l-full transform -translate-y-1/2"
               style={{ borderRight: 'none' }}
             />
             <div className="absolute right-0 top-1/2 w-2 h-2 bg-white rounded-full transform -translate-y-1/2" />
-            <div className="absolute left-0 top-1/2 w-20 h-24 border-2 border-white border-l-0 transform -translate-y-1/2" />
-            <div className="absolute left-0 top-1/2 w-12 h-16 border-2 border-white border-l-0 transform -translate-y-1/2" />
-            <div className="absolute left-0 top-1/2 w-1 h-12 bg-white transform -translate-y-1/2" />
+            
+            {/* Goal Areas (AFC Richman's goal on left) */}
+            <div className="absolute left-0 top-1/2 w-16 h-20 border-2 border-white border-l-0 transform -translate-y-1/2" />
+            <div className="absolute left-0 top-1/2 w-8 h-12 border-2 border-white border-l-0 transform -translate-y-1/2" />
+            
+            {/* Goalpost (properly sized for horizontal layout) */}
+            <div className="absolute left-0 top-1/2 w-1 h-8 bg-white transform -translate-y-1/2" />
+            
+            {/* Corner Arcs (left side only) */}
             <div className="absolute left-0 top-0 w-6 h-6 border-b-2 border-r-2 border-white rounded-br-full" />
             <div className="absolute left-0 bottom-0 w-6 h-6 border-t-2 border-r-2 border-white rounded-tr-full" />
           </div>
