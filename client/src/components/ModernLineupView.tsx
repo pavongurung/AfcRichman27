@@ -121,12 +121,35 @@ export default function ModernLineupView({
               >
                 {player ? (
                   <div className="flex flex-col items-center">
-                    <div className={`relative w-12 h-14 md:w-16 md:h-20 ${colorClass} rounded-lg shadow-lg border-2 border-white flex items-center justify-center hover:scale-110 transition-transform mb-1 md:mb-2`}>
-                      <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-white/60 rounded" />
-                      <div className="absolute top-0.5 left-1/2 -translate-x-1/2 w-3 h-2 border-2 border-white/40 rounded-t" />
-                      <div className="text-white font-bold text-base md:text-lg">
-                        {player.jerseyNumber}
-                      </div>
+                    {/* Jersey SVG */}
+                    <div className="relative hover:scale-110 transition-transform mb-1 md:mb-2">
+                      <svg 
+                        width="48" 
+                        height="56" 
+                        viewBox="0 0 48 56" 
+                        className="md:w-16 md:h-20"
+                      >
+                        {/* Jersey Shape */}
+                        <path
+                          d="M8 12 L8 8 C8 6 10 4 12 4 L16 4 C18 2 20 2 24 2 C28 2 30 2 32 4 L36 4 C38 4 40 6 40 8 L40 12 L44 16 L44 52 C44 54 42 56 40 56 L8 56 C6 56 4 54 4 52 L4 16 L8 12 Z"
+                          fill="white"
+                          stroke="white"
+                          strokeWidth="1.5"
+                        />
+                        {/* Jersey Number */}
+                        <text
+                          x="24"
+                          y="35"
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                          fill="black"
+                          fontSize="16"
+                          fontWeight="bold"
+                          className="md:text-xl"
+                        >
+                          {player.jerseyNumber}
+                        </text>
+                      </svg>
                     </div>
                     <div className="text-center min-w-[70px] md:min-w-[80px]">
                       <div className="text-white font-semibold text-xs md:text-sm leading-tight">
@@ -139,10 +162,36 @@ export default function ModernLineupView({
                   </div>
                 ) : (
                   <div className="flex flex-col items-center">
-                    <div className="relative w-12 h-14 md:w-16 md:h-20 bg-gray-700 rounded-lg shadow-lg border-2 border-white/30 flex items-center justify-center opacity-50 mb-1 md:mb-2">
-                      <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-white/30 rounded" />
-                      <div className="absolute top-0.5 left-1/2 -translate-x-1/2 w-3 h-2 border-2 border-white/20 rounded-t" />
-                      <div className="text-white/60 font-bold text-xs">?</div>
+                    {/* Empty Position Jersey SVG */}
+                    <div className="relative mb-1 md:mb-2 opacity-50">
+                      <svg 
+                        width="48" 
+                        height="56" 
+                        viewBox="0 0 48 56" 
+                        className="md:w-16 md:h-20"
+                      >
+                        {/* Jersey Shape */}
+                        <path
+                          d="M8 12 L8 8 C8 6 10 4 12 4 L16 4 C18 2 20 2 24 2 C28 2 30 2 32 4 L36 4 C38 4 40 6 40 8 L40 12 L44 16 L44 52 C44 54 42 56 40 56 L8 56 C6 56 4 54 4 52 L4 16 L8 12 Z"
+                          fill="none"
+                          stroke="white"
+                          strokeWidth="1.5"
+                          opacity="0.3"
+                        />
+                        {/* Question Mark */}
+                        <text
+                          x="24"
+                          y="35"
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                          fill="white"
+                          fontSize="20"
+                          fontWeight="bold"
+                          opacity="0.6"
+                        >
+                          ?
+                        </text>
+                      </svg>
                     </div>
                     <div className="text-gray-400 text-[10px] md:text-xs text-center min-w-[70px] md:min-w-[80px]">
                       {position.label}
