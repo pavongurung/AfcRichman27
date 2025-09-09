@@ -55,8 +55,8 @@ export default function ModernLineupView({
       <div 
         className="relative bg-gradient-to-b from-green-800 to-green-900 rounded-lg mx-auto overflow-hidden"
         style={{ 
-          width: '800px', 
-          height: '600px',
+          width: '900px', 
+          height: '700px',
           backgroundImage: `
             linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px),
             linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px)
@@ -95,14 +95,14 @@ export default function ModernLineupView({
               key={position.id}
               className="absolute transform -translate-x-1/2 -translate-y-1/2"
               style={{
-                left: `${(position.x / 100) * 90 + 5}%`,
-                top: `${(position.y / 140) * 85 + 7.5}%`,
+                left: `${(position.x / 100) * 85 + 7.5}%`,
+                top: `${(position.y / 140) * 80 + 10}%`,
               }}
             >
               {player ? (
                 <div className="flex flex-col items-center">
                   {/* Jersey */}
-                  <div className={`relative w-16 h-20 ${colorClass} rounded-lg shadow-lg border-2 border-white/30 flex items-center justify-center mb-2 transform hover:scale-110 transition-transform`}>
+                  <div className={`relative w-16 h-20 ${colorClass} rounded-lg shadow-lg border-2 border-white/30 flex items-center justify-center mb-3 transform hover:scale-110 transition-transform`}>
                     {/* Jersey Number */}
                     <div className="text-white font-bold text-lg">
                       {player.jerseyNumber}
@@ -114,11 +114,11 @@ export default function ModernLineupView({
                   </div>
                   
                   {/* Player Name */}
-                  <div className="text-center">
-                    <div className="text-white font-semibold text-sm leading-tight">
+                  <div className="text-center min-w-[80px] px-1">
+                    <div className="text-white font-semibold text-xs leading-tight bg-black/40 rounded px-2 py-1 backdrop-blur-sm">
                       {player.firstName}
                     </div>
-                    <div className="text-white font-semibold text-sm leading-tight">
+                    <div className="text-white font-semibold text-xs leading-tight bg-black/40 rounded px-2 py-1 mt-1 backdrop-blur-sm">
                       {player.lastName}
                     </div>
                   </div>
@@ -126,12 +126,12 @@ export default function ModernLineupView({
               ) : (
                 <div className="flex flex-col items-center">
                   {/* Empty Jersey */}
-                  <div className="relative w-16 h-20 bg-gray-600 rounded-lg shadow-lg border-2 border-white/20 flex items-center justify-center mb-2 opacity-50">
+                  <div className="relative w-16 h-20 bg-gray-600 rounded-lg shadow-lg border-2 border-white/20 flex items-center justify-center mb-3 opacity-50">
                     <div className="text-white/50 font-bold text-xs">
                       {position.label}
                     </div>
                   </div>
-                  <div className="text-gray-500 text-xs">
+                  <div className="text-gray-500 text-xs min-w-[80px] text-center bg-black/40 rounded px-2 py-1">
                     No Player
                   </div>
                 </div>
