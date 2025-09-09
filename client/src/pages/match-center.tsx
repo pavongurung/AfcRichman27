@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Clock, MapPin, Play, Users, Tv, ExternalLink } from "lucide-react";
 import type { Match, Player } from "@shared/schema";
 import { format } from "date-fns";
-import ModernLineupView from "@/components/ModernLineupView";
+import FormationPitch from "@/components/FormationPitch";
 
 export default function MatchCenterPage() {
   const { data: matches = [] } = useQuery<Match[]>({
@@ -275,11 +275,12 @@ export default function MatchCenterPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <ModernLineupView
-                    formation={nextMatch.formation}
+                  <FormationPitch
+                    selectedFormation={nextMatch.formation}
                     lineup={nextMatch.lineup as Record<string, string>}
                     players={players}
-                    teamName={nextMatch.homeTeam}
+                    isEditing={false}
+                    className="max-w-md mx-auto"
                   />
                 </CardContent>
               </Card>
