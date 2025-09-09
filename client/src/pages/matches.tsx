@@ -134,8 +134,8 @@ function MatchCard({ match }: { match: Match }) {
     },
   });
   
-  // Check if this match involves AFC Richman and has lineup data
-  const isRichmanMatch = match.homeTeam === "AFC Richman" || match.awayTeam === "AFC Richman";
+  // Check if this match involves AFC Richman and has lineup data  
+  const isRichmanMatch = match.homeTeam.toLowerCase().includes("richman") || match.awayTeam.toLowerCase().includes("richman");
   const hasLineup = match.formation && match.lineup && typeof match.lineup === 'object' && Object.keys(match.lineup).length > 0;
   
   return (

@@ -38,7 +38,7 @@ export default function MatchDetailsPage() {
     );
   }
 
-  const isRichmanMatch = match.homeTeam === "AFC Richman" || match.awayTeam === "AFC Richman";
+  const isRichmanMatch = match.homeTeam.toLowerCase().includes("richman") || match.awayTeam.toLowerCase().includes("richman");
   const hasLineup = match.formation && match.lineup && typeof match.lineup === 'object' && Object.keys(match.lineup).length > 0;
 
   const getStatusColor = (status: string) => {
