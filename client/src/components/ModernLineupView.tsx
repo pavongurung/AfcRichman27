@@ -41,11 +41,11 @@ export default function ModernLineupView({
         <div className="text-gray-400 text-sm mt-2">Formation: {formation}</div>
       </div>
 
-      {/* Horizontal Pitch Background */}
+      {/* AFC Richman Half Pitch */}
       <div 
         className="relative bg-gray-900 rounded-lg mx-auto overflow-hidden"
         style={{ 
-          width: '1200px', 
+          width: '800px', 
           height: '600px',
           backgroundImage: `
             repeating-linear-gradient(
@@ -59,29 +59,27 @@ export default function ModernLineupView({
         }}
       >
 
-        {/* Pitch Markings */}
+        {/* Half Pitch Markings */}
         <div className="absolute inset-4">
-          {/* Outer Border */}
-          <div className="absolute inset-0 border-2 border-white/20 rounded"></div>
+          {/* Outer Border (3 sides) */}
+          <div className="absolute inset-0 border-l-2 border-t-2 border-b-2 border-white/20 rounded-l"></div>
           
-          {/* Center Circle */}
-          <div className="absolute left-1/2 top-1/2 w-24 h-24 border-2 border-white/20 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute left-1/2 top-1/2 w-2 h-2 bg-white/20 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+          {/* Center Line (right edge) */}
+          <div className="absolute right-0 top-0 bottom-0 w-0.5 bg-white/20"></div>
           
-          {/* Center Line */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-white/20"></div>
+          {/* Half Center Circle */}
+          <div 
+            className="absolute right-0 top-1/2 w-24 h-24 border-2 border-white/20 rounded-l-full transform -translate-y-1/2"
+            style={{ borderRight: 'none' }}
+          ></div>
+          <div className="absolute right-0 top-1/2 w-2 h-2 bg-white/20 rounded-full transform -translate-y-1/2"></div>
           
-          {/* Left Goal Area */}
+          {/* Goal Area (AFC Richman defends left side) */}
           <div className="absolute left-0 top-1/4 bottom-1/4 w-16 border-2 border-white/20 border-l-0 rounded-r"></div>
           <div className="absolute left-0 top-1/3 bottom-1/3 w-8 border-2 border-white/20 border-l-0"></div>
           
-          {/* Right Goal Area */}
-          <div className="absolute right-0 top-1/4 bottom-1/4 w-16 border-2 border-white/20 border-r-0 rounded-l"></div>
-          <div className="absolute right-0 top-1/3 bottom-1/3 w-8 border-2 border-white/20 border-r-0"></div>
-          
-          {/* Goalposts */}
+          {/* Goalpost */}
           <div className="absolute left-0 top-1/3 w-1 h-1/3 bg-white/40"></div>
-          <div className="absolute right-0 top-1/3 w-1 h-1/3 bg-white/40"></div>
         </div>
 
         {/* Player Positions */}
@@ -95,24 +93,24 @@ export default function ModernLineupView({
               key={position.id}
               className="absolute transform -translate-x-1/2 -translate-y-1/2"
               style={{
-                left: `${(position.y / 140) * 85 + 7.5}%`,
-                top: `${(position.x / 100) * 80 + 10}%`,
+                left: `${(position.y / 140) * 75 + 12.5}%`,
+                top: `${(position.x / 100) * 70 + 15}%`,
               }}
             >
               {player ? (
                 <div className="flex flex-col items-center">
                   {/* Jersey with Name */}
-                  <div className={`relative w-20 h-24 ${colorClass} rounded-lg shadow-lg border-2 border-white flex flex-col items-center justify-center transform hover:scale-110 transition-transform`}>
+                  <div className={`relative w-24 h-28 ${colorClass} rounded-lg shadow-lg border-2 border-white flex flex-col items-center justify-center transform hover:scale-110 transition-transform`}>
                     {/* Jersey Shape Details */}
                     <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-white/60 rounded"></div>
                     <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-4 h-3 border-2 border-white/40 rounded-t"></div>
                     
                     {/* Player Name Inside Jersey */}
-                    <div className="text-center px-1">
-                      <div className="text-white font-semibold text-xs leading-tight">
+                    <div className="text-center px-2">
+                      <div className="text-white font-semibold text-sm leading-tight">
                         {player.firstName}
                       </div>
-                      <div className="text-white font-semibold text-xs leading-tight">
+                      <div className="text-white font-semibold text-sm leading-tight">
                         {player.lastName}
                       </div>
                     </div>
@@ -121,11 +119,11 @@ export default function ModernLineupView({
               ) : (
                 <div className="flex flex-col items-center">
                   {/* Empty Jersey */}
-                  <div className="relative w-20 h-24 bg-gray-700 rounded-lg shadow-lg border-2 border-white/30 flex flex-col items-center justify-center opacity-50">
+                  <div className="relative w-24 h-28 bg-gray-700 rounded-lg shadow-lg border-2 border-white/30 flex flex-col items-center justify-center opacity-50">
                     <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-white/30 rounded"></div>
                     <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-4 h-3 border-2 border-white/20 rounded-t"></div>
                     
-                    <div className="text-white/60 font-bold text-xs text-center">
+                    <div className="text-white/60 font-bold text-sm text-center px-2">
                       {position.label}
                     </div>
                   </div>
