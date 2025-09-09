@@ -139,9 +139,13 @@ export default function LatestSection() {
                 {/* Home Team */}
                 <div className="text-center space-y-1">
                   <div className="font-medium text-white text-sm">{match.homeTeam}</div>
-                  {match.status === "FT" && (
-                    <div className="text-2xl font-bold text-white">{match.homeScore}</div>
-                  )}
+                  <div className="h-8 flex items-center justify-center">
+                    {match.status === "FT" ? (
+                      <div className="text-2xl font-bold text-white">{match.homeScore}</div>
+                    ) : (
+                      <div className="h-8"></div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Minimal Divider */}
@@ -156,9 +160,13 @@ export default function LatestSection() {
                 {/* Away Team */}
                 <div className="text-center space-y-1">
                   <div className="font-medium text-white text-sm">{match.awayTeam}</div>
-                  {match.status === "FT" && (
-                    <div className="text-2xl font-bold text-white">{match.awayScore}</div>
-                  )}
+                  <div className="h-8 flex items-center justify-center">
+                    {match.status === "FT" ? (
+                      <div className="text-2xl font-bold text-white">{match.awayScore}</div>
+                    ) : (
+                      <div className="h-8"></div>
+                    )}
+                  </div>
                 </div>
               </div>
               
