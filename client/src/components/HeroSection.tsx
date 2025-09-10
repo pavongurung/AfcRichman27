@@ -7,9 +7,10 @@ export default function HeroSection() {
       {/* Large banner background showcasing football action */}
       <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent z-10"></div>
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat" 
+        className="absolute inset-0 bg-cover bg-top bg-no-repeat" 
         style={{
-          backgroundImage: `url('${heroImage}')`
+          backgroundImage: `url('${heroImage}')`,
+          imageRendering: 'crisp-edges'
         }}
       ></div>
       

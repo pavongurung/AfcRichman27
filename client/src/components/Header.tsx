@@ -15,9 +15,9 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-4" data-testid="logo-link">
             <img
-              src="/richmanlogo.png"
+              src="../../../attached_assets/IMG_4584_1757307720972.jpg"
               alt="AFC Richman Logo"
-              className="w-10 h-10 object-contain"
+              className="w-10 h-10 object-cover rounded-full border-2 border-red-500"
               data-testid="logo-icon"
             />
             <div className="text-xl font-bold">AFC Richman</div>
