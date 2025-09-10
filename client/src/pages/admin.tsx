@@ -148,7 +148,7 @@ export default function AdminPanel() {
   const [isPlayerDialogOpen, setIsPlayerDialogOpen] = useState(false);
   const [isMatchDialogOpen, setIsMatchDialogOpen] = useState(false);
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
-  const [editingStats, setEditingStats] = useState<PlayerStats | null>(null);
+  const [editingStats, setEditingStats] = useState<(PlayerStats & { playerId: string; playerName: string }) | null>(null);
   const [editingMatch, setEditingMatch] = useState<Match | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isOcrProcessing, setIsOcrProcessing] = useState(false);
