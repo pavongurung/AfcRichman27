@@ -1,5 +1,5 @@
 import type { Player } from "@shared/schema";
-import { getFormationById } from "@/lib/formations";
+import { getFormationById } from "../lib/formations";
 
 interface ModernLineupViewProps {
   formation?: string;

@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import heroImage from "@assets/image_1757374036583.png";
+import { Button } from "./ui/button";
+import heroImage from "../../../attached_assets/image_1757374036583.png";
 
 export default function HeroSection() {
   return (

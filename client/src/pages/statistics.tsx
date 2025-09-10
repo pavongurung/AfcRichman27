@@ -56,8 +56,10 @@ export default function Statistics() {
       aValue = a.firstName;
       bValue = b.firstName;
     } else {
-      aValue = a.stats?.[sortField] || 0;
-      bValue = b.stats?.[sortField] || 0;
+      const aStatValue = a.stats?.[sortField] || 0;
+      const bStatValue = b.stats?.[sortField] || 0;
+      aValue = typeof aStatValue === 'number' ? aStatValue : Number(aStatValue) || 0;
+      bValue = typeof bStatValue === 'number' ? bStatValue : Number(bStatValue) || 0;
     }
 
     if (typeof aValue === "string" && typeof bValue === "string") {

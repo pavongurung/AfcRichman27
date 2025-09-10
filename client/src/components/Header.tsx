@@ -1,7 +1,7 @@
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
+import { Button } from "./ui/button";
 import { Menu, Settings, X } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 
 export default function Header() {

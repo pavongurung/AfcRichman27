@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Calendar, Play, Users, ChevronDown, ChevronUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "./ui/button";
 import { useRef, useState } from "react";
 import { Link } from "wouter";
 import type { Match, Player } from "@shared/schema";
-import LineupView from "@/components/LineupView";
+import LineupView from "./LineupView";
 
 export default function LatestSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
