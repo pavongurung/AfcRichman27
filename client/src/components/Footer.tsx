@@ -9,7 +9,7 @@ export default function Footer() {
             {/* Logo */}
             <div className="flex items-center space-x-4 mb-6">
               <img
-                src="/richmanlogo.png"
+                src="../../../attached_assets/richmanlogo_1757482397915.png"
                 alt="AFC Richman Logo"
                 className="w-12 h-12 object-contain"
               />
