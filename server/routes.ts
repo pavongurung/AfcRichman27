@@ -80,6 +80,11 @@ function parseFootballStats(text: string): Record<string, number> {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Serve static files from client/public directory for logos and images
+  const path = (await import('path')).default;
+  const express = (await import('express')).default;
+  app.use(express.static(path.resolve(import.meta.dirname, "..", "client", "public")));
+  
   // Set up session middleware for admin login
   const session = (await import('express-session')).default;
   const memorystore = (await import('memorystore')).default;
