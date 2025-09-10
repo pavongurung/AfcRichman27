@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "../components/ui/table";
 import type { PlayerWithStats, PlayerStats } from "@shared/schema";
 
 type SortField = keyof PlayerStats | "firstName";
