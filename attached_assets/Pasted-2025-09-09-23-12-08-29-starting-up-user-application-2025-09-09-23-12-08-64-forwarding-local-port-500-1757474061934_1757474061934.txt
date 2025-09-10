@@ -1,0 +1,80 @@
+2025-09-09 23:12:08.29
+starting up user application
+2025-09-09 23:12:08.64
+forwarding local port 5000 to external port 80 (mapped as 1104)
+2025-09-09 23:12:10.98
+> rest-express@1.0.0 start
+2025-09-09 23:12:10.98
+> cross-env NODE_ENV=production node dist/index.mjs
+2025-09-09 23:12:13.39
+3:12:13 AM [express] serving on port 5000
+2025-09-09 23:12:25.65
+3:12:25 AM [express] GET /api/auth/user 200 in 2ms :: {"id":"test-user","email":"test@example.com"}
+2025-09-09 23:12:28.06
+3:12:28 AM [express] GET /api/matches 200 in 2442ms :: []
+2025-09-09 23:12:28.08
+3:12:28 AM [express] GET /api/players 200 in 2424ms :: []
+2025-09-09 23:12:40.98
+3:12:40 AM [express] GET /api/auth/user 200 in 1ms :: {"id":"test-user","email":"test@example.com"}
+2025-09-09 23:12:41.07
+3:12:41 AM [express] GET /api/players 200 in 98ms :: []
+2025-09-09 23:12:41.08
+3:12:41 AM [express] GET /api/matches 200 in 93ms :: []
+2025-09-09 23:12:49.60
+3:12:49 AM [express] GET /api/players 304 in 25ms :: []
+2025-09-09 23:13:13.66
+3:13:13 AM [express] POST /api/admin/players 201 in 2164ms :: {"id":"43940673-2934-4371-9db1-d17edda…
+2025-09-09 23:13:13.74
+3:13:13 AM [express] GET /api/players 200 in 35ms :: [{"id":"43940673-2934-4371-9db1-d17eddadd78e","…
+2025-09-09 23:13:21.78
+3:13:21 AM [express] GET /api/players-with-stats 200 in 44ms :: [{"id":"43940673-2934-4371-9db1-d17e…
+2025-09-09 23:13:22.23
+3:13:22 AM [express] GET /api/players 304 in 31ms :: [{"id":"43940673-2934-4371-9db1-d17eddadd78e","…
+2025-09-09 23:13:30.19
+file:///home/runner/workspace/dist/index.mjs:342
+2025-09-09 23:13:30.19
+if (!req.isAuthenticated() || !user.expires_at) {
+2025-09-09 23:13:30.19
+^
+2025-09-09 23:13:30.19
+2025-09-09 23:13:30.19
+TypeError: req.isAuthenticated is not a function
+2025-09-09 23:13:30.19
+at isAuthenticated (file:///home/runner/workspace/dist/index.mjs:342:12)
+2025-09-09 23:13:30.19
+at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+2025-09-09 23:13:30.19
+at next (/home/runner/workspace/node_modules/express/lib/router/route.js:149:13)
+2025-09-09 23:13:30.19
+at Route.dispatch (/home/runner/workspace/node_modules/express/lib/router/route.js:119:3)
+2025-09-09 23:13:30.19
+at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+2025-09-09 23:13:30.19
+at /home/runner/workspace/node_modules/express/lib/router/index.js:284:15
+2025-09-09 23:13:30.19
+at param (/home/runner/workspace/node_modules/express/lib/router/index.js:365:14)
+2025-09-09 23:13:30.19
+at param (/home/runner/workspace/node_modules/express/lib/router/index.js:376:14)
+2025-09-09 23:13:30.19
+at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:421:3)
+2025-09-09 23:13:30.19
+at next (/home/runner/workspace/node_modules/express/lib/router/index.js:280:10)
+2025-09-09 23:13:30.19
+2025-09-09 23:13:30.19
+Node.js v20.19.3
+2025-09-09 23:13:30.24
+npm notice
+2025-09-09 23:13:30.24
+npm notice New major version of npm available! 10.8.2 -> 11.6.0
+2025-09-09 23:13:30.24
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.0
+2025-09-09 23:13:30.24
+npm notice To update run: npm install -g npm@11.6.0
+2025-09-09 23:13:30.24
+npm notice
+2025-09-09 23:13:30.24
+command finished with error [npm run start]: exit status 1
+2025-09-09 23:13:31.51
+> rest-express@1.0.0 start
+2025-09-09 23:13:31.51
+> cross-env NODE_ENV=production node dist/index.mjs
