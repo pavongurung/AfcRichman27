@@ -1,0 +1,1 @@
+../src/pages/player-detail.tsx
