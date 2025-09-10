@@ -68,7 +68,7 @@ export default function PlayerDetail() {
             <div className="flex items-center space-x-6">
               <Link href="/">
                 <div className="flex items-center space-x-2">
-                  <img src="../../../attached_assets/richmanlogo_1757482397915.png" alt="AFC Richman" className="w-8 h-8 object-contain" />
+                  <img src="/richmanlogo.png" alt="AFC Richman" className="w-8 h-8 object-contain" />
                   <span className="text-white font-bold">AFC Richman</span>
                 </div>
               </Link>

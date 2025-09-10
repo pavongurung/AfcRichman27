@@ -1,5 +1,5 @@
 import { Button } from "./ui/button";
-import heroImage from "../../../attached_assets/image_1757374036583.png";
+const heroImage = "/hero-background.png";
 
 export default function HeroSection() {
   return (
