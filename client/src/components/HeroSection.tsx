@@ -24,12 +24,6 @@ export default function HeroSection() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Button 
-              className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-3 font-semibold" 
-              data-testid="hero-news-button"
-            >
-              Latest News
-            </Button>
-            <Button 
               variant="outline" 
               className="border-border text-foreground hover:bg-muted px-8 py-3 font-semibold" 
               data-testid="hero-watch-button"

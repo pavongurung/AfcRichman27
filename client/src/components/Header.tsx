@@ -25,8 +25,8 @@ export default function Header() {
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="group relative text-foreground hover:text-primary transition-all duration-300 transform hover:scale-105" data-testid="nav-latest">
-              Latest
+            <Link href="/" className="group relative text-foreground hover:text-primary transition-all duration-300 transform hover:scale-105" data-testid="nav-home">
+              Home
               <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-500 transition-all duration-300 group-hover:w-full"></div>
             </Link>
             <Link href="/squad" className="group relative text-foreground hover:text-primary transition-all duration-300 transform hover:scale-105" data-testid="nav-team">
@@ -73,9 +73,9 @@ export default function Header() {
                 href="/" 
                 className="block group relative text-foreground hover:text-primary transition-all duration-300 transform hover:scale-105 py-2" 
                 onClick={() => setIsMobileMenuOpen(false)}
-                data-testid="mobile-nav-latest"
+                data-testid="mobile-nav-home"
               >
-                Latest
+                Home
                 <div className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500 transform scale-x-0 origin-center transition-transform duration-300 group-hover:scale-x-100"></div>
               </Link>
               <Link 
