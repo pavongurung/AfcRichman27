@@ -491,7 +491,7 @@ export default function AdminPanel() {
 
   const deletePlayerMutation = useMutation({
     mutationFn: async (id: string) => {
-      return await apiRequest(`/api/admin/players/${id}`, "DELETE");
+      return await apiRequest("DELETE", `/api/admin/players/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/players"] });
