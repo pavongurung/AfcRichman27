@@ -11,7 +11,7 @@ try {
   execSync('npx vite build', { stdio: 'inherit', cwd: __dirname });
   
   console.log('Building backend with ESM format...');
-  execSync('npx esbuild server/index.ts --platform=node --packages=external --bundle --outdir=dist --format=esm', {
+  execSync('npx esbuild server/index.ts --platform=node --packages=external --bundle --outdir=dist --format=esm --out-extension:.js=.mjs', {
     stdio: 'inherit',
     cwd: __dirname
   });
