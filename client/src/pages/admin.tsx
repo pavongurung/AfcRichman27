@@ -1593,6 +1593,225 @@ export default function AdminPanel() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Match Dialog */}
+        <Dialog open={isMatchDialogOpen} onOpenChange={setIsMatchDialogOpen}>
+          <DialogContent className="max-w-2xl bg-card border-border rounded-2xl">
+            <DialogHeader className="pb-6 border-b border-border">
+              <DialogTitle className="text-xl font-semibold flex items-center space-x-3">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <Calendar className="w-4 h-4 text-primary-foreground" />
+                </div>
+                <span>{editingMatch ? "Edit Match" : "Add New Match"}</span>
+              </DialogTitle>
+            </DialogHeader>
+            <Form {...matchForm}>
+              <form onSubmit={matchForm.handleSubmit((data) => {
+                const processedData = {
+                  ...data,
+                  matchDate: data.matchDate ? new Date(data.matchDate) : new Date(),
+                };
+
+                if (editingMatch) {
+                  updateMatchMutation.mutate({
+                    id: editingMatch.id,
+                    data: processedData,
+                  });
+                } else {
+                  createMatchMutation.mutate(processedData);
+                }
+              })} className="space-y-6 pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={matchForm.control}
+                    name="homeTeam"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-foreground">Home Team</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Enter home team name" 
+                            {...field} 
+                            className="rounded-xl border-border bg-background"
+                            data-testid="input-home-team"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={matchForm.control}
+                    name="awayTeam"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-foreground">Away Team</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Enter away team name" 
+                            {...field} 
+                            className="rounded-xl border-border bg-background"
+                            data-testid="input-away-team"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={matchForm.control}
+                    name="homeScore"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-foreground">Home Score</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            placeholder="0" 
+                            {...field} 
+                            onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                            className="rounded-xl border-border bg-background"
+                            data-testid="input-home-score"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={matchForm.control}
+                    name="awayScore"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-foreground">Away Score</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            placeholder="0" 
+                            {...field} 
+                            onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                            className="rounded-xl border-border bg-background"
+                            data-testid="input-away-score"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={matchForm.control}
+                    name="competition"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-foreground">Competition</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="e.g. Premier League, Cup Final" 
+                            {...field} 
+                            className="rounded-xl border-border bg-background"
+                            data-testid="input-competition"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={matchForm.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-foreground">Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="rounded-xl border-border bg-background" data-testid="select-status">
+                              <SelectValue placeholder="Select status" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Upcoming">Upcoming</SelectItem>
+                            <SelectItem value="Live">Live</SelectItem>
+                            <SelectItem value="FT">Full Time</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={matchForm.control}
+                  name="matchDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium text-foreground">Match Date & Time</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="datetime-local" 
+                          {...field} 
+                          className="rounded-xl border-border bg-background"
+                          data-testid="input-match-date"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={matchForm.control}
+                  name="replayUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium text-foreground">Replay URL (Optional)</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="https://..." 
+                          {...field} 
+                          className="rounded-xl border-border bg-background"
+                          data-testid="input-replay-url"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex space-x-4 pt-4 border-t border-border">
+                  <Button 
+                    type="submit" 
+                    disabled={createMatchMutation.isPending || updateMatchMutation.isPending}
+                    className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl py-3"
+                    data-testid="button-save-match"
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    {createMatchMutation.isPending || updateMatchMutation.isPending ? "Saving..." : (editingMatch ? "Update Match" : "Create Match")}
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => {
+                      setIsMatchDialogOpen(false);
+                      setEditingMatch(null);
+                      matchForm.reset();
+                    }}
+                    className="px-8 rounded-xl border-border"
+                    data-testid="button-cancel-match"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
