@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { formations, getFormationById, getPositionColor, Position } from '@/lib/formations';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { formations, getFormationById, getPositionColor, Position } from '../lib/formations';
+import { Button } from './ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { X, User } from 'lucide-react';
 import type { Player } from '@shared/schema';
 

@@ -1784,6 +1784,77 @@ export default function AdminPanel() {
                   )}
                 />
 
+                {/* Formation and Lineup Section */}
+                <div className="space-y-4 p-4 border border-border rounded-xl bg-muted/20">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-6 h-6 bg-primary rounded flex items-center justify-center">
+                      <Users className="w-3 h-3 text-primary-foreground" />
+                    </div>
+                    <h3 className="text-sm font-medium text-foreground">Formation & Lineup</h3>
+                  </div>
+                  
+                  <FormField
+                    control={matchForm.control}
+                    name="formation"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-foreground">Formation (Optional)</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="rounded-xl border-border bg-background" data-testid="select-formation">
+                              <SelectValue placeholder="Select formation" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="4-3-3">4-3-3</SelectItem>
+                            <SelectItem value="4-4-2">4-4-2</SelectItem>
+                            <SelectItem value="3-5-2">3-5-2</SelectItem>
+                            <SelectItem value="4-2-3-1">4-2-3-1</SelectItem>
+                            <SelectItem value="3-4-3">3-4-3</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Interactive Formation Pitch */}
+                  {matchForm.watch("formation") && (
+                    <div className="mt-4">
+                      <FormationPitch
+                        selectedFormation={matchForm.watch("formation") || "4-3-3"}
+                        lineup={matchForm.watch("lineup") || {}}
+                        players={players || []}
+                        isEditing={true}
+                        onFormationChange={(formation) => matchForm.setValue("formation", formation)}
+                        onLineupChange={(lineup) => matchForm.setValue("lineup", lineup)}
+                        className="max-w-md mx-auto"
+                      />
+                      
+                      <div className="flex justify-center mt-4">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const currentFormation = matchForm.watch("formation");
+                            const currentLineup = matchForm.watch("lineup") || {};
+                            if (currentFormation && players) {
+                              const autoLineup = autoAssignPlayers(currentFormation, currentLineup, players);
+                              matchForm.setValue("lineup", autoLineup);
+                            }
+                          }}
+                          className="rounded-xl border-border"
+                          data-testid="button-auto-assign"
+                        >
+                          <Shuffle className="w-4 h-4 mr-2" />
+                          Auto Assign Players
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 <div className="flex space-x-4 pt-4 border-t border-border">
                   <Button 
                     type="submit" 
