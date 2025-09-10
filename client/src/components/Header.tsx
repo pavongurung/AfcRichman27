@@ -45,14 +45,28 @@ export default function Header() {
 
           {/* Right side */}
           <div className="flex items-center space-x-4">
-            {isAuthenticated && (
-              <Link href="/admin" data-testid="admin-link">
-                <Button variant="outline" size="sm" className="hidden md:flex">
-                  <Settings className="w-4 h-4 mr-2" />
-                  Admin
+            {isAuthenticated ? (
+              <>
+                <Link href="/admin" data-testid="admin-link">
+                  <Button variant="outline" size="sm" className="hidden md:flex">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Admin
+                  </Button>
+                </Link>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={async () => {
+                    await fetch('/api/admin/logout', { method: 'POST' });
+                    window.location.href = '/';
+                  }}
+                  className="hidden md:flex"
+                  data-testid="logout-button"
+                >
+                  Logout
                 </Button>
-              </Link>
-            )}
+              </>
+            ) : null}
             <Button 
               variant="ghost" 
               size="icon" 

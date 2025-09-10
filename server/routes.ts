@@ -84,16 +84,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // await setupAuth(app);
 
   // Auth routes - temporarily disabled
-  app.get('/api/auth/user', async (req: any, res) => {
-    // Return mock user for testing
-    res.json({ id: "test-user", email: "test@example.com" });
+  // Admin authentication endpoints
+  app.post('/api/admin/login', async (req: any, res) => {
+    const { username, password } = req.body;
+    
+    // Simple but secure admin credentials (you should change these!)
+    const ADMIN_USERNAME = 'admin';
+    const ADMIN_PASSWORD = 'richman2024!';
+    
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+      req.session.isAdmin = true;
+      req.session.adminUser = { id: 'admin', username: ADMIN_USERNAME };
+      res.json({ success: true, user: { id: 'admin', username: ADMIN_USERNAME } });
+    } else {
+      res.status(401).json({ error: 'Invalid credentials' });
+    }
   });
 
-  // Mock authentication middleware for testing
-  const mockIsAuthenticated = (req: any, res: any, next: any) => {
-    // Mock user for testing
-    req.user = { id: "test-user", email: "test@example.com" };
-    next();
+  app.post('/api/admin/logout', async (req: any, res) => {
+    req.session.isAdmin = false;
+    req.session.adminUser = null;
+    res.json({ success: true });
+  });
+
+  app.get('/api/auth/user', async (req: any, res) => {
+    if (req.session?.isAdmin) {
+      res.json(req.session.adminUser);
+    } else {
+      res.status(401).json({ error: 'Not authenticated' });
+    }
+  });
+
+  // Admin authentication middleware
+  const requireAdminAuth = (req: any, res: any, next: any) => {
+    if (req.session?.isAdmin) {
+      req.user = req.session.adminUser;
+      next();
+    } else {
+      res.status(401).json({ error: 'Admin access required' });
+    }
   };
 
   // Free Tesseract OCR endpoint for extracting stats from images
@@ -187,7 +216,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin routes (protected)
-  app.post("/api/admin/players", async (req, res) => {
+  app.post("/api/admin/players", requireAdminAuth, async (req, res) => {
     try {
       const playerData = insertPlayerSchema.parse(req.body);
       const player = await storage.createPlayer(playerData);
@@ -208,7 +237,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/admin/players/:id", async (req, res) => {
+  app.put("/api/admin/players/:id", requireAdminAuth, async (req, res) => {
     try {
       const updates = insertPlayerSchema.partial().parse(req.body);
       const player = await storage.updatePlayer(req.params.id, updates);
@@ -227,7 +256,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/admin/players/:id", mockIsAuthenticated, async (req, res) => {
+  app.delete("/api/admin/players/:id", requireAdminAuth, async (req, res) => {
     try {
       const success = await storage.deletePlayer(req.params.id);
       if (!success) {
@@ -240,7 +269,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/admin/players/:id/stats", mockIsAuthenticated, async (req, res) => {
+  app.put("/api/admin/players/:id/stats", requireAdminAuth, async (req, res) => {
     try {
       const statsData = insertPlayerStatsSchema.partial().parse(req.body);
       const stats = await storage.updatePlayerStats(req.params.id, statsData);
@@ -302,7 +331,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/player-images", mockIsAuthenticated, async (req, res) => {
+  app.put("/api/player-images", requireAdminAuth, async (req, res) => {
     if (!req.body.imageURL) {
       return res.status(400).json({ error: "imageURL is required" });
     }

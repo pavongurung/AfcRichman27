@@ -13,6 +13,7 @@ import MatchesPage from "./pages/matches";
 import MatchCenterPage from "./pages/match-center";
 import MatchDetailsPage from "./pages/match-details";
 import NotFound from "./pages/not-found";
+import Login from "./pages/login";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
@@ -32,6 +33,7 @@ function Router() {
           <Route path="/match-center" component={MatchCenterPage} />
           <Route path="/admin/player/:id" component={AdminPlayer} />
           <Route path="/admin" component={AdminPanel} />
+          <Route path="/login" component={Login} />
           <Route component={NotFound} />
         </Switch>
       </main>
