@@ -2,18 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Image quality improvements */
-img {
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-  backface-visibility: hidden;
-  transform: translateZ(0);
+/* High-quality rendering for all content */
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* Background image quality */
-.bg-cover, .bg-contain {
+/* Sharp, crisp image rendering for logos and photos */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: auto;
+  -ms-interpolation-mode: bicubic;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  max-width: 100%;
+  height: auto;
+}
+
+/* Specifically for logos - keep them sharp but not pixelated */
+img[alt*="Logo"], img[alt*="logo"] {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
+}
+
+/* Background image quality - smooth for photos */
+.bg-cover, .bg-contain {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: auto;
+}
+
+/* Remove any accidental blur effects */
+* {
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Enhanced text sharpness */
+body, html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "liga", "kern";
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
 }
 
 :root {
