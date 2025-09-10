@@ -681,8 +681,8 @@ export default function AdminPanel() {
       homeScore: match.homeScore || 0,
       awayScore: match.awayScore || 0,
       competition: match.competition,
-      matchDate: match.matchDate,
-      status: match.status,
+      matchDate: typeof match.matchDate === 'string' ? match.matchDate : new Date(match.matchDate).toISOString().slice(0, 16),
+      status: match.status as "FT" | "Upcoming" | "Live",
       replayUrl: match.replayUrl || "",
       formation: match.formation || "",
       lineup: match.lineup || {},
@@ -711,13 +711,18 @@ export default function AdminPanel() {
   };
 
   const onMatchSubmit = (data: MatchFormData) => {
+    const processedData = {
+      ...data,
+      matchDate: new Date(data.matchDate),
+    };
+    
     if (editingMatch) {
       updateMatchMutation.mutate({
         id: editingMatch.id,
-        data,
+        data: processedData,
       });
     } else {
-      createMatchMutation.mutate(data);
+      createMatchMutation.mutate(processedData);
     }
   };
 
@@ -2128,11 +2133,11 @@ export default function AdminPanel() {
                               {matchForm.watch('formation') && (
                                 <div className="bg-slate-50 dark:bg-slate-700/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-600">
                                   <FormationPitch
-                                    formationId={matchForm.watch('formation') || ''}
+                                    selectedFormation={matchForm.watch('formation') || ''}
                                     lineup={matchForm.watch('lineup') || {}}
                                     players={players}
                                     onLineupChange={(newLineup) => matchForm.setValue('lineup', newLineup)}
-                                    isEditable={true}
+                                    isEditing={true}
                                   />
                                 </div>
                               )}
