@@ -80,10 +80,25 @@ function parseFootballStats(text: string): Record<string, number> {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware - temporarily disabled for testing
-  // await setupAuth(app);
+  // Set up session middleware for admin login
+  const session = (await import('express-session')).default;
+  const memorystore = (await import('memorystore')).default;
+  const MemoryStore = memorystore(session);
+  
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    store: new MemoryStore({
+      checkPeriod: 86400000 // prune expired entries every 24h
+    }),
+    cookie: {
+      secure: false, // Set to true in production with HTTPS
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+  }));
 
-  // Auth routes - temporarily disabled
   // Admin authentication endpoints
   app.post('/api/admin/login', async (req: any, res) => {
     const { username, password } = req.body;
