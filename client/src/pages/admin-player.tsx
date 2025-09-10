@@ -359,7 +359,7 @@ export default function AdminPlayer() {
     
     // Calculate derived stats
     if (stats.possessionWon !== undefined && stats.possessionLost !== undefined) {
-      stats.possessionDifference = stats.possessionWon - stats.possessionLost;
+      stats.possessionDifference = (stats.possessionWon || 0) - (stats.possessionLost || 0);
     }
     
     console.log('Parsed stats:', stats);

@@ -123,7 +123,7 @@ export default function PlayerDetail() {
                 </div>
                 <div>
                   <div className="text-muted-foreground">Date of birth:</div>
-                  <div className="text-white font-medium">{formatDate(player.dateOfBirth)}</div>
+                  <div className="text-white font-medium">{player.dateOfBirth ? formatDate(player.dateOfBirth) : 'N/A'}</div>
                 </div>
                 <div>
                   <div className="text-muted-foreground">Height:</div>

@@ -31,6 +31,9 @@ export const players = pgTable("players", {
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   position: text("position").notNull(), // "Goalkeeper", "Defender", "Midfielder", "Forward"
+  nationality: text("nationality"),
+  dateOfBirth: text("date_of_birth"),
+  height: text("height"),
   consoleUsername: text("console_username").notNull(),
   joinDate: text("join_date").notNull(),
   imageUrl: text("image_url"),

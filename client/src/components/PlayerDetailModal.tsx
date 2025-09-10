@@ -135,19 +135,19 @@ export default function PlayerDetailModal({ playerId, open, onOpenChange }: Play
               <>
                 {/* Performance circles */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-                  <CircularProgress value={stats.gamesPlayed} max={30} color="text-primary">
+                  <CircularProgress value={stats.gamesPlayed || 0} max={30} color="text-primary">
                     <div className="text-foreground font-semibold">Games played</div>
                   </CircularProgress>
                   
-                  <CircularProgress value={stats.goals} max={25} color="text-green-500">
+                  <CircularProgress value={stats.goals || 0} max={25} color="text-green-500">
                     <div className="text-foreground font-semibold">Goals</div>
                   </CircularProgress>
                   
-                  <CircularProgress value={stats.assists} max={20} color="text-blue-500">
+                  <CircularProgress value={stats.assists || 0} max={20} color="text-blue-500">
                     <div className="text-foreground font-semibold">Assists</div>
                   </CircularProgress>
                   
-                  <CircularProgress value={stats.yellowCards + stats.redCards} max={10} color="text-yellow-500">
+                  <CircularProgress value={(stats.yellowCards || 0) + (stats.redCards || 0)} max={10} color="text-yellow-500">
                     <div className="text-foreground font-semibold">Cards</div>
                   </CircularProgress>
                 </div>
