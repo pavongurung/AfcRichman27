@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
 import { ArrowLeft, Calendar, MapPin, Trophy, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
 import type { Match, Player } from "@shared/schema";
 import { format } from "date-fns";
-import ModernLineupView from "@/components/ModernLineupView";
+import ModernLineupView from "../components/ModernLineupView";
 
 export default function MatchDetailsPage() {
   const params = useParams();
