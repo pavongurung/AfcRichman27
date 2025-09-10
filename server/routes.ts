@@ -414,7 +414,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/matches", async (req, res) => {
+  app.post("/api/admin/matches", requireAdminAuth, async (req, res) => {
     try {
       console.log("Received match data:", req.body);
       
@@ -446,7 +446,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/admin/matches/:id", async (req, res) => {
+  app.put("/api/admin/matches/:id", requireAdminAuth, async (req, res) => {
     try {
       // Convert date string to Date object before validation if present
       const processedData = {
@@ -478,7 +478,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/admin/matches/:id", async (req, res) => {
+  app.delete("/api/admin/matches/:id", requireAdminAuth, async (req, res) => {
     try {
       const success = await storage.deleteMatch(req.params.id);
       if (!success) {
