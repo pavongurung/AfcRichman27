@@ -23,12 +23,12 @@ import FormationPitch from "@/components/FormationPitch";
 import { getFormationById } from "@/lib/formations";
 
 const playerFormSchema = z.object({
-  jerseyNumber: z.number().min(1).max(99),
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  position: z.enum(["Goalkeeper", "Defender", "Midfielder", "Forward"]),
-  consoleUsername: z.string().min(1, "Console username is required"),
-  joinDate: z.string().min(1, "Join date is required"),
+  jerseyNumber: z.number().min(1).max(99).optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  position: z.enum(["Goalkeeper", "Defender", "Midfielder", "Forward"]).optional(),
+  consoleUsername: z.string().optional(),
+  joinDate: z.string().optional(),
   imageUrl: z.string().optional(),
 });
 
