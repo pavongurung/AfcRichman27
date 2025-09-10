@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Image quality improvements */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Background image quality */
+.bg-cover, .bg-contain {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
 :root {
   --background: hsl(0 0% 0%);
   --foreground: hsl(0 0% 98%);
