@@ -56,7 +56,7 @@ export default function Login() {
         <CardHeader className="space-y-1 text-center">
           <div className="flex items-center justify-center mb-4">
             <img
-              src="../../../attached_assets/richmanlogo_1757482397915.png"
+              src="/richmanlogo.png"
               alt="AFC Richman Logo"
               className="w-16 h-16 object-contain"
             />
